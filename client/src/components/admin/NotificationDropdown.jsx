@@ -60,7 +60,7 @@ const NotificationDropdown = () => {
         setLoading(true);
         try {
             const { data } = await api.get('/notifications');
-            setNotifications(data || []);
+            setNotifications(Array.isArray(data) ? data : []);
         } catch (err) {
             console.error('Failed to fetch notifications:', err);
         } finally {
@@ -162,8 +162,8 @@ const NotificationDropdown = () => {
                                             key={notification.id}
                                             onClick={() => !notification.read && markAsRead(notification.id)}
                                             className={`w-full text-left flex items-start gap-3 px-4 py-3 transition-colors border-b border-slate-50 dark:border-slate-800 last:border-0 ${notification.read
-                                                    ? 'bg-white dark:bg-slate-900 opacity-60'
-                                                    : 'bg-blue-50/50 dark:bg-blue-900/10 hover:bg-blue-50 dark:hover:bg-blue-900/20'
+                                                ? 'bg-white dark:bg-slate-900 opacity-60'
+                                                : 'bg-blue-50/50 dark:bg-blue-900/10 hover:bg-blue-50 dark:hover:bg-blue-900/20'
                                                 }`}
                                         >
                                             <div className={`w-9 h-9 rounded-full ${iconConfig.bg} flex items-center justify-center flex-shrink-0 mt-0.5`}>

@@ -17,7 +17,7 @@ const CertificateDisplay = () => {
     const fetchCertificates = async () => {
         try {
             const res = await api.get('/certificates/public');
-            setCertificates(res.data);
+            setCertificates(Array.isArray(res.data) ? res.data : []);
         } catch (error) {
             console.error('Failed to fetch certificates:', error);
         } finally {

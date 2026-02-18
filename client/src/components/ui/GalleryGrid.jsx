@@ -18,7 +18,7 @@ const GalleryGrid = () => {
     const fetchGallery = async () => {
         try {
             const res = await api.get('/gallery/public');
-            setImages(res.data);
+            setImages(Array.isArray(res.data) ? res.data : []);
         } catch (error) {
             console.error('Failed to fetch gallery:', error);
         } finally {

@@ -105,7 +105,7 @@ const About = () => {
                             <Heart className="w-16 h-16 mx-auto text-white group-hover:scale-110 transition-transform duration-500" />
                             <h3 className="text-2xl font-black">{t.about.valuesTitle}</h3>
                             <div className="flex flex-wrap justify-center gap-2">
-                                {t.about.values.map((v, i) => (
+                                {(Array.isArray(t?.about?.values) ? t.about.values : []).map((v, i) => (
                                     <span key={i} className="bg-white/20 px-3 py-1 rounded-full text-xs font-bold backdrop-blur-sm border border-white/10">{v}</span>
                                 ))}
                             </div>

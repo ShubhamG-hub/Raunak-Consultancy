@@ -17,7 +17,7 @@ const TestimonialList = () => {
     const fetchTestimonials = async () => {
         try {
             const res = await api.get('/testimonials/public');
-            setTestimonials(res.data);
+            setTestimonials(Array.isArray(res.data) ? res.data : []);
         } catch (error) {
             console.error('Failed to fetch testimonials:', error);
         } finally {
