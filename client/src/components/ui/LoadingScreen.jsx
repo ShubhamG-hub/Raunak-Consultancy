@@ -54,23 +54,6 @@ const LoadingScreen = () => {
                     <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent mb-2">
                         Raunak Consultancy
                     </h1>
-                    <div className="flex items-center justify-center gap-1">
-                        <motion.div
-                            animate={{ opacity: [1, 0.3, 1] }}
-                            transition={{ duration: 1.5, repeat: Infinity, delay: 0 }}
-                            className="w-2 h-2 bg-blue-500 rounded-full"
-                        />
-                        <motion.div
-                            animate={{ opacity: [1, 0.3, 1] }}
-                            transition={{ duration: 1.5, repeat: Infinity, delay: 0.2 }}
-                            className="w-2 h-2 bg-blue-500 rounded-full"
-                        />
-                        <motion.div
-                            animate={{ opacity: [1, 0.3, 1] }}
-                            transition={{ duration: 1.5, repeat: Infinity, delay: 0.4 }}
-                            className="w-2 h-2 bg-blue-500 rounded-full"
-                        />
-                    </div>
                 </motion.div>
             </div>
         </motion.div>
