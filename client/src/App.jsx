@@ -1,9 +1,10 @@
 import { Routes, Route, useLocation } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { AnimatePresence } from 'framer-motion';
+import LoadingScreen from './components/ui/LoadingScreen';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
-import WhatsAppButton from './components/ui/WhatsAppButton';
-import SmartAssistant from './components/ui/SmartAssistant';
+import FloatingActions from './components/ui/FloatingActions';
 import { AuthProvider } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import Home from './pages/public/Home';
@@ -91,17 +92,28 @@ const AppLayout = ({ children }) => {
         {children}
       </main>
       {!isAdmin && <Footer />}
-      {!isAdmin && <WhatsAppButton />}
-      {!isAdmin && <SmartAssistant />}
+      {!isAdmin && <FloatingActions />}
     </div>
   );
 };
 
 
 function App() {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <ThemeProvider>
       <AuthProvider>
+        <AnimatePresence mode="wait">
+          {loading && <LoadingScreen key="loader" />}
+        </AnimatePresence>
         <AppLayout>
           <Routes>
             {/* Public Routes */}

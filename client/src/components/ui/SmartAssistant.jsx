@@ -98,48 +98,60 @@ const SmartAssistant = () => {
         // 2. Process Calculator Flow or AI logic
         setIsTyping(true);
         setTimeout(async () => {
-            let aiText = '';
-            let aiMsg = null;
-            let metadata = null;
+            try {
+                let aiText = '';
+                let aiMsg = null;
+                let metadata = null;
 
-            if (calcState.type) {
-                // Handle ongoing calculator step
-                const nextState = handleCalcStep(text);
-                aiText = nextState.prompt;
-                if (nextState.result) {
-                    metadata = nextState.result;
+                if (calcState.type) {
+                    // Handle ongoing calculator step
+                    const nextState = handleCalcStep(text);
+                    aiText = nextState.prompt;
+                    if (nextState.result) {
+                        metadata = nextState.result;
+                        aiMsg = {
+                            id: Date.now() + 1,
+                            text: aiText,
+                            sender: 'bot',
+                            timestamp: new Date(),
+                            result: nextState.result // Special result card
+                        };
+                    }
+                } else {
+                    // Check if user wants to start a calculator
+                    const trigger = checkCalcTrigger(text);
+                    if (trigger) {
+                        setCalcState({ type: trigger.type, step: 1, data: {} });
+                        aiText = trigger.prompt;
+                    } else {
+                        aiText = getAIResponse(text, language);
+                    }
+                }
+
+                if (!aiMsg) {
                     aiMsg = {
                         id: Date.now() + 1,
                         text: aiText,
                         sender: 'bot',
-                        timestamp: new Date(),
-                        result: nextState.result // Special result card
+                        timestamp: new Date()
                     };
                 }
-            } else {
-                // Check if user wants to start a calculator
-                const trigger = checkCalcTrigger(text);
-                if (trigger) {
-                    setCalcState({ type: trigger.type, step: 1, data: {} });
-                    aiText = trigger.prompt;
-                } else {
-                    aiText = getAIResponse(text, language);
-                }
-            }
 
-            if (!aiMsg) {
-                aiMsg = {
+                setMessages(prev => [...prev, aiMsg]);
+                persistMessage(sId, 'bot', aiText, metadata);
+            } catch (error) {
+                console.error('Chatbot error:', error);
+                const errorMsg = {
                     id: Date.now() + 1,
-                    text: aiText,
+                    text: "I'm sorry, I encountered an error. Please try again.",
                     sender: 'bot',
                     timestamp: new Date()
                 };
+                setMessages(prev => [...prev, errorMsg]);
+            } finally {
+                setIsTyping(false);
+                scrollToBottom();
             }
-
-            setMessages(prev => [...prev, aiMsg]);
-            persistMessage(sId, 'bot', aiText, metadata);
-            setIsTyping(false);
-            scrollToBottom();
         }, 800);
     };
 
@@ -596,19 +608,19 @@ const SmartAssistant = () => {
     };
 
     return (
-        <div className="fixed bottom-6 right-6 z-50 pointer-events-none">
+        <div className="pointer-events-none relative">
             <div className="relative pointer-events-auto flex flex-col items-end gap-3">
                 {/* Greeting Tooltip */}
                 <AnimatePresence>
                     {showGreeting && !isOpen && (
                         <motion.div
-                            initial={{ opacity: 0, scale: 0.8, x: 20 }}
-                            animate={{ opacity: 1, scale: 1, x: 0 }}
-                            exit={{ opacity: 0, scale: 0.8, x: 20 }}
-                            className="absolute right-16 top-1/2 -translate-y-1/2 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md text-zinc-900 dark:text-zinc-100 px-4 py-2.5 rounded-2xl rounded-br-none shadow-2xl border border-white/20 text-xs font-bold whitespace-nowrap z-[60]"
+                            initial={{ opacity: 0, x: 10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: 10 }}
+                            className="absolute right-16 top-1/2 -translate-y-1/2 bg-white/95 dark:bg-slate-800/95 backdrop-blur-md text-primary dark:text-primary px-3 py-1.5 rounded-lg shadow-sm font-bold text-xs border border-primary/10 dark:border-primary/20 whitespace-nowrap z-[70] hidden md:block"
                         >
                             <div className="flex items-center gap-2">
-                                <Sparkles className="w-3.5 h-3.5 text-primary animate-pulse" />
+                                <Sparkles className="w-3.5 h-3.5 animate-pulse" />
                                 <span>{t.chatbot.ui.greetingTooltip}</span>
                             </div>
                         </motion.div>
@@ -622,7 +634,7 @@ const SmartAssistant = () => {
                             initial={{ opacity: 0, scale: 0.9, y: 20, transformOrigin: 'bottom right' }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                            className="absolute bottom-16 right-0 w-[350px] bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl border border-white/20 dark:border-zinc-800/50 rounded-[2.5rem] shadow-[0_0_50px_-12px_rgba(0,0,0,0.25)] overflow-hidden z-50"
+                            className="fixed md:absolute bottom-24 md:bottom-16 right-4 md:right-0 w-[calc(100vw-32px)] md:w-[350px] bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl border border-white/20 dark:border-zinc-800/50 rounded-[2.5rem] shadow-[0_0_50px_-12px_rgba(0,0,0,0.25)] overflow-hidden z-[100]"
                         >
                             {/* Header */}
                             <div className="p-5 bg-gradient-to-br from-primary/90 to-primary/70 backdrop-blur-md text-primary-foreground flex items-center justify-between border-b border-white/10">
@@ -664,17 +676,27 @@ const SmartAssistant = () => {
 
                 {/* Floating Bubble */}
                 <motion.button
-                    whileHover={{ scale: 1.05 }}
+                    layoutId="chat-bubble"
+                    whileHover={{
+                        scale: 1.1,
+                        boxShadow: "0 0 15px 2px rgba(var(--primary-rgb), 0.3)"
+                    }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => { setIsOpen(!isOpen); setShowGreeting(false); }}
-                    className={`w-14 h-14 rounded-2xl shadow-2xl flex items-center justify-center transition-all duration-300 relative group overflow-hidden ${isOpen
+                    onMouseEnter={() => setShowGreeting(true)}
+                    onMouseLeave={() => setShowGreeting(false)}
+                    className={`w-14 h-14 rounded-full shadow-2xl flex items-center justify-center transition-all duration-300 relative group overflow-hidden z-[60] ${isOpen
                         ? 'bg-zinc-800 dark:bg-zinc-100 text-white dark:text-zinc-900 border-zinc-700'
                         : 'bg-gradient-to-br from-primary to-primary/80 text-white'
                         }`}
                 >
                     <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity" />
-                    {isOpen ? <X className="relative z-10" /> : <MessageCircle className="relative z-10 w-7 h-7" />}
-                    {!isOpen && <div className="absolute top-2 right-2 w-2 h-2 rounded-full bg-white animate-ping" />}
+                    {isOpen ? (
+                        <X className="relative z-10 w-6 h-6" />
+                    ) : (
+                        <MessageCircle className="relative z-10 w-7 h-7 fill-current" />
+                    )}
+                    {!isOpen && <div className="absolute top-3 right-3 w-2.5 h-2.5 rounded-full bg-white animate-ping" />}
                 </motion.button>
             </div>
         </div>
