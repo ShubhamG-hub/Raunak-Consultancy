@@ -67,4 +67,40 @@ router.get('/', authMiddleware, async (req, res) => {
     }
 });
 
+// PATCH /api/leads/:id (Admin Only)
+router.patch('/:id', authMiddleware, async (req, res) => {
+    const { status, notes } = req.body;
+    try {
+        const { data, error } = await supabase
+            .from('leads')
+            .update({ status, notes })
+            .eq('id', req.params.id)
+            .select();
+
+        if (error) throw error;
+        if (data.length === 0) return res.status(404).json({ error: 'Lead not found' });
+
+        res.json(data[0]);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to update lead' });
+    }
+});
+
+// DELETE /api/leads/:id (Admin Only)
+router.delete('/:id', authMiddleware, async (req, res) => {
+    try {
+        const { error } = await supabase
+            .from('leads')
+            .delete()
+            .eq('id', req.params.id);
+
+        if (error) throw error;
+        res.json({ message: 'Lead deleted successfully' });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to delete lead' });
+    }
+});
+
 module.exports = router;

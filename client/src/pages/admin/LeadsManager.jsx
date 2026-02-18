@@ -3,8 +3,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import api from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Search, Filter, Download, MoreHorizontal, Eye, Edit, Trash2, Phone, Mail } from 'lucide-react';
+import { Search, Filter, Download, MoreHorizontal, Eye, Edit, Trash2, Phone, Mail, Calendar, Clock, AlertCircle } from 'lucide-react';
 import StatusBadge from '@/components/admin/StatusBadge';
+import Modal from '@/components/ui/Modal';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -20,6 +21,13 @@ const LeadsManager = () => {
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState('all');
+
+    // Modal states
+    const [selectedLead, setSelectedLead] = useState(null);
+    const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [actionLoading, setActionLoading] = useState(false);
 
     useEffect(() => {
         fetchLeads();
@@ -58,8 +66,37 @@ const LeadsManager = () => {
         setFilteredLeads(filtered);
     };
 
-    const handleAction = (leadId, actionType) => {
-        console.log(`Action ${actionType} on lead ${leadId}`);
+    const handleAction = (lead, actionType) => {
+        setSelectedLead(lead);
+        if (actionType === 'view') setIsViewModalOpen(true);
+        if (actionType === 'edit') setIsEditModalOpen(true);
+        if (actionType === 'delete') setIsDeleteModalOpen(true);
+    };
+
+    const updateStatus = async (newStatus) => {
+        setActionLoading(true);
+        try {
+            const { data } = await api.patch(`/leads/${selectedLead.id}`, { status: newStatus });
+            setLeads(prev => prev.map(l => l.id === data.id ? data : l));
+            setIsEditModalOpen(false);
+        } catch (err) {
+            alert('Failed to update status');
+        } finally {
+            setActionLoading(false);
+        }
+    };
+
+    const deleteLead = async () => {
+        setActionLoading(true);
+        try {
+            await api.delete(`/leads/${selectedLead.id}`);
+            setLeads(prev => prev.filter(l => l.id !== selectedLead.id));
+            setIsDeleteModalOpen(false);
+        } catch (err) {
+            alert('Failed to delete lead');
+        } finally {
+            setActionLoading(false);
+        }
     };
 
     const exportToCSV = () => {
@@ -238,15 +275,15 @@ const LeadsManager = () => {
                                                     </DropdownMenuTrigger>
                                                     <DropdownMenuContent align="end" className="w-[160px]">
                                                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                                        <DropdownMenuItem onClick={() => handleAction(lead.id, 'view')}>
+                                                        <DropdownMenuItem onClick={() => handleAction(lead, 'view')}>
                                                             <Eye className="mr-2 h-4 w-4" /> View Details
                                                         </DropdownMenuItem>
-                                                        <DropdownMenuItem onClick={() => handleAction(lead.id, 'edit')}>
+                                                        <DropdownMenuItem onClick={() => handleAction(lead, 'edit')}>
                                                             <Edit className="mr-2 h-4 w-4" /> Edit Status
                                                         </DropdownMenuItem>
                                                         <DropdownMenuSeparator />
                                                         <DropdownMenuItem
-                                                            onClick={() => handleAction(lead.id, 'delete')}
+                                                            onClick={() => handleAction(lead, 'delete')}
                                                             className="text-red-600 focus:text-red-600 focus:bg-red-50"
                                                         >
                                                             <Trash2 className="mr-2 h-4 w-4" /> Delete
@@ -262,6 +299,120 @@ const LeadsManager = () => {
                     )}
                 </div>
             </motion.div>
+
+            {/* View Modal */}
+            <Modal
+                isOpen={isViewModalOpen}
+                onClose={() => setIsViewModalOpen(false)}
+                title="Lead Details"
+            >
+                {selectedLead && (
+                    <div className="space-y-6">
+                        <div className="flex items-center gap-4 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-white/5">
+                            <div className="w-16 h-16 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center text-2xl font-bold">
+                                {selectedLead.name.charAt(0)}
+                            </div>
+                            <div>
+                                <h4 className="text-xl font-bold text-slate-900 dark:text-white uppercase">{selectedLead.name}</h4>
+                                <StatusBadge status={selectedLead.status} />
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-1">
+                                <p className="text-xs font-semibold text-slate-400 uppercase flex items-center gap-1">
+                                    <Phone className="w-3 h-3" /> Contact Info
+                                </p>
+                                <p className="text-slate-900 dark:text-white font-medium">{selectedLead.mobile}</p>
+                                {selectedLead.email && <p className="text-slate-500 dark:text-slate-400 text-sm">{selectedLead.email}</p>}
+                            </div>
+                            <div className="space-y-1">
+                                <p className="text-xs font-semibold text-slate-400 uppercase flex items-center gap-1">
+                                    <Clock className="w-3 h-3" /> Submitted On
+                                </p>
+                                <p className="text-slate-900 dark:text-white font-medium">{new Date(selectedLead.created_at).toLocaleDateString()}</p>
+                                <p className="text-slate-500 dark:text-slate-400 text-sm">{new Date(selectedLead.created_at).toLocaleTimeString()}</p>
+                            </div>
+                        </div>
+
+                        <div className="space-y-2">
+                            <p className="text-xs font-semibold text-slate-400 uppercase flex items-center gap-1">
+                                <Calendar className="w-3 h-3" /> Requirement Details
+                            </p>
+                            <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-white/5 italic text-slate-700 dark:text-slate-300">
+                                {selectedLead.requirement || 'No specific requirement provided.'}
+                            </div>
+                        </div>
+
+                        {selectedLead.notes && (
+                            <div className="space-y-2">
+                                <p className="text-xs font-semibold text-slate-400 uppercase">Admin Notes</p>
+                                <p className="text-sm text-slate-600 dark:text-slate-400">{selectedLead.notes}</p>
+                            </div>
+                        )}
+                    </div>
+                )}
+            </Modal>
+
+            {/* Edit Modal */}
+            <Modal
+                isOpen={isEditModalOpen}
+                onClose={() => setIsEditModalOpen(false)}
+                title="Update Lead Status"
+            >
+                <div className="space-y-6 text-center">
+                    <p className="text-slate-600 dark:text-slate-400">Update status for <span className="font-bold text-slate-900 dark:text-white uppercase">{selectedLead?.name}</span></p>
+                    <div className="grid grid-cols-2 gap-3">
+                        {['New', 'Contacted', 'Closed'].map((status) => (
+                            <Button
+                                key={status}
+                                variant={selectedLead?.status === status ? 'default' : 'outline'}
+                                onClick={() => updateStatus(status)}
+                                disabled={actionLoading}
+                                className={`h-12 border-2 ${selectedLead?.status === status ? 'border-blue-600' : 'border-slate-100 dark:border-slate-800'}`}
+                            >
+                                {status}
+                            </Button>
+                        ))}
+                    </div>
+                </div>
+            </Modal>
+
+            {/* Delete Modal */}
+            <Modal
+                isOpen={isDeleteModalOpen}
+                onClose={() => setIsDeleteModalOpen(false)}
+                title="Confirm Deletion"
+            >
+                <div className="space-y-6 text-center">
+                    <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-full flex items-center justify-center mx-auto">
+                        <AlertCircle className="w-8 h-8" />
+                    </div>
+                    <div>
+                        <h4 className="text-xl font-bold text-slate-900 dark:text-white">Are you sure?</h4>
+                        <p className="text-slate-500 dark:text-slate-400 mt-2">
+                            This action cannot be undone. You are about to delete the lead for <span className="font-bold text-slate-900 dark:text-white uppercase">{selectedLead?.name}</span>.
+                        </p>
+                    </div>
+                    <div className="flex gap-3">
+                        <Button
+                            variant="outline"
+                            className="flex-1"
+                            onClick={() => setIsDeleteModalOpen(false)}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            variant="destructive"
+                            className="flex-1 bg-red-600 hover:bg-red-700"
+                            onClick={deleteLead}
+                            disabled={actionLoading}
+                        >
+                            {actionLoading ? 'Deleting...' : 'Delete Lead'}
+                        </Button>
+                    </div>
+                </div>
+            </Modal>
         </motion.div>
     );
 };

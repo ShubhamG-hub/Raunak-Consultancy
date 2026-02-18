@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
     Users,
     MessageSquare,
@@ -9,7 +9,10 @@ import {
     ArrowUpRight,
     ArrowDownRight,
     Activity,
-    Calendar
+    Calendar,
+    Search,
+    X,
+    Filter
 } from 'lucide-react';
 import {
     AreaChart,
@@ -24,6 +27,7 @@ import {
 } from 'recharts';
 import api from '@/lib/api';
 import { Button } from '@/components/ui/button';
+import Modal from '@/components/ui/Modal';
 
 // Custom hook to track container size and avoid ResponsiveContainer issues
 const useContainerSize = () => {
@@ -69,6 +73,7 @@ const Dashboard = () => {
         testimonials: 0,
         claims: 0
     });
+    const [allLeads, setAllLeads] = useState([]);
     const [recentLeads, setRecentLeads] = useState([]);
     const [loading, setLoading] = useState(true);
     const [areaChartRef, areaSize] = useContainerSize();
@@ -77,6 +82,8 @@ const Dashboard = () => {
     const [lastUpdated, setLastUpdated] = useState(new Date());
     const [chartData, setChartData] = useState([]);
     const [pieData, setPieData] = useState([]);
+    const [selectedDate, setSelectedDate] = useState(null);
+    const [isCalendarOpen, setIsCalendarOpen] = useState(false);
     const navigate = useNavigate();
 
     const fetchDashboardData = useCallback(async () => {
@@ -91,13 +98,19 @@ const Dashboard = () => {
             const claims = Array.isArray(claimsRes.data) ? claimsRes.data : [];
             const testimonials = Array.isArray(testRes.data) ? testRes.data : [];
 
+            setAllLeads(leads);
             setStats({
                 leads: leads.length,
                 claims: claims.length,
                 testimonials: testimonials.length
             });
 
-            setRecentLeads(leads.slice(0, 5));
+            // Default to latest 5 if no date selected
+            if (!selectedDate) {
+                setRecentLeads(leads.slice(0, 5));
+            } else {
+                filterByDate(selectedDate, leads);
+            }
 
             // Process Chart Data (Last 7 Months)
             const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -152,7 +165,31 @@ const Dashboard = () => {
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [selectedDate]);
+
+    const filterByDate = (dateVal, sourceData = allLeads) => {
+        if (!dateVal) {
+            setRecentLeads(sourceData.slice(0, 5));
+            return;
+        }
+        const filtered = sourceData.filter(lead => {
+            const leadDate = new Date(lead.created_at).toISOString().split('T')[0];
+            return leadDate === dateVal;
+        });
+        setRecentLeads(filtered);
+    };
+
+    const handleDateChange = (e) => {
+        const val = e.target.value;
+        setSelectedDate(val);
+        filterByDate(val);
+        setIsCalendarOpen(false);
+    };
+
+    const resetDateFilter = () => {
+        setSelectedDate(null);
+        setRecentLeads(allLeads.slice(0, 5));
+    };
 
     useEffect(() => {
         fetchDashboardData();
@@ -361,17 +398,26 @@ const Dashboard = () => {
             <motion.div variants={itemVariants} className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-white/10">
                 <div className="flex items-center justify-between mb-6">
                     <div>
-                        <h3 className="text-lg font-bold text-slate-900 dark:text-white">Recent Activity</h3>
+                        <div className="flex items-center gap-2">
+                            <h3 className="text-lg font-bold text-slate-900 dark:text-white text-uppercase">Recent Activity</h3>
+                            {selectedDate && (
+                                <span className="px-2 py-0.5 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 rounded-lg text-xs font-bold flex items-center gap-1">
+                                    <Filter className="w-3 h-3" /> {new Date(selectedDate).toLocaleDateString()}
+                                    <button onClick={resetDateFilter} className="hover:text-red-500"><X className="w-3 h-3" /></button>
+                                </span>
+                            )}
+                        </div>
                         <p className="text-sm text-slate-500 dark:text-slate-400">Latest leads and inquiries</p>
                     </div>
                     <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => navigate('/admin/leads')}
-                        className="bg-slate-50 dark:bg-slate-800/50 hover:bg-blue-50 dark:hover:bg-blue-900/20 text-slate-400 hover:text-blue-600 transition-all cursor-pointer border border-transparent hover:border-blue-200 dark:hover:border-blue-500/30 group"
-                        title="View All Activity"
+                        onClick={() => setIsCalendarOpen(true)}
+                        className={`bg-slate-50 dark:bg-slate-800/50 hover:bg-blue-50 dark:hover:bg-blue-900/20 text-slate-400 hover:text-blue-600 transition-all cursor-pointer border-2 ${selectedDate ? 'border-blue-500' : 'border-transparent'} group relative`}
+                        title="Filter by Date"
                     >
-                        <Calendar className="w-5 h-5 group-hover:text-blue-500 transition-colors" />
+                        <Calendar className={`w-5 h-5 ${selectedDate ? 'text-blue-500' : 'group-hover:text-blue-500'} transition-colors`} />
+                        {selectedDate && <span className="absolute -top-1 -right-1 w-2 h-2 bg-blue-600 rounded-full" />}
                     </Button>
                 </div>
 
@@ -381,7 +427,10 @@ const Dashboard = () => {
                     ) : recentLeads.length === 0 ? (
                         <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl py-12 text-center border-2 border-dashed border-slate-200 dark:border-white/5">
                             <Activity className="w-12 h-12 text-slate-300 dark:text-slate-700 mx-auto mb-3" />
-                            <p className="text-slate-500 dark:text-slate-400 font-medium">No recent activity found</p>
+                            <p className="text-slate-500 dark:text-slate-400 font-medium">No activity found{selectedDate ? ` for ${new Date(selectedDate).toLocaleDateString()}` : ''}</p>
+                            {selectedDate && (
+                                <Button variant="link" onClick={resetDateFilter} className="text-blue-600 mt-2">View all activity</Button>
+                            )}
                         </div>
                     ) : (
                         recentLeads.map((lead, index) => (
@@ -414,6 +463,34 @@ const Dashboard = () => {
                     )}
                 </div>
             </motion.div>
+
+            {/* Calendar Filter Modal */}
+            <Modal
+                isOpen={isCalendarOpen}
+                onClose={() => setIsCalendarOpen(false)}
+                title="Filter Activity by Date"
+            >
+                <div className="space-y-6">
+                    <p className="text-sm text-slate-500 dark:text-slate-400 text-center uppercase font-bold tracking-tight">Select a date to view activity logged on that day.</p>
+                    <div className="relative">
+                        <input
+                            type="date"
+                            value={selectedDate || ''}
+                            onChange={handleDateChange}
+                            className="w-full p-4 bg-slate-50 dark:bg-slate-800/50 border-2 border-slate-100 dark:border-white/10 rounded-2xl focus:border-blue-500 focus:ring-0 transition-all outline-none text-slate-900 dark:text-white font-medium"
+                        />
+                    </div>
+                    {selectedDate && (
+                        <Button
+                            variant="destructive"
+                            onClick={resetDateFilter}
+                            className="w-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"
+                        >
+                            Clear Filter
+                        </Button>
+                    )}
+                </div>
+            </Modal>
         </motion.div>
     );
 };
