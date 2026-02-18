@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
     Users,
@@ -75,6 +76,7 @@ const Dashboard = () => {
     const [lastUpdated, setLastUpdated] = useState(new Date());
     const [chartData, setChartData] = useState([]);
     const [pieData, setPieData] = useState([]);
+    const navigate = useNavigate();
 
     const fetchDashboardData = useCallback(async () => {
         try {
@@ -361,9 +363,13 @@ const Dashboard = () => {
                         <h3 className="text-lg font-bold text-slate-900 dark:text-white">Recent Activity</h3>
                         <p className="text-sm text-slate-500 dark:text-slate-400">Latest leads and inquiries</p>
                     </div>
-                    <div className="p-2 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
-                        <Calendar className="w-5 h-5 text-slate-400" />
-                    </div>
+                    <button
+                        onClick={() => navigate('/admin/leads')}
+                        className="p-2 bg-slate-50 dark:bg-slate-800/50 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 transition-all cursor-pointer border border-transparent hover:border-blue-200 dark:hover:border-blue-500/30 group"
+                        title="View All Activity"
+                    >
+                        <Calendar className="w-5 h-5 text-slate-400 group-hover:text-blue-500 transition-colors" />
+                    </button>
                 </div>
 
                 <div className="space-y-4">
