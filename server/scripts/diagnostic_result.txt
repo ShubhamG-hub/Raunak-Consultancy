@@ -1,13 +1,3 @@
---- CLAIMS API DEBUG ---
-
-1. Testing POST /api/claims...
-POST Error: {
-  "code": "PGRST204",
-  "details": null,
-  "hint": null,
-  "message": "Could not find the 'email' column of 'claims' in the schema cache"
-}
-
-2. Testing PUT /api/claims/:id...
-Testing update for ID: a88bda3e-2c13-4d4b-9008-b9220e6e7372
-Fetch Success, email: undefined, phone: undefined
+--- CHAT DATA DUMP ---
+SESSIONS ERROR: TypeError: fetch failed
+MESSAGES ERROR: TypeError: fetch failed

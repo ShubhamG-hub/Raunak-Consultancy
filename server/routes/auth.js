@@ -9,8 +9,8 @@ router.post('/login', async (req, res) => {
 
     try {
         // 1. Check against Environment Variables
-        const adminEmail = process.env.ADMIN_EMAIL || 'admin@raunak.com';
-        const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
+        const adminEmail = process.env.ADMIN_EMAIL || 'ms.sudhirgupta@rediffmail.com';
+        const adminPassword = process.env.ADMIN_PASSWORD || 'admin@1277899';
 
         console.log(`Login attempt for: ${email}`);
         console.log(`Expected (Env): ${adminEmail}`);
