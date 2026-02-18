@@ -20,8 +20,11 @@ console.log('--- Supabase Initialization ---');
 console.log('URL Found:', !!url);
 console.log('Key Found:', !!key);
 
+if (!url) console.error('CRITICAL: SUPABASE_URL is missing.');
+if (!key) console.error('CRITICAL: SUPABASE_KEY is missing.');
+
 if (!url || !key) {
-    console.error('CRITICAL: Supabase URL or Key is missing. Server cannot start properly.');
+    console.error('Server cannot start properly without Supabase credentials.');
 }
 
 // Fallback to avoid crash during dev if vars are missing, but API calls will fail
