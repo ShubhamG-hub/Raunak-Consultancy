@@ -72,29 +72,11 @@ const Dashboard = () => {
     const [areaChartRef, areaSize] = useContainerSize();
     const [pieChartRef, pieSize] = useContainerSize();
 
-    // Mock Chart Data (Replacing with real data in future)
-    const chartData = [
-        { name: 'Jan', leads: 4 },
-        { name: 'Feb', leads: 7 },
-        { name: 'Mar', leads: 5 },
-        { name: 'Apr', leads: 12 },
-        { name: 'May', leads: 18 },
-        { name: 'Jun', leads: 24 },
-        { name: 'Jul', leads: stats.leads || 30 },
-    ];
+    const [lastUpdated, setLastUpdated] = useState(new Date());
+    const [chartData, setChartData] = useState([]);
+    const [pieData, setPieData] = useState([]);
 
-    const pieData = [
-        { name: 'New', value: 35, color: '#3b82f6' },
-        { name: 'Contacted', value: 45, color: '#8b5cf6' },
-        { name: 'Converted', value: 15, color: '#10b981' },
-        { name: 'Lost', value: 5, color: '#ef4444' },
-    ];
-
-    useEffect(() => {
-        fetchDashboardData();
-    }, []);
-
-    const fetchDashboardData = async () => {
+    const fetchDashboardData = useCallback(async () => {
         try {
             const [leadsRes, claimsRes, testRes] = await Promise.all([
                 api.get('/leads').catch(() => ({ data: [] })),
@@ -102,21 +84,78 @@ const Dashboard = () => {
                 api.get('/testimonials/admin').catch(() => ({ data: [] }))
             ]);
 
+            const leads = Array.isArray(leadsRes.data) ? leadsRes.data : [];
+            const claims = Array.isArray(claimsRes.data) ? claimsRes.data : [];
+            const testimonials = Array.isArray(testRes.data) ? testRes.data : [];
+
             setStats({
-                leads: leadsRes.data ? leadsRes.data.length : 0,
-                claims: claimsRes.data ? claimsRes.data.length : 0,
-                testimonials: testRes.data ? testRes.data.length : 0
+                leads: leads.length,
+                claims: claims.length,
+                testimonials: testimonials.length
             });
 
-            if (leadsRes.data) {
-                setRecentLeads(leadsRes.data.slice(0, 5));
+            setRecentLeads(leads.slice(0, 5));
+
+            // Process Chart Data (Last 7 Months)
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const last7Months = [];
+            for (let i = 6; i >= 0; i--) {
+                const d = new Date();
+                d.setMonth(d.getMonth() - i);
+                last7Months.push({
+                    name: months[d.getMonth()],
+                    monthNum: d.getMonth(),
+                    year: d.getFullYear(),
+                    leads: 0
+                });
             }
+
+            leads.forEach(lead => {
+                const date = new Date(lead.created_at);
+                const leadMonth = date.getMonth();
+                const leadYear = date.getFullYear();
+                const chartPoint = last7Months.find(m => m.monthNum === leadMonth && m.year === leadYear);
+                if (chartPoint) chartPoint.leads++;
+            });
+            setChartData(last7Months);
+
+            // Process Pie Data
+            const statusCounts = {
+                'New': 0,
+                'Contacted': 0,
+                'Converted': 0,
+                'Lost': 0
+            };
+            leads.forEach(lead => {
+                const status = lead.status || 'New';
+                if (statusCounts.hasOwnProperty(status)) {
+                    statusCounts[status]++;
+                } else {
+                    statusCounts['New']++;
+                }
+            });
+
+            const totalLeads = leads.length || 1;
+            setPieData([
+                { name: 'New', value: Math.round((statusCounts['New'] / totalLeads) * 100), color: '#3b82f6' },
+                { name: 'Contacted', value: Math.round((statusCounts['Contacted'] / totalLeads) * 100), color: '#8b5cf6' },
+                { name: 'Converted', value: Math.round((statusCounts['Converted'] / totalLeads) * 100), color: '#10b981' },
+                { name: 'Lost', value: Math.round((statusCounts['Lost'] / totalLeads) * 100), color: '#ef4444' },
+            ]);
+
+            setLastUpdated(new Date());
         } catch (err) {
             console.error("Failed to fetch dashboard stats", err);
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
+
+    useEffect(() => {
+        fetchDashboardData();
+        const interval = setInterval(fetchDashboardData, 30000); // 30s auto-refresh
+        return () => clearInterval(interval);
+    }, [fetchDashboardData]);
 
     const containerVariants = {
         hidden: { opacity: 0 },
@@ -147,6 +186,30 @@ const Dashboard = () => {
             initial="hidden"
             animate="visible"
         >
+            {/* Header with Refresh */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Admin Dashboard</h1>
+                    <p className="text-slate-500 dark:text-slate-400">Welcome back to your overview.</p>
+                </div>
+                <div className="flex items-center gap-3">
+                    <div className="text-right hidden sm:block">
+                        <p className="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">Last Updated</p>
+                        <p className="text-sm font-medium text-slate-600 dark:text-slate-300">
+                            {lastUpdated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                        </p>
+                    </div>
+                    <button
+                        onClick={fetchDashboardData}
+                        disabled={loading}
+                        className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/10 rounded-xl text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors shadow-sm disabled:opacity-50"
+                    >
+                        <Activity className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+                        Refresh
+                    </button>
+                </div>
+            </div>
+
             {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <motion.div variants={itemVariants} className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-white/10 hover:shadow-md transition-shadow relative overflow-hidden group">
@@ -155,9 +218,6 @@ const Dashboard = () => {
                         <div className="p-3 bg-blue-50 dark:bg-blue-500/10 rounded-xl">
                             <Users className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                         </div>
-                        <span className="flex items-center gap-1 text-xs font-medium text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-500/10 px-2 py-1 rounded-full">
-                            +12% <ArrowUpRight className="w-3 h-3" />
-                        </span>
                     </div>
                     <div>
                         <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">Total Leads</p>
@@ -173,9 +233,6 @@ const Dashboard = () => {
                         <div className="p-3 bg-purple-50 dark:bg-purple-500/10 rounded-xl">
                             <MessageSquare className="w-6 h-6 text-purple-600 dark:text-purple-400" />
                         </div>
-                        <span className="flex items-center gap-1 text-xs font-medium text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-500/10 px-2 py-1 rounded-full">
-                            +5% <ArrowUpRight className="w-3 h-3" />
-                        </span>
                     </div>
                     <div>
                         <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">Testimonials</p>
@@ -191,9 +248,6 @@ const Dashboard = () => {
                         <div className="p-3 bg-orange-50 dark:bg-orange-500/10 rounded-xl">
                             <FileText className="w-6 h-6 text-orange-600 dark:text-orange-400" />
                         </div>
-                        <span className="flex items-center gap-1 text-xs font-medium text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/50 px-2 py-1 rounded-full">
-                            0% <Activity className="w-3 h-3" />
-                        </span>
                     </div>
                     <div>
                         <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">Active Claims</p>
@@ -313,10 +367,13 @@ const Dashboard = () => {
                 </div>
 
                 <div className="space-y-4">
-                    {loading ? (
-                        <div className="text-center py-10 text-slate-500">Loading activity...</div>
+                    {loading && stats.leads === 0 ? (
+                        <div className="text-center py-10 text-slate-500 font-medium">Loading activity...</div>
                     ) : recentLeads.length === 0 ? (
-                        <div className="text-center py-10 text-slate-500">No recent activity</div>
+                        <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl py-12 text-center border-2 border-dashed border-slate-200 dark:border-white/5">
+                            <Activity className="w-12 h-12 text-slate-300 dark:text-slate-700 mx-auto mb-3" />
+                            <p className="text-slate-500 dark:text-slate-400 font-medium">No recent activity found</p>
+                        </div>
                     ) : (
                         recentLeads.map((lead, index) => (
                             <motion.div
@@ -331,12 +388,12 @@ const Dashboard = () => {
                                         {lead.name.charAt(0)}
                                     </div>
                                     <div>
-                                        <h4 className="font-semibold text-slate-900 dark:text-white group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors">{lead.name}</h4>
-                                        <p className="text-xs text-slate-500 dark:text-slate-400">{lead.service || 'General Inquiry'} • {new Date(lead.created_at || Date.now()).toLocaleDateString()}</p>
+                                        <h4 className="font-semibold text-slate-900 dark:text-white group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors uppercase">{lead.name}</h4>
+                                        <p className="text-xs text-slate-500 dark:text-slate-400 capitalize">{lead.type || 'General Inquiry'} • {new Date(lead.created_at || Date.now()).toLocaleDateString()}</p>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-3">
-                                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${lead.status === 'New' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' :
+                                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${lead.status === 'New' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' :
                                         lead.status === 'Contacted' ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400' : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300'
                                         }`}>
                                         {lead.status || 'New'}

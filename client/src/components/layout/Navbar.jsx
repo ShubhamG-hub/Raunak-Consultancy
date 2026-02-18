@@ -34,11 +34,25 @@ const Navbar = () => {
     ];
 
     const scrollToSection = (id) => {
-        const element = document.getElementById(id.replace('#', ''));
-        if (element) {
-            element.scrollIntoView({ behavior: 'smooth' });
-        }
+        const targetId = id.replace('#', '');
+        const element = document.getElementById(targetId);
+
+        // Close menu immediately to avoid layout shift issues during scroll
         setIsOpen(false);
+
+        if (element) {
+            // Small delay to allow the menu closing animation to start/layout to stabilize
+            setTimeout(() => {
+                const navHeight = 80; // Height of the fixed absolute navbar
+                const elementPosition = element.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - navHeight;
+
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
+            }, 50);
+        }
     };
 
     return (
@@ -123,15 +137,31 @@ const Navbar = () => {
                             )}
                         </Button>
                         <LanguageToggle />
-                        <button
+                        <Button
+                            variant="ghost"
+                            size="icon"
                             onClick={toggleMenu}
-                            className="inline-flex items-center justify-center p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 focus:outline-none transition-colors"
+                            className="rounded-full w-10 h-10 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                         >
                             {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-                        </button>
+                        </Button>
                     </div>
                 </div>
             </div>
+
+            {/* Mobile Menu Backdrop */}
+            <AnimatePresence>
+                {isOpen && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onClick={() => setIsOpen(false)}
+                        className="fixed inset-0 bg-slate-900/40 backdrop-blur-[2px] z-40 md:hidden"
+                        style={{ top: '80px' }} // Start below the navbar
+                    />
+                )}
+            </AnimatePresence>
 
             {/* Mobile Menu */}
             <AnimatePresence>
@@ -141,9 +171,9 @@ const Navbar = () => {
                         animate={{ opacity: 1, height: 'auto' }}
                         exit={{ opacity: 0, height: 0 }}
                         transition={{ duration: 0.3, ease: 'easeInOut' }}
-                        className="md:hidden overflow-hidden bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800"
+                        className="md:hidden overflow-hidden bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800 z-50 relative"
                     >
-                        <div className="px-4 pt-3 pb-4 space-y-1">
+                        <div className="px-4 pt-3 pb-6 space-y-1 max-h-[calc(100vh-100px)] overflow-y-auto">
                             {navLinks.map((link, index) => (
                                 <motion.a
                                     key={link.path}
