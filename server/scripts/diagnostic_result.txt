@@ -1,3 +1,0 @@
---- COLUMN LIST ---
-chat_messages columns: No data to infer
-chat_sessions columns: No data to infer
