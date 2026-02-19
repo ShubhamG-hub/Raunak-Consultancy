@@ -84,10 +84,10 @@ const TestimonialsManager = () => {
     };
 
     return (
-        <div className="p-6 space-y-6">
+        <div className="p-3 md:p-6 space-y-4 md:space-y-6">
             {/* Header */}
             <div>
-                <h1 className="text-3xl font-bold text-slate-900">Testimonials Management</h1>
+                <h1 className="text-2xl md:text-3xl font-bold text-slate-900">Testimonials Management</h1>
                 <p className="text-slate-600 mt-1">Review and manage customer testimonials</p>
             </div>
 
@@ -107,7 +107,7 @@ const TestimonialsManager = () => {
                         </div>
 
                         {/* Status Filter */}
-                        <div className="flex gap-2">
+                        <div className="flex gap-2 flex-wrap">
                             <Button
                                 variant={statusFilter === 'all' ? 'default' : 'outline'}
                                 size="sm"

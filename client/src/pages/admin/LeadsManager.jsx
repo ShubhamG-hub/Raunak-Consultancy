@@ -3,17 +3,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import api from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Search, Filter, Download, MoreHorizontal, Eye, Edit, Trash2, Phone, Mail, Calendar, Clock, AlertCircle } from 'lucide-react';
+import { Search, Filter, Download, Eye, Edit, Trash2, Phone, Mail, Calendar, Clock, AlertCircle } from 'lucide-react';
 import StatusBadge from '@/components/admin/StatusBadge';
 import Modal from '@/components/ui/Modal';
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 const LeadsManager = () => {
     const [leads, setLeads] = useState([]);
@@ -150,7 +142,7 @@ const LeadsManager = () => {
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold text-slate-900 dark:text-white bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-400">
+                    <h1 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-400">
                         Leads Management
                     </h1>
                     <p className="text-slate-600 dark:text-slate-400 mt-1">Manage and track all customer inquiries</p>
@@ -165,7 +157,7 @@ const LeadsManager = () => {
             </div>
 
             {/* Controls */}
-            <motion.div variants={itemVariants} className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-white/10 sticky top-24 z-10 transition-all">
+            <motion.div variants={itemVariants} className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md p-3 md:p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-white/10 sticky top-16 md:top-24 z-10 transition-all">
                 <div className="flex flex-col md:flex-row gap-4">
                     <div className="flex-1 relative group">
                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4 group-focus-within:text-blue-500 transition-colors" />
@@ -177,12 +169,12 @@ const LeadsManager = () => {
                         />
                     </div>
 
-                    <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0">
+                    <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0 flex-nowrap">
                         {['all', 'New', 'Contacted', 'Closed'].map((filter) => (
                             <button
                                 key={filter}
                                 onClick={() => setStatusFilter(filter)}
-                                className={`px-4 py-2 rounded-full text-sm font-medium transition-all whitespace-nowrap ${statusFilter === filter
+                                className={`px-3 md:px-4 py-1.5 md:py-2 rounded-full text-xs md:text-sm font-medium transition-all whitespace-nowrap ${statusFilter === filter
                                     ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/30 scale-105'
                                     : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700'
                                     }`}
@@ -198,7 +190,7 @@ const LeadsManager = () => {
 
             {/* Table Card */}
             <motion.div variants={itemVariants} className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md rounded-2xl shadow-sm border border-slate-100 dark:border-white/10 overflow-hidden">
-                <div className="p-6 border-b border-slate-100 dark:border-white/10">
+                <div className="p-4 md:p-6 border-b border-slate-100 dark:border-white/10">
                     <h2 className="text-lg font-bold text-slate-900 dark:text-white">All Leads</h2>
                 </div>
 
@@ -214,88 +206,158 @@ const LeadsManager = () => {
                             <p>No leads found matching your criteria</p>
                         </div>
                     ) : (
-                        <table className="w-full">
-                            <thead>
-                                <tr className="bg-slate-50/50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-white/10">
-                                    <th className="text-left py-4 px-6 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Date</th>
-                                    <th className="text-left py-4 px-6 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Customer</th>
-                                    <th className="text-left py-4 px-6 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Contact</th>
-                                    <th className="text-left py-4 px-6 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Status</th>
-                                    <th className="text-right py-4 px-6 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-slate-50 dark:divide-slate-800">
+                        <>
+                            {/* Desktop Table */}
+                            <table className="w-full hidden md:table">
+                                <thead>
+                                    <tr className="bg-slate-50/50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-white/10">
+                                        <th className="text-left py-4 px-6 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Date</th>
+                                        <th className="text-left py-4 px-6 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Customer</th>
+                                        <th className="text-left py-4 px-6 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Contact</th>
+                                        <th className="text-left py-4 px-6 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Status</th>
+                                        <th className="text-right py-4 px-6 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-slate-50 dark:divide-slate-800">
+                                    <AnimatePresence>
+                                        {filteredLeads.map((lead, index) => (
+                                            <motion.tr
+                                                key={lead.id}
+                                                initial={{ opacity: 0, y: 10 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                exit={{ opacity: 0 }}
+                                                transition={{ delay: index * 0.05 }}
+                                                className="group hover:bg-blue-50/30 dark:hover:bg-blue-900/10 transition-colors"
+                                            >
+                                                <td className="py-4 px-6 text-sm text-slate-600 dark:text-slate-300 whitespace-nowrap">
+                                                    {new Date(lead.created_at).toLocaleDateString()}
+                                                    <div className="text-xs text-slate-400">{new Date(lead.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                                                </td>
+                                                <td className="py-4 px-6">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900 dark:to-indigo-900 text-blue-600 dark:text-blue-300 flex items-center justify-center font-bold text-xs ring-4 ring-white dark:ring-slate-800">
+                                                            {lead.name.charAt(0)}
+                                                        </div>
+                                                        <div>
+                                                            <div className="font-medium text-slate-900 dark:text-white">{lead.name}</div>
+                                                            <div className="text-xs text-slate-500 dark:text-slate-400 capitalize">{lead.type}</div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td className="py-4 px-6">
+                                                    <div className="flex flex-col gap-1">
+                                                        <div className="flex items-center gap-1 text-sm text-slate-600 dark:text-slate-300">
+                                                            <Phone className="w-3 h-3" /> {lead.mobile}
+                                                        </div>
+                                                        {lead.email && (
+                                                            <div className="flex items-center gap-1 text-xs text-slate-400">
+                                                                <Mail className="w-3 h-3" /> {lead.email}
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </td>
+                                                <td className="py-4 px-6">
+                                                    <StatusBadge status={lead.status} pulse={lead.status === 'New'} />
+                                                </td>
+                                                <td className="py-4 px-6 text-right">
+                                                    <div className="flex items-center justify-end gap-1">
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="sm"
+                                                            className="h-8 w-8 p-0 text-slate-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 dark:hover:text-blue-400 transition-colors"
+                                                            onClick={() => handleAction(lead, 'view')}
+                                                            title="View Details"
+                                                        >
+                                                            <Eye className="h-4 w-4" />
+                                                        </Button>
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="sm"
+                                                            className="h-8 w-8 p-0 text-slate-500 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20 dark:hover:text-amber-400 transition-colors"
+                                                            onClick={() => handleAction(lead, 'edit')}
+                                                            title="Edit Status"
+                                                        >
+                                                            <Edit className="h-4 w-4" />
+                                                        </Button>
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="sm"
+                                                            className="h-8 w-8 p-0 text-slate-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 dark:hover:text-red-400 transition-colors"
+                                                            onClick={() => handleAction(lead, 'delete')}
+                                                            title="Delete"
+                                                        >
+                                                            <Trash2 className="h-4 w-4" />
+                                                        </Button>
+                                                    </div>
+                                                </td>
+                                            </motion.tr>
+                                        ))}
+                                    </AnimatePresence>
+                                </tbody>
+                            </table>
+
+                            {/* Mobile Card View */}
+                            <div className="md:hidden divide-y divide-slate-100 dark:divide-slate-800">
                                 <AnimatePresence>
                                     {filteredLeads.map((lead, index) => (
-                                        <motion.tr
+                                        <motion.div
                                             key={lead.id}
                                             initial={{ opacity: 0, y: 10 }}
                                             animate={{ opacity: 1, y: 0 }}
                                             exit={{ opacity: 0 }}
-                                            transition={{ delay: index * 0.05 }}
-                                            className="group hover:bg-blue-50/30 dark:hover:bg-blue-900/10 transition-colors"
+                                            transition={{ delay: index * 0.03 }}
+                                            className="p-4 hover:bg-blue-50/30 dark:hover:bg-blue-900/10 transition-colors"
                                         >
-                                            <td className="py-4 px-6 text-sm text-slate-600 dark:text-slate-300 whitespace-nowrap">
-                                                {new Date(lead.created_at).toLocaleDateString()}
-                                                <div className="text-xs text-slate-400">{new Date(lead.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
-                                            </td>
-                                            <td className="py-4 px-6">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900 dark:to-indigo-900 text-blue-600 dark:text-blue-300 flex items-center justify-center font-bold text-xs ring-4 ring-white dark:ring-slate-800">
+                                            <div className="flex items-start justify-between gap-3">
+                                                <div className="flex items-center gap-3 min-w-0">
+                                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900 dark:to-indigo-900 text-blue-600 dark:text-blue-300 flex items-center justify-center font-bold text-sm ring-2 ring-white dark:ring-slate-800 flex-shrink-0">
                                                         {lead.name.charAt(0)}
                                                     </div>
-                                                    <div>
-                                                        <div className="font-medium text-slate-900 dark:text-white">{lead.name}</div>
-                                                        <div className="text-xs text-slate-500 dark:text-slate-400 capitalize">{lead.type}</div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="py-4 px-6">
-                                                <div className="flex flex-col gap-1">
-                                                    <div className="flex items-center gap-1 text-sm text-slate-600 dark:text-slate-300">
-                                                        <Phone className="w-3 h-3" /> {lead.mobile}
-                                                    </div>
-                                                    {lead.email && (
-                                                        <div className="flex items-center gap-1 text-xs text-slate-400">
-                                                            <Mail className="w-3 h-3" /> {lead.email}
+                                                    <div className="min-w-0">
+                                                        <div className="font-medium text-slate-900 dark:text-white truncate">{lead.name}</div>
+                                                        <div className="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
+                                                            <Phone className="w-3 h-3 flex-shrink-0" /> {lead.mobile}
                                                         </div>
-                                                    )}
+                                                    </div>
                                                 </div>
-                                            </td>
-                                            <td className="py-4 px-6">
                                                 <StatusBadge status={lead.status} pulse={lead.status === 'New'} />
-                                            </td>
-                                            <td className="py-4 px-6 text-right">
-                                                <DropdownMenu>
-                                                    <DropdownMenuTrigger asChild>
-                                                        <Button variant="ghost" className="h-8 w-8 p-0 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
-                                                            <span className="sr-only">Open menu</span>
-                                                            <MoreHorizontal className="h-4 w-4" />
-                                                        </Button>
-                                                    </DropdownMenuTrigger>
-                                                    <DropdownMenuContent align="end" className="w-[160px]">
-                                                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                                        <DropdownMenuItem onClick={() => handleAction(lead, 'view')}>
-                                                            <Eye className="mr-2 h-4 w-4" /> View Details
-                                                        </DropdownMenuItem>
-                                                        <DropdownMenuItem onClick={() => handleAction(lead, 'edit')}>
-                                                            <Edit className="mr-2 h-4 w-4" /> Edit Status
-                                                        </DropdownMenuItem>
-                                                        <DropdownMenuSeparator />
-                                                        <DropdownMenuItem
-                                                            onClick={() => handleAction(lead, 'delete')}
-                                                            className="text-red-600 focus:text-red-600 focus:bg-red-50"
-                                                        >
-                                                            <Trash2 className="mr-2 h-4 w-4" /> Delete
-                                                        </DropdownMenuItem>
-                                                    </DropdownMenuContent>
-                                                </DropdownMenu>
-                                            </td>
-                                        </motion.tr>
+                                            </div>
+                                            <div className="flex items-center justify-between mt-3 pt-3 border-t border-slate-100 dark:border-slate-800">
+                                                <span className="text-xs text-slate-400">
+                                                    {new Date(lead.created_at).toLocaleDateString()} • <span className="capitalize">{lead.type}</span>
+                                                </span>
+                                                <div className="flex items-center gap-1">
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        className="h-8 w-8 p-0 text-slate-400 hover:text-blue-600"
+                                                        onClick={() => handleAction(lead, 'view')}
+                                                    >
+                                                        <Eye className="h-4 w-4" />
+                                                    </Button>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        className="h-8 w-8 p-0 text-slate-400 hover:text-amber-600"
+                                                        onClick={() => handleAction(lead, 'edit')}
+                                                    >
+                                                        <Edit className="h-4 w-4" />
+                                                    </Button>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        className="h-8 w-8 p-0 text-slate-400 hover:text-red-600"
+                                                        onClick={() => handleAction(lead, 'delete')}
+                                                    >
+                                                        <Trash2 className="h-4 w-4" />
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                        </motion.div>
                                     ))}
                                 </AnimatePresence>
-                            </tbody>
-                        </table>
+                            </div>
+                        </>
                     )}
                 </div>
             </motion.div>

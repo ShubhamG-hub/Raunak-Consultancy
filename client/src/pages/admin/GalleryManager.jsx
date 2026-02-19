@@ -123,10 +123,10 @@ const GalleryManager = () => {
     });
 
     return (
-        <div className="p-6 space-y-6">
+        <div className="p-3 md:p-6 space-y-4 md:space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-2xl font-bold text-slate-900">Gallery Manager</h1>
+                    <h1 className="text-xl md:text-2xl font-bold text-slate-900">Gallery Manager</h1>
                     <p className="text-slate-500">Manage images displayed in the website gallery</p>
                 </div>
 
@@ -236,7 +236,7 @@ const GalleryManager = () => {
             {/* Custom Modal for Adding Image */}
             {isAddModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-                    <div className="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-200">
+                    <div className="bg-white rounded-xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto overflow-hidden animate-in fade-in zoom-in duration-200">
                         <div className="flex items-center justify-between p-6 border-b border-slate-100">
                             <h2 className="text-xl font-bold text-slate-900">Add Gallery Image</h2>
                             <button

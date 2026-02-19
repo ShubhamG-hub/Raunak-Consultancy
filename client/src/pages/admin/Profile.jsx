@@ -129,16 +129,16 @@ const Profile = () => {
     };
 
     return (
-        <div className="p-6 space-y-6 max-w-5xl">
+        <div className="p-3 md:p-6 space-y-4 md:space-y-6 max-w-5xl">
             {/* Header */}
             <div>
-                <h1 className="text-3xl font-bold text-slate-900">Profile Settings</h1>
-                <p className="text-slate-600 mt-1">Manage your account information</p>
+                <h1 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white">Profile Settings</h1>
+                <p className="text-slate-600 dark:text-slate-400 mt-1">Manage your account information</p>
             </div>
 
             {/* Message Alert */}
             {message.text && (
-                <div className={`p-4 rounded-lg ${message.type === 'success' ? 'bg-green-50 text-green-800 border border-green-200' : 'bg-red-50 text-red-800 border border-red-200'
+                <div className={`p-4 rounded-lg ${message.type === 'success' ? 'bg-green-50 dark:bg-green-900/30 text-green-800 dark:text-green-300 border border-green-200 dark:border-green-800' : 'bg-red-50 dark:bg-red-900/30 text-red-800 dark:text-red-300 border border-red-200 dark:border-red-800'
                     }`}>
                     {message.text}
                 </div>
@@ -172,39 +172,39 @@ const Profile = () => {
                             <form onSubmit={handleProfileUpdate} className="space-y-4">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div className="space-y-2">
-                                        <label className="text-sm font-medium text-slate-700">Full Name</label>
+                                        <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Full Name</label>
                                         <Input
                                             value={profileData.name}
                                             onChange={(e) => setProfileData({ ...profileData, name: e.target.value })}
                                             disabled={!isEditing}
-                                            className={!isEditing ? 'bg-slate-50' : ''}
+                                            className={!isEditing ? 'bg-slate-50 dark:bg-slate-800' : ''}
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-sm font-medium text-slate-700">Email</label>
+                                        <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Email</label>
                                         <Input
                                             type="email"
                                             value={profileData.email}
                                             onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
                                             disabled={!isEditing}
-                                            className={!isEditing ? 'bg-slate-50' : ''}
+                                            className={!isEditing ? 'bg-slate-50 dark:bg-slate-800' : ''}
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-sm font-medium text-slate-700">Phone</label>
+                                        <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Phone</label>
                                         <Input
                                             value={profileData.phone}
                                             onChange={(e) => setProfileData({ ...profileData, phone: e.target.value })}
                                             disabled={!isEditing}
-                                            className={!isEditing ? 'bg-slate-50' : ''}
+                                            className={!isEditing ? 'bg-slate-50 dark:bg-slate-800' : ''}
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-sm font-medium text-slate-700">Role</label>
+                                        <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Role</label>
                                         <Input
                                             value={profileData.role}
                                             disabled
-                                            className="bg-slate-50"
+                                            className="bg-slate-50 dark:bg-slate-800"
                                         />
                                     </div>
                                 </div>
@@ -247,7 +247,7 @@ const Profile = () => {
                             ) : (
                                 <form onSubmit={handlePasswordChange} className="space-y-4">
                                     <div className="space-y-2">
-                                        <label className="text-sm font-medium text-slate-700">Current Password</label>
+                                        <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Current Password</label>
                                         <Input
                                             type="password"
                                             value={passwordData.currentPassword}
@@ -256,7 +256,7 @@ const Profile = () => {
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-sm font-medium text-slate-700">New Password</label>
+                                        <label className="text-sm font-medium text-slate-700 dark:text-slate-300">New Password</label>
                                         <Input
                                             type="password"
                                             value={passwordData.newPassword}
@@ -265,7 +265,7 @@ const Profile = () => {
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-sm font-medium text-slate-700">Confirm New Password</label>
+                                        <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Confirm New Password</label>
                                         <Input
                                             type="password"
                                             value={passwordData.confirmPassword}
@@ -313,18 +313,18 @@ const Profile = () => {
                                 </div>
                             </div>
                             <div className="text-center">
-                                <h3 className="font-semibold text-slate-900">{profileData.name}</h3>
-                                <p className="text-sm text-slate-500">{profileData.role}</p>
+                                <h3 className="font-semibold text-slate-900 dark:text-white">{profileData.name}</h3>
+                                <p className="text-sm text-slate-500 dark:text-slate-400">{profileData.role}</p>
                             </div>
-                            <div className="pt-4 border-t space-y-2 text-sm">
+                            <div className="pt-4 border-t dark:border-slate-700 space-y-2 text-sm">
                                 <div className="flex justify-between">
-                                    <span className="text-slate-600">Member since:</span>
-                                    <span className="font-medium text-slate-900">
+                                    <span className="text-slate-600 dark:text-slate-400">Member since:</span>
+                                    <span className="font-medium text-slate-900 dark:text-white">
                                         {new Date(profileData.joinedDate).toLocaleDateString()}
                                     </span>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span className="text-slate-600">Status:</span>
+                                    <span className="text-slate-600 dark:text-slate-400">Status:</span>
                                     <span className="font-medium text-green-600">Active</span>
                                 </div>
                             </div>

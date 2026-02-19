@@ -90,10 +90,10 @@ const Certificates = () => {
     };
 
     return (
-        <div className="container mx-auto px-4 py-8">
-            <h1 className="text-3xl font-bold mb-6">Compliance Certificates</h1>
+        <div className="p-3 md:p-6 space-y-4 md:space-y-6">
+            <h1 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6">Compliance Certificates</h1>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
                 {/* Upload Section */}
                 <Card>
                     <CardHeader>
@@ -167,7 +167,7 @@ const Certificates = () => {
                         ) : (
                             <div className="space-y-4">
                                 {certificates.map((cert) => (
-                                    <div key={cert.id} className="flex items-center justify-between p-4 bg-white rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
+                                    <div key={cert.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-3 md:p-4 bg-white rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow gap-3">
                                         <div className="flex items-center gap-4">
                                             <div className="w-12 h-12 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0">
                                                 <img src={cert.image_url} alt={cert.name} className="w-full h-full object-cover" />

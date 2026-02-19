@@ -78,10 +78,10 @@ const ClaimsManager = () => {
     });
 
     return (
-        <div className="p-6 space-y-6">
+        <div className="p-3 md:p-6 space-y-4 md:space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-2xl font-bold text-slate-900">Claims Management</h1>
+                    <h1 className="text-xl md:text-2xl font-bold text-slate-900">Claims Management</h1>
                     <p className="text-slate-500">Review and process insurance claim requests</p>
                 </div>
             </div>
@@ -174,8 +174,8 @@ const ClaimsManager = () => {
             {/* View/Process Modal */}
             {isViewModalOpen && selectedClaim && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-                    <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
-                        <div className="flex items-center justify-between p-6 border-b border-slate-100 bg-slate-50/50">
+                    <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto overflow-hidden animate-in fade-in zoom-in duration-200">
+                        <div className="flex items-center justify-between p-4 md:p-6 border-b border-slate-100 bg-slate-50/50">
                             <div className="flex items-center gap-3">
                                 <div className="p-2 bg-blue-100 rounded-lg">
                                     <FileText className="w-6 h-6 text-blue-600" />
@@ -193,7 +193,7 @@ const ClaimsManager = () => {
                             </button>
                         </div>
 
-                        <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div className="p-4 md:p-6 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
                             <div className="space-y-4">
                                 <div>
                                     <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Client Details</label>

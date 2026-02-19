@@ -251,8 +251,8 @@ const Dashboard = () => {
             </div>
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <motion.div variants={itemVariants} className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-white/10 hover:shadow-md transition-shadow relative overflow-hidden group">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+                <motion.div variants={itemVariants} className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm p-4 md:p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-white/10 hover:shadow-md transition-shadow relative overflow-hidden group">
                     <div className="absolute right-0 top-0 w-32 h-32 bg-blue-500/10 dark:bg-blue-500/20 rounded-full blur-3xl -mr-16 -mt-16 transition-all group-hover:bg-blue-500/20" />
                     <div className="flex justify-between items-start mb-4">
                         <div className="p-3 bg-blue-50 dark:bg-blue-500/10 rounded-xl">
@@ -267,7 +267,7 @@ const Dashboard = () => {
                     </div>
                 </motion.div>
 
-                <motion.div variants={itemVariants} className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-white/10 hover:shadow-md transition-shadow relative overflow-hidden group">
+                <motion.div variants={itemVariants} className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm p-4 md:p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-white/10 hover:shadow-md transition-shadow relative overflow-hidden group">
                     <div className="absolute right-0 top-0 w-32 h-32 bg-purple-500/10 dark:bg-purple-500/20 rounded-full blur-3xl -mr-16 -mt-16 transition-all group-hover:bg-purple-500/20" />
                     <div className="flex justify-between items-start mb-4">
                         <div className="p-3 bg-purple-50 dark:bg-purple-500/10 rounded-xl">
@@ -282,7 +282,7 @@ const Dashboard = () => {
                     </div>
                 </motion.div>
 
-                <motion.div variants={itemVariants} className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-white/10 hover:shadow-md transition-shadow relative overflow-hidden group">
+                <motion.div variants={itemVariants} className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm p-4 md:p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-white/10 hover:shadow-md transition-shadow relative overflow-hidden group">
                     <div className="absolute right-0 top-0 w-32 h-32 bg-orange-500/10 dark:bg-orange-500/20 rounded-full blur-3xl -mr-16 -mt-16 transition-all group-hover:bg-orange-500/20" />
                     <div className="flex justify-between items-start mb-4">
                         <div className="p-3 bg-orange-50 dark:bg-orange-500/10 rounded-xl">
@@ -299,9 +299,9 @@ const Dashboard = () => {
             </div>
 
             {/* Charts Section */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
                 {/* Main Area Chart */}
-                <motion.div variants={itemVariants} className="lg:col-span-2 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-white/10">
+                <motion.div variants={itemVariants} className="lg:col-span-2 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm p-4 md:p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-white/10">
                     <div className="flex items-center justify-between mb-6">
                         <div>
                             <h3 className="text-lg font-bold text-slate-900 dark:text-white">Lead Growth</h3>
@@ -311,7 +311,7 @@ const Dashboard = () => {
                             <TrendingUp className="w-5 h-5 text-slate-400" />
                         </div>
                     </div>
-                    <div ref={areaChartRef} className="h-[300px] w-full">
+                    <div ref={areaChartRef} className="h-[200px] md:h-[300px] w-full">
                         {areaSize.width > 0 && areaSize.height > 0 && (
                             <AreaChart width={areaSize.width} height={areaSize.height} data={chartData}>
                                 <defs>
@@ -348,7 +348,7 @@ const Dashboard = () => {
                 </motion.div>
 
                 {/* Pie Chart / Status */}
-                <motion.div variants={itemVariants} className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-white/10">
+                <motion.div variants={itemVariants} className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm p-4 md:p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-white/10">
                     <div className="mb-6">
                         <h3 className="text-lg font-bold text-slate-900 dark:text-white">Lead Status</h3>
                         <p className="text-sm text-slate-500 dark:text-slate-400">Distribution by category</p>
@@ -395,7 +395,7 @@ const Dashboard = () => {
             </div>
 
             {/* Recent Leads Activity */}
-            <motion.div variants={itemVariants} className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-white/10">
+            <motion.div variants={itemVariants} className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm p-4 md:p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-white/10">
                 <div className="flex items-center justify-between mb-6">
                     <div>
                         <div className="flex items-center gap-2">
@@ -440,7 +440,7 @@ const Dashboard = () => {
                                 animate={{ opacity: 1, x: 0 }}
                                 transition={{ delay: index * 0.1 }}
                                 onClick={() => navigate('/admin/leads')}
-                                className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/50 hover:bg-blue-50/50 dark:hover:bg-blue-900/20 rounded-xl transition-colors group cursor-pointer border border-transparent hover:border-blue-200 dark:hover:border-blue-500/30"
+                                className="flex items-center justify-between p-3 md:p-4 bg-slate-50 dark:bg-slate-800/50 hover:bg-blue-50/50 dark:hover:bg-blue-900/20 rounded-xl transition-colors group cursor-pointer border border-transparent hover:border-blue-200 dark:hover:border-blue-500/30"
                             >
                                 <div className="flex items-center gap-4">
                                     <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full flex items-center justify-center font-bold">
