@@ -22,13 +22,19 @@ export const AuthProvider = ({ children }) => {
                 }
 
                 // 2. Listen for Supabase Auth changes (Auto logout on expiry)
-                const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-                    if (event === 'SIGNED_OUT' || event === 'TOKEN_REFRESH_FAILED') {
-                        logout();
-                    }
-                });
+                let subscription;
+                if (supabase) {
+                    const { data } = supabase.auth.onAuthStateChange((event, session) => {
+                        if (event === 'SIGNED_OUT' || event === 'TOKEN_REFRESH_FAILED') {
+                            logout();
+                        }
+                    });
+                    subscription = data.subscription;
+                }
 
-                return () => subscription.unsubscribe();
+                return () => {
+                    if (subscription) subscription.unsubscribe();
+                };
             } catch (error) {
                 console.error("Auth Initialization Error:", error);
                 localStorage.removeItem('token');
@@ -64,7 +70,7 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
         setUser(null);
-        supabase.auth.signOut();
+        if (supabase) supabase.auth.signOut();
         window.location.href = '/admin/login';
     };
 

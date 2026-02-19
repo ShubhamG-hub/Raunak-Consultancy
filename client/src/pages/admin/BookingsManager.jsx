@@ -70,7 +70,9 @@ const BookingsManager = () => {
     useEffect(() => {
         fetchBookings();
 
-        // Real-time subscription
+        // Real-time subscription - only if supabase is available
+        if (!supabase) return;
+
         const channel = supabase
             .channel('bookings-changes')
             .on('postgres_changes', { event: '*', table: 'bookings', schema: 'public' }, () => {
