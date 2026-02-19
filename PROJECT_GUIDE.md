@@ -7,12 +7,37 @@ Welcome to the comprehensive guide for the **Raunak Consultancy** portfolio and 
 ## 🚀 Project Overview
 Raunak Consultancy is a professional service platform designed for legal and financial consultation. It features a modern, responsive public interface and a robust admin dashboard for managing leads, bookings, testimonials, and gallery content.
 
-### Core Features:
-- **Instant Booking System:** Public-facing modal with real-time slot selection and double-booking prevention.
-- **Admin Dashboard:** Centralized hub for managing appointments, leads, and site content.
-- **WhatsApp Integration:** Automated notifications for booking confirmations and status updates via Twilio.
-- **Multi-Language Support:** Integrated translation system for Hindi and English.
-- **Dynamic Content:** Editable gallery, testimonials, and service information.
+## ✨ Detailed Feature List
+
+### 🌐 Public Frontend
+- **Modern Landing Page:** Premium UI with smooth animations (Framer Motion) and responsive design.
+- **Smart Booking Modal:**
+    - Real-time slot availability fetching.
+    - Automated blocking of already booked slots.
+    - Server-side double-booking prevention.
+- **Service Showcases:** Detailed pages for legal and financial consultancy services.
+- **Testimonials & Gallery:** Dynamic sections showing client feedback and project highlights.
+- **Contact & Leads:** Interactive forms to capture user inquiries (Leads).
+- **Multi-Language Support:** Instant switching between English and Hindi (Universal translation system).
+- **Dark/Light Mode:** Full theme support spanning the entire public and admin interface.
+
+### 🔐 Admin Dashboard (Private)
+- **Real-Time Analytics:** Visual charts (Area Chart, Pie Chart) for lead growth and status distribution.
+- **Activity Stats:** Live counters for today’s bookings, pending tasks, and total leads.
+- **Leads Management:** Full CRUD (Create, Read, Update, Delete) capability for client inquiries.
+- **Bookings Management:**
+    - **Dual View Layout:** Tabular view for desktop and card-based layout for mobile.
+    - **One-Click Actions:** Quick buttons to confirm, complete, or cancel appointments.
+    - **Real-Time Sync:** Automatic UI updates when bookings change (Supabase Channels).
+- **Notification System:** Responsive dropdown with "Mark as Read" functionality and real-time alerts.
+- **Content Management:** Dedicated editors for Gallery, Testimonials, and Website content.
+- **Claims Tracking:** Specialized module for tracking insurance and legal claims.
+- **Profile Settings:** Secure admin profile management with role-based visibility.
+
+### 🤖 System Automations
+- **WhatsApp Notifications:** Automatic professional messages sent via Twilio when a booking is Confirmed or Cancelled.
+- **Auto-Refresh:** Dashboard data refreshes automatically every 30 seconds.
+- **Defensive Error Handling:** Front-end safeguards against missing credentials or network failures.
 
 ---
 
@@ -95,4 +120,4 @@ If you change your Supabase or Twilio accounts:
 - **Admin Access:** Use the provided admin credentials to manage the platform contents.
 
 ---
-*Created by Antigravity AI for Raunak Consultancy.*
+*Created by Shubham Gupta for Raunak Consultancy.*
