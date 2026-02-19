@@ -1,7 +1,9 @@
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { TrendingUp, Users, Clock, Award } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/context/LanguageContext';
+import BookingModal from '@/components/ui/BookingModal';
 
 // Import Sections
 import About from './About';
@@ -27,7 +29,7 @@ const SectionHeader = ({ tag, title, description, accent = 'blue' }) => {
             className="text-center max-w-3xl mx-auto mb-16"
         >
             {tag && (
-                <span className={`inline-block py-1 px-3 mb-4 font-bold text-[10px] tracking-widest uppercase ${accentColors[accent]} rounded-full border`}>
+                <span className={`inline-block py-1.5 px-4 mb-4 font-bold text-[10px] tracking-widest uppercase ${accentColors[accent]} rounded-full border`}>
                     {tag}
                 </span>
             )}
@@ -42,6 +44,7 @@ const SectionHeader = ({ tag, title, description, accent = 'blue' }) => {
 
 const Home = () => {
     const { t } = useLanguage();
+    const [isBookingOpen, setIsBookingOpen] = useState(false);
 
     const trustCounters = [
         { icon: Users, label: t.stats.families, value: t.stats.familiesVal, color: 'blue' },
@@ -86,7 +89,7 @@ const Home = () => {
                                 {t.hero.subtitle}
                             </p>
                             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                                <Button size="lg" className="h-14 px-10 text-base rounded-full bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 shadow-lg shadow-blue-600/20 transition-all hover:scale-105 active:scale-95" onClick={() => document.getElementById('contact').scrollIntoView({ behavior: 'smooth' })}>
+                                <Button size="lg" className="h-14 px-10 text-base rounded-full bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 shadow-lg shadow-blue-600/20 transition-all hover:scale-105 active:scale-95" onClick={() => setIsBookingOpen(true)}>
                                     {t.hero.ctaPrimary}
                                 </Button>
                                 <Button variant="outline" size="lg" className="h-14 px-10 text-base rounded-full border-2 border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-all hover:scale-105 active:scale-95 dark:text-white" onClick={() => document.getElementById('services').scrollIntoView({ behavior: 'smooth' })}>
@@ -172,6 +175,8 @@ const Home = () => {
                 <Contact />
             </section>
 
+            {/* Global Booking Modal */}
+            <BookingModal isOpen={isBookingOpen} onClose={() => setIsBookingOpen(false)} />
         </div>
     );
 };

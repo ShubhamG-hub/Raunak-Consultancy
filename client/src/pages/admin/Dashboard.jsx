@@ -12,7 +12,8 @@ import {
     Calendar,
     Search,
     X,
-    Filter
+    Filter,
+    Clock
 } from 'lucide-react';
 import {
     AreaChart,
@@ -71,7 +72,10 @@ const Dashboard = () => {
     const [stats, setStats] = useState({
         leads: 0,
         testimonials: 0,
-        claims: 0
+        claims: 0,
+        bookings: 0,
+        bookingsToday: 0,
+        bookingsPending: 0
     });
     const [allLeads, setAllLeads] = useState([]);
     const [recentLeads, setRecentLeads] = useState([]);
@@ -88,21 +92,28 @@ const Dashboard = () => {
 
     const fetchDashboardData = useCallback(async () => {
         try {
-            const [leadsRes, claimsRes, testRes] = await Promise.all([
+            const [leadsRes, claimsRes, testRes, bookingsRes] = await Promise.all([
                 api.get('/leads').catch(() => ({ data: [] })),
                 api.get('/claims').catch(() => ({ data: [] })),
-                api.get('/testimonials/admin').catch(() => ({ data: [] }))
+                api.get('/testimonials/admin').catch(() => ({ data: [] })),
+                api.get('/bookings').catch(() => ({ data: { data: [] } }))
             ]);
 
             const leads = Array.isArray(leadsRes.data) ? leadsRes.data : [];
             const claims = Array.isArray(claimsRes.data) ? claimsRes.data : [];
             const testimonials = Array.isArray(testRes.data) ? testRes.data : [];
 
+            const bookingsData = bookingsRes.data?.data || [];
+            const today = new Date().toISOString().split('T')[0];
+
             setAllLeads(leads);
             setStats({
                 leads: leads.length,
                 claims: claims.length,
-                testimonials: testimonials.length
+                testimonials: testimonials.length,
+                bookings: bookingsData.length,
+                bookingsToday: bookingsData.filter(b => b.date === today).length,
+                bookingsPending: bookingsData.filter(b => b.status === 'Pending').length
             });
 
             // Default to latest 5 if no date selected
@@ -293,6 +304,55 @@ const Dashboard = () => {
                         <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">Active Claims</p>
                         <h3 className="text-3xl font-bold text-slate-900 dark:text-white mt-1">
                             <AnimatedCounter value={stats.claims} />
+                        </h3>
+                    </div>
+                </motion.div>
+            </div>
+
+            {/* Bookings Stats Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mt-6">
+                <motion.div variants={itemVariants} className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm p-4 md:p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-white/10 hover:shadow-md transition-shadow relative overflow-hidden group">
+                    <div className="absolute right-0 top-0 w-32 h-32 bg-emerald-500/10 dark:bg-emerald-500/20 rounded-full blur-3xl -mr-16 -mt-16 transition-all group-hover:bg-emerald-500/20" />
+                    <div className="flex justify-between items-start mb-4">
+                        <div className="p-3 bg-emerald-50 dark:bg-emerald-500/10 rounded-xl">
+                            <Calendar className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+                        </div>
+                        <span className="flex items-center gap-1 text-[10px] font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-900/30 dark:text-emerald-400 px-2 py-1 rounded-lg uppercase">Today</span>
+                    </div>
+                    <div>
+                        <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">Today's Bookings</p>
+                        <h3 className="text-3xl font-bold text-slate-900 dark:text-white mt-1">
+                            <AnimatedCounter value={stats.bookingsToday} />
+                        </h3>
+                    </div>
+                </motion.div>
+
+                <motion.div variants={itemVariants} className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm p-4 md:p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-white/10 hover:shadow-md transition-shadow relative overflow-hidden group">
+                    <div className="absolute right-0 top-0 w-32 h-32 bg-amber-500/10 dark:bg-amber-500/20 rounded-full blur-3xl -mr-16 -mt-16 transition-all group-hover:bg-amber-500/20" />
+                    <div className="flex justify-between items-start mb-4">
+                        <div className="p-3 bg-amber-50 dark:bg-amber-500/10 rounded-xl">
+                            <Clock className="w-6 h-6 text-amber-600 dark:text-amber-400" />
+                        </div>
+                    </div>
+                    <div>
+                        <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">Pending Bookings</p>
+                        <h3 className="text-3xl font-bold text-slate-900 dark:text-white mt-1">
+                            <AnimatedCounter value={stats.bookingsPending} />
+                        </h3>
+                    </div>
+                </motion.div>
+
+                <motion.div variants={itemVariants} className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm p-4 md:p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-white/10 hover:shadow-md transition-shadow relative overflow-hidden group">
+                    <div className="absolute right-0 top-0 w-32 h-32 bg-indigo-500/10 dark:bg-indigo-500/20 rounded-full blur-3xl -mr-16 -mt-16 transition-all group-hover:bg-indigo-500/20" />
+                    <div className="flex justify-between items-start mb-4">
+                        <div className="p-3 bg-indigo-50 dark:bg-indigo-500/10 rounded-xl">
+                            <TrendingUp className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
+                        </div>
+                    </div>
+                    <div>
+                        <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">Total Appointments</p>
+                        <h3 className="text-3xl font-bold text-slate-900 dark:text-white mt-1">
+                            <AnimatedCounter value={stats.bookings} />
                         </h3>
                     </div>
                 </motion.div>

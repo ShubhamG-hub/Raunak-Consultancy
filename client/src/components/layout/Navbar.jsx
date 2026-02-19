@@ -7,10 +7,12 @@ import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
 import LanguageToggle from '@/components/ui/LanguageToggle';
 import { useLanguage } from '@/context/LanguageContext';
+import BookingModal from '@/components/ui/BookingModal';
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
+    const [isBookingOpen, setIsBookingOpen] = useState(false);
     const { user, logout } = useAuth();
     const { theme, toggleTheme } = useTheme();
     const { t } = useLanguage();
@@ -116,7 +118,7 @@ const Navbar = () => {
                                 <Button variant="ghost" size="sm" className="rounded-full dark:text-white dark:hover:bg-slate-800" onClick={logout}>{t.nav.logout}</Button>
                             </div>
                         ) : (
-                            <Button onClick={() => scrollToSection('#contact')} className="ml-2 rounded-full h-10 px-6 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 shadow-lg shadow-blue-600/20 hover:shadow-blue-600/30 transition-all">
+                            <Button onClick={() => setIsBookingOpen(true)} className="ml-2 rounded-full h-10 px-6 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 shadow-lg shadow-blue-600/20 hover:shadow-blue-600/30 transition-all">
                                 {t.nav.bookConsultation}
                             </Button>
                         )}
@@ -201,7 +203,7 @@ const Navbar = () => {
                                 </>
                             ) : (
                                 <div className="pt-2">
-                                    <Button className="w-full rounded-2xl h-12 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 shadow-lg" onClick={() => scrollToSection('#contact')}>
+                                    <Button className="w-full rounded-2xl h-12 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 shadow-lg" onClick={() => { setIsBookingOpen(true); setIsOpen(false); }}>
                                         {t.nav.bookConsultation}
                                     </Button>
                                 </div>
@@ -210,6 +212,12 @@ const Navbar = () => {
                     </motion.div>
                 )}
             </AnimatePresence>
+
+            {/* Booking Modal */}
+            <BookingModal
+                isOpen={isBookingOpen}
+                onClose={() => setIsBookingOpen(false)}
+            />
         </nav>
     );
 };

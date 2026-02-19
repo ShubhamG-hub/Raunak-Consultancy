@@ -1,3 +1,3 @@
---- CHAT DATA DUMP ---
-SESSIONS ERROR: TypeError: fetch failed
-MESSAGES ERROR: TypeError: fetch failed
+--- COLUMN LIST ---
+chat_messages columns: No data to infer
+chat_sessions columns: No data to infer

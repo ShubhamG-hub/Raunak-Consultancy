@@ -30,7 +30,7 @@ router.post('/login', async (req, res) => {
             const userPayload = {
                 email,
                 name: admin?.name || 'Admin User',
-                role: admin?.role || 'Administrator',
+                role: admin?.role || 'admin', // Default to admin for env/admin table matches
                 id: admin?.id || 'admin_env'
             };
 
@@ -81,12 +81,21 @@ router.post('/login', async (req, res) => {
 
         // If Supabase Auth succeeded
         if (data.session) {
+            // Fetch profile for role check
+            const { data: admin } = await supabase
+                .from('admins')
+                .select('name, role')
+                .eq('email', data.user.email)
+                .single();
+
+            const userRole = admin?.role || 'user'; // Default to user if not in admins table
+
             const token = jwt.sign(
-                { id: data.user.id, email: data.user.email },
+                { id: data.user.id, email: data.user.email, role: userRole },
                 process.env.JWT_SECRET || 'fallback_secret',
                 { expiresIn: '1d' }
             );
-            return res.json({ token, user: { email: data.user.email } });
+            return res.json({ token, user: { email: data.user.email, name: admin?.name || data.user.email, role: userRole } });
         }
 
         return res.status(401).json({ error: 'Invalid credentials' });

@@ -56,6 +56,7 @@ const AdminLayout = ({ children }) => {
 
     const menuItems = [
         { path: '/admin/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+        { path: '/admin/bookings', icon: FileText, label: 'Bookings' },
         { path: '/admin/leads', icon: Users, label: 'Leads' },
         { path: '/admin/testimonials', icon: MessageSquare, label: 'Testimonials' },
         { path: '/admin/claims', icon: FileText, label: 'Claims' },

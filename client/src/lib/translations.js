@@ -128,6 +128,38 @@ export const translations = {
             legalDisclaimer: "Disclaimer",
             insuranceSolicitation: "Insurance is the subject matter of solicitation."
         },
+        booking: {
+            title: "Book a Consultation",
+            subtitle: "Fill in the details below to schedule your free financial session with Sudhir Gupta.",
+            successTitle: "Booking Confirmed!",
+            successDesc: "Thank you for choosing us. We have received your request and will contact you shortly to confirm the appointment.",
+            form: {
+                name: "Full Name",
+                namePlaceholder: "Enter your name",
+                phone: "Phone Number",
+                phonePlaceholder: "98765 43210",
+                email: "Email (Optional)",
+                emailPlaceholder: "your@email.com",
+                date: "Preferred Date",
+                time: "Preferred Time",
+                timeSelect: "Select Time",
+                service: "Area of Interest",
+                message: "Message (Optional)",
+                messagePlaceholder: "Tell us about your requirements...",
+                submit: "Confirm Consultation",
+                submitting: "Booking...",
+                disclaimer: "By booking, you agree to be contacted for financial advisory services."
+            },
+            services: {
+                mutualFunds: "Mutual Funds & SIP",
+                taxPlanning: "Tax Planning",
+                insurance: "Insurance Planning",
+                health: "Health Insurance",
+                retirement: "Retirement Planning",
+                wealth: "Wealth Management",
+                other: "Other Query"
+            }
+        },
         testimonials: {
             title: "What Our Clients Say",
             subtitle: "Stories from families who have secured their financial future with us.",
@@ -356,6 +388,38 @@ export const translations = {
             legalDisclaimer: "अस्वीकरण",
             insuranceSolicitation: "बीमा आग्रह की विषयवस्तु है।"
         },
+        booking: {
+            title: "परामर्श बुक करें",
+            subtitle: "सुधीर गुप्ता के साथ अपना मुफ्त वित्तीय सत्र निर्धारित करने के लिए नीचे विवरण भरें।",
+            successTitle: "बुकिंग की पुष्टि हो गई!",
+            successDesc: "हमें चुनने के लिए धन्यवाद। हमें आपका अनुरोध मिल गया है और अपॉइंटमेंट की पुष्टि करने के लिए शीघ्र ही आपसे संपर्क करेंगे।",
+            form: {
+                name: "पूरा नाम",
+                namePlaceholder: "अपना नाम दर्ज करें",
+                phone: "फ़ोन नंबर",
+                phonePlaceholder: "98765 43210",
+                email: "ईमेल (वैकल्पिक)",
+                emailPlaceholder: "your@email.com",
+                date: "पसंदीदा तारीख",
+                time: "पसंदीदा समय",
+                timeSelect: "समय चुनें",
+                service: "रुचि का क्षेत्र",
+                message: "संदेश (वैकल्पिक)",
+                messagePlaceholder: "हमें अपनी आवश्यकताओं के बारे में बताएं...",
+                submit: "परामर्श की पुष्टि करें",
+                submitting: "बुकिंग हो रही है...",
+                disclaimer: "बुकिंग करके, आप वित्तीय सलाहकार सेवाओं के लिए संपर्क किए जाने के लिए सहमत होते हैं।"
+            },
+            services: {
+                mutualFunds: "म्यूचुअल फंड और एसआईपी",
+                taxPlanning: "टैक्स प्लानिंग",
+                insurance: "बीमा योजना",
+                health: "स्वास्थ्य बीमा",
+                retirement: "सेवानिवृत्ति योजना",
+                wealth: "धन प्रबंधन",
+                other: "अन्य प्रश्न"
+            }
+        },
         testimonials: {
             title: "हमारे ग्राहक क्या कहते हैं",
             subtitle: "उन परिवारों की कहानियाँ जिन्होंने हमारे साथ अपने वित्तीय भविष्य को सुरक्षित किया।",
@@ -582,7 +646,39 @@ export const translations = {
             privacy: "गोपनीयता धोरण",
             terms: "नियम आणि अटी",
             legalDisclaimer: "अस्वीकरण",
-            insuranceSolicitation: "विमा ही आवाहनाची विषयवस्तू आहे."
+            insuranceSolicitation: "विमा ही आवाहनाची विषयवस्तू आहे।"
+        },
+        booking: {
+            title: "सल्ला बुक करा",
+            subtitle: "सुधीर गुप्ता यांच्यासोबत तुमचे मोफत आर्थिक सत्र शेड्यूल करण्यासाठी खालील तपशील भरा.",
+            successTitle: "बुकिंगची पुष्टी झाली!",
+            successDesc: "आम्हाला निवडल्याबद्दल धन्यवाद. आम्हाला तुमची विनंती प्राप्त झाली आहे आणि भेटीची पुष्टी करण्यासाठी लवकरच तुमच्याशी संपर्क साधू.",
+            form: {
+                name: "पूर्ण नाव",
+                namePlaceholder: "तुमचे नाव प्रविष्ट करा",
+                phone: "फोन नंबर",
+                phonePlaceholder: "98765 43210",
+                email: "ईमेल (पर्यायी)",
+                emailPlaceholder: "your@email.com",
+                date: "पसंतीची तारीख",
+                time: "पसंतीची वेळ",
+                timeSelect: "वेळ निवडा",
+                service: "क्षेत्र निवडा",
+                message: "संदेश (पर्यायी)",
+                messagePlaceholder: "आम्हाला तुमच्या गरजांबद्दल सांगा...",
+                submit: "सल्ल्याची पुष्टी करा",
+                submitting: "बुकिंग होत आहे...",
+                disclaimer: "बुकिंग करून, आपण आर्थिक सल्लागार सेवांसाठी संपर्क साधण्यास सहमत आहात."
+            },
+            services: {
+                mutualFunds: "म्युचुअल फंड आणि एसआयपी",
+                taxPlanning: "टॅक्स प्लॅनिंग",
+                insurance: "विमा नियोजन",
+                health: "आरोग्य विमा",
+                retirement: "निवृत्ती नियोजन",
+                wealth: "संपत्ती व्यवस्थापन",
+                other: "इतर प्रश्न"
+            }
         },
         testimonials: {
             title: "आमचे ग्राहक काय म्हणतात",

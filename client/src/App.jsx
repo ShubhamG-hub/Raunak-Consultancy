@@ -10,6 +10,7 @@ import { ThemeProvider } from './context/ThemeContext';
 import Home from './pages/public/Home';
 import AdminLogin from './pages/admin/Login';
 import AdminDashboard from './pages/admin/Dashboard';
+import BookingsManager from './pages/admin/BookingsManager';
 import LeadsManager from './pages/admin/LeadsManager';
 import Certificates from './pages/admin/Certificates';
 import ContentEditor from './pages/admin/ContentEditor';
@@ -127,6 +128,16 @@ function App() {
                 <ProtectedRoute>
                   <AdminLayout>
                     <AdminDashboard />
+                  </AdminLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/bookings"
+              element={
+                <ProtectedRoute>
+                  <AdminLayout>
+                    <BookingsManager />
                   </AdminLayout>
                 </ProtectedRoute>
               }
