@@ -134,9 +134,11 @@ router.patch('/:id', authMiddleware, async (req, res) => {
         const booking = data[0];
 
         // Trigger WhatsApp notification on relevant status changes
-        if (['Confirmed', 'Cancelled', 'Completed'].includes(status)) {
+        if (['Pending', 'Confirmed', 'Cancelled', 'Completed'].includes(status)) {
             let msg = '';
-            if (status === 'Confirmed') {
+            if (status === 'Pending') {
+                msg = `⏳ *Booking on Hold*\n\nHello ${booking.name},\nYour ${booking.service_type} consultation is currently under review.\n\n📅 *Date:* ${booking.date}\n🕒 *Time:* ${booking.time}\n\nWe will notify you once it's confirmed. Thank you for your patience!`;
+            } else if (status === 'Confirmed') {
                 msg = `✅ *Booking Confirmed*\n\nHello ${booking.name},\nWe are pleased to confirm your ${booking.service_type} consultation.\n\n📅 *Date:* ${booking.date}\n🕒 *Time:* ${booking.time}\n\nThank you for choosing Raunak Consultancy!`;
             } else if (status === 'Cancelled') {
                 msg = `❌ *Booking Cancelled*\n\nHello ${booking.name},\nWe regret to inform you that your consultation on ${booking.date} at ${booking.time} has been cancelled.\n\nPlease contact us if you wish to reschedule.`;
