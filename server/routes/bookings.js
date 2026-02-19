@@ -68,9 +68,13 @@ router.post('/', async (req, res) => {
             .insert([value])
             .select();
 
-        if (dbError) throw dbError;
+        const booking = data[0];
 
-        res.status(201).json({ message: 'Booking created successfully', booking: data[0] });
+        // Send a "Booking Received" notification
+        const msg = `📩 *Booking Received*\n\nHello ${booking.name},\nWe've received your request for a ${booking.service_type} consultation on ${booking.date} at ${booking.time}.\n\nOur team will review it and notify you once it's confirmed. Thank you!`;
+        sendWhatsApp(booking.phone, msg);
+
+        res.status(201).json({ message: 'Booking created successfully', booking });
     } catch (err) {
         console.error('Booking Creation Error:', err);
         res.status(500).json({ error: 'Failed to create booking' });
