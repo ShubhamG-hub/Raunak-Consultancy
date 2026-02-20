@@ -3,7 +3,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Award } from 'lucide-react';
 import { motion } from 'framer-motion';
 import api from '@/lib/api';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/context/useLanguage';
 
 const CertificateDisplay = () => {
     const { t, language } = useLanguage();

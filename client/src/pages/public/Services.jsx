@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/componen
 import { Button } from '@/components/ui/button';
 import { TrendingUp, ShieldCheck, Clock, Award, Briefcase, Calculator, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/context/useLanguage';
 
 const Services = () => {
     const { t } = useLanguage();

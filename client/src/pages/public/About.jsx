@@ -1,7 +1,7 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { BadgeCheck, Target, Heart } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/context/useLanguage';
 
 const About = () => {
     const { t } = useLanguage();

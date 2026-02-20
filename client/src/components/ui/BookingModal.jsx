@@ -18,7 +18,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from './button';
 import { Input } from './input';
 import api from '@/lib/api';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/context/useLanguage';
 
 const bookingSchema = z.object({
     name: z.string().min(2, 'Name must be at least 2 characters'),

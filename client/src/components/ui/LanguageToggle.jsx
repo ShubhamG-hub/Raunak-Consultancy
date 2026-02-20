@@ -6,7 +6,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Globe } from "lucide-react"
-import { useLanguage } from "@/context/LanguageContext"
+import { useLanguage } from "@/context/useLanguage"
 
 const LanguageToggle = () => {
     const { language, setLanguage } = useLanguage();

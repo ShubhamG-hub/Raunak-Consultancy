@@ -1,9 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { translations } from '../lib/translations';
 
-const LanguageContext = createContext();
-
-export const useLanguage = () => useContext(LanguageContext);
+export const LanguageContext = createContext();
 
 export const LanguageProvider = ({ children }) => {
     // Default to English, but check localStorage

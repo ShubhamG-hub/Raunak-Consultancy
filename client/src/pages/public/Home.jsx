@@ -1,8 +1,18 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { motion, useScroll, useSpring } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { TrendingUp, Users, Clock, Award } from 'lucide-react';
-import { motion } from 'framer-motion';
-import { useLanguage } from '@/context/LanguageContext';
+import {
+    Users,
+    TrendingUp,
+    Clock,
+    Award,
+    Sunset,
+    Baby,
+    Coins,
+    ArrowRight
+} from 'lucide-react';
+import { useLanguage } from '@/context/useLanguage';
 import BookingModal from '@/components/ui/BookingModal';
 
 // Import Sections
@@ -15,36 +25,20 @@ import TestimonialForm from '@/components/forms/TestimonialForm';
 import CertificateDisplay from '@/components/ui/CertificateDisplay';
 import GalleryGrid from '@/components/ui/GalleryGrid';
 
-const SectionHeader = ({ tag, title, description, accent = 'blue' }) => {
-    const accentColors = {
-        blue: 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 border-blue-100 dark:border-blue-800',
-        blueLine: 'bg-blue-600 dark:bg-blue-500',
-    };
-    return (
-        <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-center max-w-3xl mx-auto mb-16"
-        >
-            {tag && (
-                <span className={`inline-block py-1.5 px-4 mb-4 font-bold text-[10px] tracking-widest uppercase ${accentColors[accent]} rounded-full border`}>
-                    {tag}
-                </span>
-            )}
-            <h2 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white mb-4 leading-tight">{title}</h2>
-            <div className={`w-16 h-1.5 ${accentColors.blueLine} mx-auto rounded-full mb-6`} />
-            {description && (
-                <p className="text-base text-slate-600 dark:text-slate-400 leading-relaxed">{description}</p>
-            )}
-        </motion.div>
-    );
-};
+import SectionHeader from '@/components/layout/SectionHeader';
 
 const Home = () => {
     const { t } = useLanguage();
     const [isBookingOpen, setIsBookingOpen] = useState(false);
+    const containerRef = useRef(null);
+
+    const { scrollYProgress } = useScroll();
+
+    const scaleX = useSpring(scrollYProgress, {
+        stiffness: 100,
+        damping: 30,
+        restDelta: 0.001
+    });
 
     const trustCounters = [
         { icon: Users, label: t.stats.families, value: t.stats.familiesVal, color: 'blue' },
@@ -61,7 +55,12 @@ const Home = () => {
     };
 
     return (
-        <div className="flex flex-col pb-0">
+        <div ref={containerRef} className="relative flex flex-col pb-0">
+            {/* Scroll Progress Bar */}
+            <motion.div
+                className="fixed top-0 left-0 right-0 h-1 bg-blue-600 origin-left z-[60]"
+                style={{ scaleX }}
+            />
 
             {/* Hero Section */}
             <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-slate-50 dark:bg-slate-900 pt-20 transition-colors duration-500">
@@ -128,52 +127,233 @@ const Home = () => {
             </section>
 
             {/* About Section */}
-            <section id="about" className="py-24 bg-white dark:bg-slate-900 transition-colors duration-500">
+            <motion.section
+                id="about"
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.8 }}
+                className="py-24 bg-white dark:bg-slate-900 transition-colors duration-500"
+            >
                 <About />
-            </section>
+            </motion.section>
+
+            {/* Financial Tools / Calculators Preview */}
+            <motion.section
+                id="calculators"
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.8 }}
+                className="py-24 bg-slate-50 dark:bg-slate-900/50 transition-colors duration-500 overflow-hidden relative"
+            >
+                <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-slate-200 dark:via-slate-800 to-transparent" />
+
+                <div className="container mx-auto px-6 relative z-10">
+                    <div className="flex flex-col lg:flex-row items-center gap-16">
+                        <div className="lg:w-1/2">
+                            <span className="inline-block py-1 px-3 mb-4 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs font-bold uppercase tracking-widest">
+                                Interactive Tools
+                            </span>
+                            <h2 className="text-4xl md:text-5xl font-black text-slate-900 dark:text-white mb-6 leading-tight">
+                                {t.calculators.title}
+                            </h2>
+                            <p className="text-lg text-slate-600 dark:text-slate-400 mb-8 max-w-xl">
+                                {t.calculators.subtitle}
+                            </p>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
+                                {[
+                                    { icon: TrendingUp, label: t.services.goalPlanner, color: "text-blue-600" },
+                                    { icon: Sunset, label: t.calculators.retirement.title, color: "text-indigo-600" },
+                                    { icon: Baby, label: t.calculators.child.title, color: "text-rose-600" },
+                                    { icon: Coins, label: t.services.goalPlanner, color: "text-emerald-600" }
+                                ].map((item, i) => (
+                                    <motion.div
+                                        key={i}
+                                        whileHover={{ scale: 1.05, x: 10 }}
+                                        className="flex items-center gap-3 p-4 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 cursor-default"
+                                    >
+                                        <item.icon className={`w-5 h-5 ${item.color}`} />
+                                        <span className="font-bold text-slate-700 dark:text-slate-200 text-sm">{item.label}</span>
+                                    </motion.div>
+                                ))}
+                            </div>
+
+                            <Link to="/calculators">
+                                <Button size="lg" className="h-14 px-10 rounded-full bg-blue-600 hover:bg-blue-700 font-bold shadow-xl shadow-blue-600/20 group">
+                                    {t.services.startPlanning} <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                                </Button>
+                            </Link>
+                        </div>
+
+                        <div className="lg:w-1/2 relative">
+                            <motion.div
+                                animate={{
+                                    rotate: [2, -2, 2],
+                                    y: [0, -10, 0]
+                                }}
+                                transition={{
+                                    duration: 6,
+                                    repeat: Infinity,
+                                    ease: "easeInOut"
+                                }}
+                                className="relative z-10 bg-white dark:bg-slate-800 p-2 rounded-[2.5rem] shadow-2xl border border-slate-100 dark:border-slate-700"
+                            >
+                                <div className="bg-slate-50 dark:bg-slate-900 rounded-[2rem] p-8">
+                                    <div className="flex justify-between items-center mb-8">
+                                        <div className="flex gap-2">
+                                            <div className="w-3 h-3 rounded-full bg-red-400" />
+                                            <div className="w-3 h-3 rounded-full bg-yellow-400" />
+                                            <div className="w-3 h-3 rounded-full bg-green-400" />
+                                        </div>
+                                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">SIP Analysis</span>
+                                    </div>
+                                    <div className="space-y-6">
+                                        <div className="h-2 w-3/4 bg-slate-200 dark:bg-slate-800 rounded-full" />
+                                        <div className="h-2 w-1/2 bg-slate-200 dark:bg-slate-800 rounded-full" />
+                                        <div className="flex items-end gap-2 h-32 pt-4">
+                                            <motion.div
+                                                initial={{ height: 0 }}
+                                                whileInView={{ height: '40%' }}
+                                                className="flex-1 bg-slate-200 dark:bg-slate-700 rounded-t-lg"
+                                            />
+                                            <motion.div
+                                                initial={{ height: 0 }}
+                                                whileInView={{ height: '100%' }}
+                                                className="flex-1 bg-blue-600 rounded-t-lg shadow-lg shadow-blue-600/20"
+                                            />
+                                            <motion.div
+                                                initial={{ height: 0 }}
+                                                whileInView={{ height: '60%' }}
+                                                className="flex-1 bg-indigo-500 rounded-t-lg"
+                                            />
+                                        </div>
+                                        <div className="pt-4 flex justify-between">
+                                            <div className="space-y-2">
+                                                <div className="h-2 w-12 bg-blue-600/20 rounded-full" />
+                                                <div className="h-4 w-20 bg-blue-600/40 rounded-full" />
+                                            </div>
+                                            <div className="w-12 h-12 rounded-2xl bg-blue-600 flex items-center justify-center text-white font-black text-xl">
+                                                %
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </motion.div>
+
+                            {/* Decorative background for the card */}
+                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-blue-600/5 blur-[100px] rounded-full -z-10" />
+                        </div>
+                    </div>
+                </div>
+            </motion.section>
 
             {/* Certificates Section */}
-            <section id="certificates" className="py-24 bg-slate-50 dark:bg-slate-900/50 transition-colors duration-500">
+            <motion.section
+                id="certificates"
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.8 }}
+                className="py-24 bg-slate-50 dark:bg-slate-900/50 transition-colors duration-500"
+            >
                 <div className="container mx-auto px-6">
                     <SectionHeader title={t.certificates.title} description={t.certificates.subtitle} />
                     <CertificateDisplay />
+                    <div className="mt-12 text-center">
+                        <Link to="/certificates">
+                            <Button variant="outline" size="lg" className="rounded-full px-8 font-bold border-2 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group">
+                                View All Certificates <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                            </Button>
+                        </Link>
+                    </div>
                 </div>
-            </section>
+            </motion.section>
 
             {/* Gallery Section */}
-            <section id="gallery" className="py-24 bg-white dark:bg-slate-900 transition-colors duration-500">
+            <motion.section
+                id="gallery"
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.8 }}
+                className="py-24 bg-white dark:bg-slate-900 transition-colors duration-500"
+            >
                 <div className="container mx-auto px-6">
                     <SectionHeader title={t.gallery.title} description={t.gallery.subtitle} />
                     <GalleryGrid />
+                    <div className="mt-12 text-center">
+                        <Link to="/gallery">
+                            <Button variant="outline" size="lg" className="rounded-full px-8 font-bold border-2 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group">
+                                Explore Full Gallery <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                            </Button>
+                        </Link>
+                    </div>
                 </div>
-            </section>
+            </motion.section>
 
             {/* Services Section */}
-            <section id="services" className="py-24 bg-slate-50 dark:bg-slate-900/50 transition-colors duration-500">
+            <motion.section
+                id="services"
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.8 }}
+                className="py-24 bg-slate-50 dark:bg-slate-900/50 transition-colors duration-500"
+            >
                 <Services />
-            </section>
+            </motion.section>
 
             {/* Claims Section */}
-            <section id="claims" className="py-24 bg-white dark:bg-slate-900 transition-colors duration-500">
+            <motion.section
+                id="claims"
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.8 }}
+                className="py-24 bg-white dark:bg-slate-900 transition-colors duration-500"
+            >
                 <Claims />
-            </section>
+            </motion.section>
 
             {/* Testimonials Section */}
-            <section id="testimonials" className="py-24 bg-slate-50 dark:bg-slate-900/50 transition-colors duration-500">
+            <motion.section
+                id="testimonials"
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.8 }}
+                className="py-24 bg-slate-50 dark:bg-slate-900/50 transition-colors duration-500"
+            >
                 <div className="container mx-auto px-6">
                     <SectionHeader title={t.testimonials.title} description={t.testimonials.subtitle} />
                     <TestimonialList />
+                    <div className="mt-12 text-center">
+                        <Link to="/testimonials">
+                            <Button variant="outline" size="lg" className="rounded-full px-8 font-bold border-2 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group">
+                                Read All Testimonials <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                            </Button>
+                        </Link>
+                    </div>
                     <div className="mt-16 text-center">
                         <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-8">{t.testimonials.leaveReview}</h3>
                         <TestimonialForm />
                     </div>
                 </div>
-            </section>
+            </motion.section>
 
             {/* Contact Section */}
-            <section id="contact" className="py-24 bg-white dark:bg-slate-900 transition-colors duration-500">
+            <motion.section
+                id="contact"
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.8 }}
+                className="py-24 bg-white dark:bg-slate-900 transition-colors duration-500"
+            >
                 <Contact />
-            </section>
+            </motion.section>
 
             {/* Global Booking Modal */}
             <BookingModal isOpen={isBookingOpen} onClose={() => setIsBookingOpen(false)} />

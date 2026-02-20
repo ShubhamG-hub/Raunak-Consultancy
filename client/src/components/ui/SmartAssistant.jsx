@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircle, X, ChevronLeft, Send, Calculator, HelpCircle, Calendar, ShieldCheck, UserPlus, ArrowRight, Sparkles, User, Bot } from 'lucide-react';
 import api from '../../lib/api';
-import { useLanguage } from '../../context/LanguageContext';
+import { useLanguage } from '@/context/useLanguage';
 
 const SmartAssistant = () => {
     const { t, language } = useLanguage();
@@ -643,7 +643,7 @@ const SmartAssistant = () => {
                                         <Bot className="w-6 h-6" />
                                     </div>
                                     <div>
-                                        <h4 className="text-sm font-black tracking-tight uppercase">{t.footer.companyName}</h4>
+                                        <h4 className="text-sm font-black tracking-tight uppercase">Raunak AI Chatbot</h4>
                                         <div className="flex items-center gap-1.5 mt-0.5">
                                             <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse ring-4 ring-green-400/20" />
                                             <span className="text-[10px] font-bold opacity-90 uppercase tracking-widest">{t.chatbot.ui.alwaysActive}</span>
@@ -668,7 +668,7 @@ const SmartAssistant = () => {
                                     <ShieldCheck className="w-3.5 h-3.5 text-primary" />
                                     <span className="text-[10px] font-bold uppercase tracking-tighter">Safe & Encrypted</span>
                                 </div>
-                                <span className="text-[10px] font-medium opacity-40 italic">Raunak Financial Assistant v2.0</span>
+                                <span className="text-[10px] font-medium opacity-40 italic">Raunak AI Assistant v2.0</span>
                             </div>
                         </motion.div>
                     )}
@@ -694,7 +694,7 @@ const SmartAssistant = () => {
                     {isOpen ? (
                         <X className="relative z-10 w-6 h-6" />
                     ) : (
-                        <MessageCircle className="relative z-10 w-7 h-7 fill-current" />
+                        <Bot className="relative z-10 w-7 h-7" />
                     )}
                     {!isOpen && <div className="absolute top-3 right-3 w-2.5 h-2.5 rounded-full bg-white animate-ping" />}
                 </motion.button>

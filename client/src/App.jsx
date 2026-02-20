@@ -1,30 +1,46 @@
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
-import LoadingScreen from './components/ui/LoadingScreen';
-import Navbar from './components/layout/Navbar';
-import Footer from './components/layout/Footer';
-import FloatingActions from './components/ui/FloatingActions';
-import { AuthProvider } from './context/AuthContext';
-import { ThemeProvider } from './context/ThemeContext';
-import Home from './pages/public/Home';
-import AdminLogin from './pages/admin/Login';
-import AdminDashboard from './pages/admin/Dashboard';
-import BookingsManager from './pages/admin/BookingsManager';
-import LeadsManager from './pages/admin/LeadsManager';
-import Certificates from './pages/admin/Certificates';
-import ContentEditor from './pages/admin/ContentEditor';
-import TestimonialsManager from './pages/admin/TestimonialsManager';
-import GalleryManager from './pages/admin/GalleryManager';
-import ClaimsManager from './pages/admin/ClaimsManager';
-import ChatManager from './pages/admin/ChatManager';
-import Profile from './pages/admin/Profile';
-import AdminLayout from './components/layout/AdminLayout';
-import ProtectedRoute from './components/layout/ProtectedRoute';
+import LoadingScreen from '@/components/ui/LoadingScreen';
+import Navbar from '@/components/layout/Navbar';
+import Footer from '@/components/layout/Footer';
+import FloatingActions from '@/components/ui/FloatingActions';
+import { AuthProvider } from '@/context/AuthContext';
+import { ThemeProvider } from '@/context/ThemeContext';
+import Home from '@/pages/public/Home';
+import Login from '@/pages/public/Login';
+import Register from '@/pages/public/Register';
+import Calculators from '@/pages/public/Calculators';
+import Gallery from '@/pages/public/Gallery';
+import CertificatesPage from '@/pages/public/CertificatesPage';
+import TestimonialsPage from '@/pages/public/TestimonialsPage';
+import AdminLogin from '@/pages/admin/Login';
+import AdminDashboard from '@/pages/admin/Dashboard';
+import BookingsManager from '@/pages/admin/BookingsManager';
+import LeadsManager from '@/pages/admin/LeadsManager';
+import Certificates from '@/pages/admin/Certificates';
+import ContentEditor from '@/pages/admin/ContentEditor';
+import TestimonialsManager from '@/pages/admin/TestimonialsManager';
+import GalleryManager from '@/pages/admin/GalleryManager';
+import ClaimsManager from '@/pages/admin/ClaimsManager';
+import ChatManager from '@/pages/admin/ChatManager';
+import Profile from '@/pages/admin/Profile';
+import AdminLayout from '@/components/layout/AdminLayout';
+import ProtectedRoute from '@/components/layout/ProtectedRoute';
 
-import { useLanguage } from './context/LanguageContext';
+import { useLanguage } from '@/context/useLanguage';
 
 const SITE_NAME = 'Raunak Consultancy';
+
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+};
 
 const AppLayout = ({ children }) => {
   const location = useLocation();
@@ -89,7 +105,7 @@ const AppLayout = ({ children }) => {
   return (
     <div className="flex flex-col min-h-screen">
       {!isAdmin && <Navbar />}
-      <main className="flex-grow">
+      <main className="relative flex-grow">
         {children}
       </main>
       {!isAdmin && <Footer />}
@@ -102,10 +118,27 @@ const AppLayout = ({ children }) => {
 function App() {
   const [loading, setLoading] = useState(true);
 
+  const navigate = useNavigate();
+  const location = useLocation();
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
     }, 2000);
+
+    // Redirect to home on reload/initial load if not an admin route
+    // Also clear hash to ensure we start at the top (Hero section)
+    const isAdmin = location.pathname.startsWith('/admin');
+    if (!isAdmin) {
+      if (location.pathname !== '/' || location.hash !== '') {
+        navigate('/', { replace: true });
+        window.scrollTo(0, 0);
+      } else {
+        // Even if on / with no hash, force scroll to top on fresh load/reload
+        window.scrollTo(0, 0);
+      }
+    }
+
     return () => clearTimeout(timer);
   }, []);
 
@@ -115,10 +148,17 @@ function App() {
         <AnimatePresence mode="wait">
           {loading && <LoadingScreen key="loader" />}
         </AnimatePresence>
+        <ScrollToTop />
         <AppLayout>
           <Routes>
             {/* Public Routes */}
             <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/calculators" element={<Calculators />} />
+            <Route path="/gallery" element={<Gallery />} />
+            <Route path="/certificates" element={<CertificatesPage />} />
+            <Route path="/testimonials" element={<TestimonialsPage />} />
 
             {/* Admin Routes */}
             <Route path="/admin/login" element={<AdminLogin />} />

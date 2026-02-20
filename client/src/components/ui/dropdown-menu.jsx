@@ -1,6 +1,8 @@
 import * as React from "react"
 import { cn } from "@/lib/utils"
 
+const DropdownMenuContext = React.createContext(null)
+
 const DropdownMenu = ({ children }) => {
     const [open, setOpen] = React.useState(false)
     const dropdownRef = React.useRef(null)
@@ -16,26 +18,37 @@ const DropdownMenu = ({ children }) => {
     }, [])
 
     return (
-        <div className="relative inline-block text-left" ref={dropdownRef}>
-            {React.Children.map(children, (child) => {
-                if (React.isValidElement(child)) {
-                    return React.cloneElement(child, { open, setOpen })
-                }
-                return child
-            })}
-        </div>
+        <DropdownMenuContext.Provider value={{ open, setOpen }}>
+            <div className="relative inline-block text-left" ref={dropdownRef}>
+                {children}
+            </div>
+        </DropdownMenuContext.Provider>
     )
 }
 
-const DropdownMenuTrigger = ({ children, open, setOpen }) => {
+const DropdownMenuTrigger = ({ children, asChild }) => {
+    const { open, setOpen } = React.useContext(DropdownMenuContext)
+
+    const handleClick = () => setOpen(!open)
+
+    if (asChild && React.isValidElement(children)) {
+        return React.cloneElement(children, {
+            onClick: (e) => {
+                if (children.props.onClick) children.props.onClick(e)
+                handleClick()
+            }
+        })
+    }
+
     return (
-        <div onClick={() => setOpen(!open)} className="cursor-pointer inline-flex">
+        <div onClick={handleClick} className="cursor-pointer inline-flex">
             {children}
         </div>
     )
 }
 
-const DropdownMenuContent = ({ children, align = "end", open, className }) => {
+const DropdownMenuContent = ({ children, align = "end", className }) => {
+    const { open } = React.useContext(DropdownMenuContext)
     if (!open) return null
 
     const alignmentClasses = {
@@ -58,13 +71,20 @@ const DropdownMenuContent = ({ children, align = "end", open, className }) => {
 }
 
 const DropdownMenuItem = ({ children, onClick, className }) => {
+    const { setOpen } = React.useContext(DropdownMenuContext)
+
+    const handleClick = (e) => {
+        if (onClick) onClick(e)
+        setOpen(false)
+    }
+
     return (
         <div
             className={cn(
                 "relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-slate-100 hover:text-slate-900 data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
                 className
             )}
-            onClick={onClick}
+            onClick={handleClick}
         >
             {children}
         </div>

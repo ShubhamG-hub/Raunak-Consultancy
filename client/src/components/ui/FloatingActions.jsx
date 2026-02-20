@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import WhatsAppButton from './WhatsAppButton';
 import PhoneButton from './PhoneButton';
+import MailButton from './MailButton';
 import SmartAssistant from './SmartAssistant';
 import { useLocation } from 'react-router-dom';
 
@@ -44,6 +45,9 @@ const FloatingActions = () => {
             >
                 <motion.div variants={itemVariants}>
                     <PhoneButton />
+                </motion.div>
+                <motion.div variants={itemVariants}>
+                    <MailButton />
                 </motion.div>
                 <motion.div variants={itemVariants}>
                     <WhatsAppButton />

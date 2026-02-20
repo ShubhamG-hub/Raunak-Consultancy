@@ -8,7 +8,11 @@ export const translations = {
             contact: "Contact",
             bookConsultation: "Book Consultation",
             dashboard: "Dashboard",
-            logout: "Logout"
+            logout: "Logout",
+            calculators: "Calculators",
+            certificates: "Certificates",
+            gallery: "Gallery",
+            testimonials: "Testimonials"
         },
         hero: {
             title: "Secure Your Future with ",
@@ -23,7 +27,7 @@ export const translations = {
             assets: "Assets Managed",
             assetsVal: "₹2500 Cr+",
             experience: "Experience",
-            experienceVal: "17+ Years",
+            experienceVal: "25+ Years",
             team: "Jeevan Gaurav Team",
             teamVal: "Top Rated"
         },
@@ -32,7 +36,7 @@ export const translations = {
             name: "Sudhir Mewalal Gupta",
             role: "Financial Growth & Claims Expert",
             intro: "Helping families achieve financial freedom since 2008.",
-            description: "With over 17 years of experience in the financial sector, I have helped thousands of families secure their future through strategic investment planning and comprehensive insurance coverage. My mission is to simplify finance for the common man.",
+            description: "With over 25 years of experience in the financial sector, I have helped thousands of families secure their future through strategic investment planning and comprehensive insurance coverage. My mission is to simplify finance for the common man.",
             missionTitle: "My Mission",
             mission: "To empower 100,000 families with financial security and wealth creation strategies by 2030.",
             valuesTitle: "Core Values",
@@ -63,7 +67,128 @@ export const translations = {
             bestFor: "Best For",
             riskProfile: "Risk Profile",
             learnMore: "Learn more",
+            startPlanning: "Start Planning",
+            goalPlanner: "Goal Planner",
             disclaimer: "Mutual Fund investments are subject to market risks, read all scheme related documents carefully. Past performance is not an indicator of future returns."
+        },
+        calculators: {
+            title: "Financial Planning Tools",
+            subtitle: "Calculate your goals and plan your future with our interactive tools.",
+            sip: {
+                title: "SIP Calculator",
+                description: "Calculate how much wealth you can create through Systematic Investment Plans.",
+                monthlyInvestment: "Monthly Investment",
+                period: "Investment Period (Years)",
+                expectedReturn: "Expected Return Rate (% p.a.)",
+                investedAmount: "Amount Invested",
+                estReturns: "Estimated Returns",
+                totalValue: "Total Value"
+            },
+            retirement: {
+                title: "Retirement Planner",
+                description: "Plan for your golden years by calculating your required retirement corpus.",
+                currentAge: "Current Age",
+                retirementAge: "Expected Retirement Age",
+                monthlyExpense: "Current Monthly Expenses",
+                inflation: "Expected Inflation Rate (%)",
+                corpusNeeded: "Retirement Corpus Needed"
+            },
+            child: {
+                title: "Child Future Planner",
+                description: "Ensure a bright future for your child with strategic education and marriage planning.",
+                childAge: "Child's Current Age",
+                higherEdAge: "Age for Higher Education",
+                currentCost: "Current Cost of Education",
+                savingsTarget: "Target Savings"
+            },
+            lumpsum: {
+                title: "Lumpsum Calculator",
+                description: "Calculate the future value of your one-time investment.",
+                totalInvestment: "One-time Investment",
+                period: "Investment Period (Years)",
+                expectedReturn: "Expected Return Rate (% p.a.)",
+                investedAmount: "Amount Invested",
+                estReturns: "Estimated Returns",
+                totalValue: "Total Value"
+            },
+            emi: {
+                title: "EMI Calculator",
+                description: "Calculate your Equated Monthly Installment for loans.",
+                loanAmount: "Loan Amount",
+                interestRate: "Interest Rate (% p.a.)",
+                loanTenure: "Loan Tenure (Years)",
+                monthlyEMI: "Monthly EMI",
+                principalAmount: "Principal Amount",
+                totalInterest: "Total Interest",
+                totalAmount: "Total Amount"
+            },
+            fd: {
+                title: "FD Calculator",
+                description: "Calculate the maturity amount of your Fixed Deposit.",
+                totalInvestment: "Total Investment",
+                interestRate: "Interest Rate (% p.a.)",
+                period: "Period (Years)",
+                estReturns: "Estimated Returns",
+                totalValue: "Total Value"
+            },
+            rd: {
+                title: "RD Calculator",
+                description: "Calculate the maturity amount of your Recurring Deposit.",
+                monthlyInvestment: "Monthly Investment",
+                interestRate: "Interest Rate (% p.a.)",
+                period: "Period (Years)",
+                investedAmount: "Total Investment",
+                estReturns: "Estimated Returns",
+                totalValue: "Total Value"
+            },
+            hlv: {
+                title: "HLV Calculator",
+                description: "Human Life Value calculator to estimate required life insurance cover.",
+                currentAge: "Current Age",
+                retirementAge: "Expected Retirement Age",
+                annualIncome: "Annual Income",
+                annualExpenses: "Annual Personal Expenses",
+                inflation: "Expected Inflation (%)",
+                rateOfReturn: "Expected Rate of Return (%)",
+                insuranceCover: "Recommended Insurance Cover"
+            },
+            tax: {
+                title: "Income Tax Calculator",
+                description: "Estimated tax calculation for FY 2023-24 (New vs Old Regime).",
+                annualIncome: "Gross Annual Income",
+                deductions: "Total Deductions (80C, etc.)",
+                oldTax: "Tax (Old Regime)",
+                newTax: "Tax (New Regime)",
+                savings: "Potential Savings"
+            },
+            delay: {
+                title: "SIP Delay Calculator",
+                description: "Calculate the potential wealth loss due to delaying your SIP.",
+                monthlyInvestment: "Monthly Investment",
+                period: "Investment Period (Years)",
+                expectedReturn: "Expected Return Rate (% p.a.)",
+                delayPeriod: "Delay Period (Months)",
+                valueWithoutDelay: "Value (No Delay)",
+                valueWithDelay: "Value (With Delay)",
+                costOfDelay: "Cost of Delay (Loss)"
+            }
+        },
+        auth: {
+            loginTitle: "Welcome Back",
+            loginSubtitle: "Login to access your personalized financial dashboard.",
+            registerTitle: "Join Raunak Consultancy",
+            registerSubtitle: "Start your journey towards financial freedom today.",
+            fullName: "Full Name",
+            email: "Email Address",
+            password: "Password",
+            mobile: "Mobile Number",
+            loginBtn: "Login",
+            registerBtn: "Register",
+            noAccount: "Don't have an account?",
+            hasAccount: "Already have an account?",
+            forgotPassword: "Forgot Password?",
+            profile: "My Profile",
+            dashboard: "Client Dashboard"
         },
         claims: {
             title: "Claim Support Desk",
@@ -185,7 +310,7 @@ export const translations = {
             loading: "Loading gallery..."
         },
         chatbot: {
-            welcome: "Hello! I am your Smart Assistant. How can I help you today?",
+            welcome: "Hello! I am Raunak AI Chatbot. How can I help you today?",
             mainMenu: "Please choose an option:",
             back: "Go Back",
             actions: {
@@ -254,7 +379,7 @@ export const translations = {
                 nextProvisions: "Next: Provisions",
                 seeResults: "See Results",
                 restart: "Restart Analysis",
-                greetingTooltip: "Need financial help? Just ask me!",
+                greetingTooltip: "AI Chatbot is here to help!",
                 alwaysActive: "Always Active"
             }
         }
@@ -268,7 +393,11 @@ export const translations = {
             contact: "संपर्क",
             bookConsultation: "परामर्श बुक करें",
             dashboard: "डैशबोर्ड",
-            logout: "लॉगआउट"
+            logout: "लॉगआउट",
+            calculators: "कैलकुलेटर",
+            certificates: "प्रमाणपत्र",
+            gallery: "गैलरी",
+            testimonials: "प्रशंसापत्र"
         },
         hero: {
             title: "विशेषज्ञ वित्तीय योजना के साथ ",
@@ -283,7 +412,7 @@ export const translations = {
             assets: "प्रबंधित संपत्ति",
             assetsVal: "₹२५०० करोड़+",
             experience: "का अनुभव",
-            experienceVal: "१७+ वर्ष",
+            experienceVal: "२५+ वर्ष",
             team: "जीवन गौरव टीम",
             teamVal: "सर्वश्रेष्ठ रेटेड"
         },
@@ -292,7 +421,7 @@ export const translations = {
             name: "सुधीर मेवालाल गुप्ता",
             role: "वित्तीय विकास और क्लेम विशेषज्ञ",
             intro: "२००८ से परिवारों को आर्थिक स्वतंत्रता प्राप्त करने में मदद कर रहे हैं।",
-            description: "वित्तीय क्षेत्र में १७ से अधिक वर्षों के अनुभव के साथ, मैंने हजारों परिवारों को रणनीतिक निवेश योजना और व्यापक बीमा कवरेज के माध्यम से अपना भविष्य सुरक्षित करने में मदद की है। मेरा मिशन आम आदमी के लिए वित्त को सरल बनाना है।",
+            description: "वित्तीय क्षेत्र में २५ से अधिक वर्षों के अनुभव के साथ, मैंने हजारों परिवारों को रणनीतिक निवेश योजना और व्यापक बीमा कवरेज के माध्यम से अपना भविष्य सुरक्षित करने में मदद की है। मेरा मिशन आम आदमी के लिए वित्त को सरल बनाना है।",
             missionTitle: "मेेरा मिशन",
             mission: "२०३० तक १,००,००० परिवारों को वित्तीय सुरक्षा और धन निर्माण रणनीतियों के साथ सशक्त बनाना।",
             valuesTitle: "मूल्य",
@@ -323,7 +452,128 @@ export const translations = {
             bestFor: "इनके लिए सर्वश्रेष्ठ",
             riskProfile: "जोखिम प्रोफ़ाइल",
             learnMore: "और जानें",
+            startPlanning: "योजना शुरू करें",
+            goalPlanner: "लक्ष्य योजनाकार",
             disclaimer: "म्यूचुअल फंड निवेश बाजार के जोखिमों के अधीन हैं, सभी योजना संबंधी दस्तावेजों को ध्यान से पढ़ें। पिछला प्रदर्शन भविष्य के रिटर्न का संकेतक नहीं है।"
+        },
+        calculators: {
+            title: "वित्तीय योजना उपकरण",
+            subtitle: "हमारे इंटरैक्टिव उपकरणों के साथ अपने लक्ष्यों की गणना करें और अपने भविष्य की योजना बनाएं।",
+            sip: {
+                title: "एसआईपी कैलकुलेटर",
+                description: "गणना करें कि आप सिस्टेमैटिक इन्वेस्टमेंट प्लान के माध्यम से कितना धन बना सकते हैं।",
+                monthlyInvestment: "मासिक निवेश",
+                period: "निवेश की अवधि (वर्ष)",
+                expectedReturn: "अपेक्षित रिटर्न दर (% p.a.)",
+                investedAmount: "कुल निवेश",
+                estReturns: "अनुमानित रिटर्न",
+                totalValue: "कुल मूल्य"
+            },
+            retirement: {
+                title: "रिटायरमेंट प्लानर",
+                description: "अपने रिटायरमेंट कॉर्पस की गणना करके अपने सुनहरे वर्षों की योजना बनाएं।",
+                currentAge: "वर्तमान आयु",
+                retirementAge: "अपेक्षित सेवानिवृत्ति आयु",
+                monthlyExpense: "वर्तमान मासिक खर्च",
+                inflation: "अपेक्षित मुद्रास्फीति दर (%)",
+                corpusNeeded: "रिटायरमेंट कॉर्पस की आवश्यकता"
+            },
+            child: {
+                title: "चाइल्ड फ्यूचर प्लानर",
+                description: "रणनीतिक शिक्षा और विवाह योजना के साथ अपने बच्चे के लिए उज्ज्वल भविष्य सुनिश्चित करें।",
+                childAge: "बच्चे की वर्तमान आयु",
+                higherEdAge: "उच्च शिक्षा के लिए आयु",
+                currentCost: "शिक्षा की वर्तमान लागत",
+                savingsTarget: "बचत लक्ष्य"
+            },
+            lumpsum: {
+                title: "लमसम कैलकुलेटर",
+                description: "अपने एकमुश्त निवेश के भविष्य के मूल्य की गणना करें।",
+                totalInvestment: "एकमुश्त निवेश",
+                period: "निवेश की अवधि (वर्ष)",
+                expectedReturn: "अपेक्षित रिटर्न दर (% p.a.)",
+                investedAmount: "कुल निवेश",
+                estReturns: "अनुमानित रिटर्न",
+                totalValue: "कुल मूल्य"
+            },
+            emi: {
+                title: "ईएमआई कैलकुलेटर",
+                description: "ऋण के लिए अपनी समान मासिक किस्त की गणना करें।",
+                loanAmount: "ऋण राशि",
+                interestRate: "ब्याज दर (% p.a.)",
+                loanTenure: "ऋण अवधि (वर्ष)",
+                monthlyEMI: "मासिक ईएमआई",
+                principalAmount: "मूल राशि",
+                totalInterest: "कुल ब्याज",
+                totalAmount: "कुल राशि"
+            },
+            fd: {
+                title: "एफडी कैलकुलेटर",
+                description: "अपनी सावधि जमा की परिपक्वता राशि की गणना करें।",
+                totalInvestment: "कुल निवेश",
+                interestRate: "ब्याज दर (% p.a.)",
+                period: "अवधि (वर्ष)",
+                estReturns: "अनुमानित रिटर्न",
+                totalValue: "कुल मूल्य"
+            },
+            rd: {
+                title: "आरडी कैलकुलेटर",
+                description: "अपनी आवर्ती जमा की परिपक्वता राशि की गणना करें।",
+                monthlyInvestment: "मासिक निवेश",
+                interestRate: "ब्याज दर (% p.a.)",
+                period: "अवधि (वर्ष)",
+                investedAmount: "कुल निवेश",
+                estReturns: "अनुमानित रिटर्न",
+                totalValue: "कुल मूल्य"
+            },
+            hlv: {
+                title: "एचएलवी कैलकुलेटर",
+                description: "आवश्यक जीवन बीमा कवर का अनुमान लगाने के लिए मानव जीवन मूल्य कैलकुलेटर।",
+                currentAge: "वर्तमान आयु",
+                retirementAge: "अपेक्षित सेवानिवृत्ति आयु",
+                annualIncome: "वार्षिक आय",
+                annualExpenses: "वार्षिक व्यक्तिगत खर्च",
+                inflation: "अपेक्षित मुद्रास्फीति (%)",
+                rateOfReturn: "अपेक्षित रिटर्न दर (%)",
+                insuranceCover: "अनुशंसित बीमा कवर"
+            },
+            tax: {
+                title: "आयकर कैलकुलेटर",
+                description: "वित्तीय वर्ष २०२३-२४ के लिए अनुमानित कर गणना (नई बनाम पुरानी व्यवस्था)।",
+                annualIncome: "कुल वार्षिक आय",
+                deductions: "कुल कटौती (80C, आदि)",
+                oldTax: "टैक्स (पुरानी व्यवस्था)",
+                newTax: "टैक्स (नई व्यवस्था)",
+                savings: "संभावित बचत"
+            },
+            delay: {
+                title: "एसआईपी देरी कैलकुलेटर",
+                description: "अपनी एसआईपी में देरी के कारण संभावित धन हानि की गणना करें।",
+                monthlyInvestment: "मासिक निवेश",
+                period: "निवेश की अवधि (वर्ष)",
+                expectedReturn: "अपेक्षित रिटर्न दर (% p.a.)",
+                delayPeriod: "देरी की अवधि (महीने)",
+                valueWithoutDelay: "बिना देरी के मूल्य",
+                valueWithDelay: "देरी के साथ मूल्य",
+                costOfDelay: "देरी की लागत (हानि)"
+            }
+        },
+        auth: {
+            loginTitle: "स्वागत है",
+            loginSubtitle: "अपने व्यक्तिगत वित्तीय डैशबोर्ड तक पहुंचने के लिए लॉगिन करें।",
+            registerTitle: "रौनक कंसल्टेंसी से जुड़ें",
+            registerSubtitle: "आज ही वित्तीय स्वतंत्रता की ओर अपनी यात्रा शुरू करें।",
+            fullName: "पूरा नाम",
+            email: "ईमेल पता",
+            password: "पासवर्ड",
+            mobile: "मोबाइल नंबर",
+            loginBtn: "लॉगिन",
+            registerBtn: "रजिस्टर",
+            noAccount: "अकाउंट नहीं है?",
+            hasAccount: "पहले से अकाउंट है?",
+            forgotPassword: "पासवर्ड भूल गए?",
+            profile: "मेरी प्रोफाइल",
+            dashboard: "क्लाइंट डैशबोर्ड"
         },
         claims: {
             title: "क्लेम सहायता डेस्क",
@@ -445,7 +695,7 @@ export const translations = {
             loading: "गैलरी लोड हो रही है..."
         },
         chatbot: {
-            welcome: "नमस्ते! मैं आपका स्मार्ट असिस्टेंट हूँ। मैं आज आपकी कैसे मदद कर सकता हूँ?",
+            welcome: "नमस्ते! मैं आपका रौनक एआई चैटबॉट हूँ। मैं आज आपकी कैसे मदद कर सकता हूँ?",
             mainMenu: "कृपया एक विकल्प चुनें:",
             back: "पीछे जाएं",
             actions: {
@@ -514,7 +764,7 @@ export const translations = {
                 nextProvisions: "अगला: प्रावधान",
                 seeResults: "परिणाम देखें",
                 restart: "पुनः विश्लेषण",
-                greetingTooltip: "क्या आपको वित्तीय मदद चाहिए? बस मुझसे पूछें!",
+                greetingTooltip: "एआई चैटबॉट आपकी मदद के लिए यहाँ है!",
                 alwaysActive: "हमेशा सक्रिय"
             }
         }
@@ -528,7 +778,11 @@ export const translations = {
             contact: "संपर्क",
             bookConsultation: "सल्ला बुक करा",
             dashboard: "डॅशबोर्ड",
-            logout: "लॉगआउट"
+            logout: "लॉगआउट",
+            calculators: "कॅल्क्युलेटर",
+            certificates: "प्रमाणपत्रे",
+            gallery: "गॅलरी",
+            testimonials: "प्रशंसापत्रे"
         },
         hero: {
             title: "तज्ञ आर्थिक नियोजनासह ",
@@ -543,7 +797,7 @@ export const translations = {
             assets: "व्यवस्थापित मालमत्ता",
             assetsVal: "₹२५०० कोटी+",
             experience: "अनुभव",
-            experienceVal: "१७+ वर्षे",
+            experienceVal: "२५+ वर्षे",
             team: "जीवन गौरव टीम",
             teamVal: "सर्वोच्च रेटेड"
         },
@@ -552,7 +806,7 @@ export const translations = {
             name: "सुधीर मेवालाल गुप्ता",
             role: "आर्थिक विकास आणि क्लेम तज्ञ",
             intro: "२००८ पासून कुटुंबांना आर्थिक स्वातंत्र्य मिळवून देण्यात मदत करत आहे.",
-            description: "वित्तीय क्षेत्रातील १७ वर्षांहून अधिक अनुभवासह, मी हजारो कुटुंबांना धोरणात्मक गुंतवणूक नियोजन आणि सर्वसमावेशक विमा संरक्षणाद्वारे त्यांचे भविष्य सुरक्षित करण्यात मदत केली आहे. सामान्य माणसासाठी वित्त सोपे करणे हे माझे ध्येय आहे.",
+            description: "वित्तीय क्षेत्रातील २५ वर्षांहून अधिक अनुभवासह, मी हजारो कुटुंबांना धोरणात्मक गुंतवणूक नियोजन आणि सर्वसमावेशक विमा संरक्षणाद्वारे त्यांचे भविष्य सुरक्षित करण्यात मदत केली आहे। सामान्य माणसासाठी वित्त सोपे करणे हे माझे ध्येय आहे।",
             missionTitle: "माझे ध्येय",
             mission: "२०३० पर्यंत १,००,००० कुटुंबांना आर्थिक सुरक्षा आणि संपत्ती निर्मिती धोरणांसह सक्षम करणे.",
             valuesTitle: "मूल्ये",
@@ -583,7 +837,128 @@ export const translations = {
             bestFor: "यांच्यासाठी सर्वोत्तम",
             riskProfile: "जोखिम प्रोफाइल",
             learnMore: "अधिक जाणून घ्या",
-            disclaimer: "म्युच्युअल फंड गुंतवणूक बाजार जोखमीच्या अधीन आहे, सर्व योजना संबंधित कागदपत्रे काळजीपूर्वक वाचा. मागील कामगिरी भविष्यातील परताव्याचा निदर्शक नाही."
+            startPlanning: "नियोजन सुरू करा",
+            goalPlanner: "ध्येय नियोजक",
+            disclaimer: "म्युच्युअल फंड गुंतवणूक बाजार जोखमीच्या अधीन आहे, सर्व योजना संबंधित कागदपत्रे काळजीपूर्वक वाचा. मागील कामगिरी भविष्यातील परताव्याचा निदर्शक नाही।"
+        },
+        calculators: {
+            title: "वित्तीय नियोजन साधने",
+            subtitle: "तुमच्या ध्येयांची गणना करा आणि आमच्या परस्परसंवादी साधनांसह तुमच्या भविष्याचे नियोजन करा.",
+            sip: {
+                title: "एसआयपी कॅल्क्युलेटर",
+                description: "सिस्टमॅटिक इन्व्हेस्टमेंट प्लॅनद्वारे तुम्ही किती संपत्ती निर्माण करू शकता याची गणना करा.",
+                monthlyInvestment: "मासिक गुंतवणूक",
+                period: "गुंतवणूक कालावधी (वर्षे)",
+                expectedReturn: "अपेक्षित परतावा दर (% p.a.)",
+                investedAmount: "गुंतवलेली एकूण रक्कम",
+                estReturns: "अपेक्षित परतावा",
+                totalValue: "एकूण मूल्य"
+            },
+            retirement: {
+                title: "रिटायरमेंट प्लॅनर",
+                description: "तुमच्या सेवानिवृत्ती निधीची गणना करून तुमच्या सुवर्ण वर्षांचे नियोजन करा.",
+                currentAge: "सध्याचे वय",
+                retirementAge: "अपेक्षित सेवानिवृत्ति वय",
+                monthlyExpense: "सध्याचा मासिक खर्च",
+                inflation: "अपेक्षित महागाई दर (%)",
+                corpusNeeded: "निवृत्ती निधीची आवश्यकता"
+            },
+            child: {
+                title: "चाइल्ड फ्युचर प्लॅनर",
+                description: "धोरणात्मक शिक्षण आणि विवाह नियोजनासह तुमच्या मुलासाठी उज्ज्वल भविष्य सुनिश्चित करा.",
+                childAge: "मुलाचे सध्याचे वय",
+                higherEdAge: "उच्च शिक्षणासाठी वय",
+                currentCost: "शिक्षणाचा सध्याचा खर्च",
+                savingsTarget: "बचत लक्ष्य"
+            },
+            lumpsum: {
+                title: "लमसम कॅल्क्युलेटर",
+                description: "तुमच्या एकरकमी गुंतवणुकीच्या भविष्यातील मूल्याची गणना करा.",
+                totalInvestment: "एकरकमी गुंतवणूक",
+                period: "गुंतवणूक कालावधी (वर्षे)",
+                expectedReturn: "अपेक्षित परतावा दर (% p.a.)",
+                investedAmount: "गुंतवलेली एकूण रक्कम",
+                estReturns: "अपेक्षित परतावा",
+                totalValue: "एकूण मूल्य"
+            },
+            emi: {
+                title: "ईएमआय कॅल्क्युलेटर",
+                description: "कर्जासाठी तुमच्या मासिक हप्त्याची गणना करा.",
+                loanAmount: "कर्ज रक्कम",
+                interestRate: "व्याज दर (% p.a.)",
+                loanTenure: "कर्ज कालावधी (वर्षे)",
+                monthlyEMI: "मासिक ईएमआय",
+                principalAmount: "मुद्दल रक्कम",
+                totalInterest: "एकूण व्याज",
+                totalAmount: "एकूण रक्कम"
+            },
+            fd: {
+                title: "एफडी कॅल्क्युलेटर",
+                description: "तुमच्या मुदत ठेव (Fixed Deposit) परिपक्वता रकमेची गणना करा.",
+                totalInvestment: "एकूण गुंतवणूक",
+                interestRate: "व्याज दर (% p.a.)",
+                period: "कालावधी (वर्षे)",
+                estReturns: "अपेक्षित परतावा",
+                totalValue: "एकूण मूल्य"
+            },
+            rd: {
+                title: "आरडी कॅल्क्युलेटर",
+                description: "तुमच्या आवर्ती ठेव (Recurring Deposit) परिपक्वता रकमेची गणना करा.",
+                monthlyInvestment: "मासिक गुंतवणूक",
+                interestRate: "व्याज दर (% p.a.)",
+                period: "कालावधी (वर्षे)",
+                investedAmount: "एकूण गुंतवणूक",
+                estReturns: "अपेक्षित परतावा",
+                totalValue: "एकूण मूल्य"
+            },
+            hlv: {
+                title: "एचएलव्ही कॅल्क्युलेटर",
+                description: "आवश्यक जीवन विमा संरक्षणाचा अंदाज घेण्यासाठी मानवी जीवन मूल्य कॅल्क्युलेटर.",
+                currentAge: "सध्याचे वय",
+                retirementAge: "अपेक्षित सेवानिवृत्ति वय",
+                annualIncome: "वार्षिक उत्पन्न",
+                annualExpenses: "वार्षिक वैयक्तिक खर्च",
+                inflation: "अपेक्षित महागाई दर (%)",
+                rateOfReturn: "अपेक्षित परतावा दर (%)",
+                insuranceCover: "शिफारस केलेले विमा कवच"
+            },
+            tax: {
+                title: "आयकर कॅल्क्युलेटर",
+                description: "आर्थिक वर्ष २०२३-२४ साठी अंदाजित कर गणना (नवीन वि. जुनी व्यवस्था).",
+                annualIncome: "एकूण वार्षिक उत्पन्न",
+                deductions: "एकूण वजावट (80C, इ.)",
+                oldTax: "टॅक्स (जुनी व्यवस्था)",
+                newTax: "टॅक्स (नवीन व्यवस्था)",
+                savings: "संभाव्य बचत"
+            },
+            delay: {
+                title: "एसआयपी उशीर कॅल्क्युलेटर",
+                description: "तुमच्या एसआयपीमध्ये उशीर झाल्यामुळे संभाव्य संपत्तीच्या नुकसानीची गणना करा.",
+                monthlyInvestment: "मासिक गुंतवणूक",
+                period: "गुंतवणूक कालावधी (वर्षे)",
+                expectedReturn: "अपेक्षित परतावा दर (% p.a.)",
+                delayPeriod: "उशीर कालावधी (महिने)",
+                valueWithoutDelay: "उशीर नसतानाचे मूल्य",
+                valueWithDelay: "उशीरासह मूल्य",
+                costOfDelay: "उशीराची किंमत (नुकसान)"
+            }
+        },
+        auth: {
+            loginTitle: "स्वागत आहे",
+            loginSubtitle: "तुमच्या वैयक्तिकृत आर्थिक डॅशबोर्डवर प्रवेश करण्यासाठी लॉगिन करा.",
+            registerTitle: "रौनक कन्सल्टन्सीमध्ये सामील व्हा",
+            registerSubtitle: "आजच आर्थिक स्वातंत्र्याकडे आपला प्रवास सुरू करा.",
+            fullName: "पूर्ण नाव",
+            email: "ईमेल पत्ता",
+            password: "पासवर्ड",
+            mobile: "मोबाईल नंबर",
+            loginBtn: "लॉगिन",
+            registerBtn: "रजिस्टर",
+            noAccount: "अकाउंट नाही का?",
+            hasAccount: "आधीच अकाउंट आहे का?",
+            forgotPassword: "पासवर्ड विसरलात का?",
+            profile: "माझी प्रोफाइल",
+            dashboard: "क्लायंट डॅशबोर्ड"
         },
         claims: {
             title: "क्लेम मदत डेस्क",
@@ -705,7 +1080,7 @@ export const translations = {
             loading: "गॅलरी लोड होत आहे..."
         },
         chatbot: {
-            welcome: "नमस्कार! मी तुमचा स्मार्ट असिस्टंट आहे. मी आज तुम्हाला कशी मदत करू शकतो?",
+            welcome: "नमस्कार! मी तुमचा रौनक एआई चॅटबॉट आहे. मी आज तुम्हाला कशी मदत करू शकतो?",
             mainMenu: "कृपया एक पर्याय निवडा:",
             back: "मागे जा",
             actions: {
@@ -774,7 +1149,7 @@ export const translations = {
                 nextProvisions: "पुढील: तरतुदी",
                 seeResults: "निकाल पहा",
                 restart: "पुन्हा विश्लेषण",
-                greetingTooltip: "तुम्हाला आर्थिक मदतीची गरज आहे का? फक्त मला विचारा!",
+                greetingTooltip: "एआई चॅटबॉट तुमच्या मदतीसाठी येथे आहे!",
                 alwaysActive: "नेहमी सक्रिय"
             }
         }

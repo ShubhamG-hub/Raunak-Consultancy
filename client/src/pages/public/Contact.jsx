@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/componen
 import { MapPin, Phone, Mail, MessageSquare, BadgeCheck } from 'lucide-react';
 import { motion } from 'framer-motion';
 import api from '@/lib/api';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/context/useLanguage';
 
 // Input sanitizers — block invalid characters in real-time
 const allowOnlyLetters = (e) => {
