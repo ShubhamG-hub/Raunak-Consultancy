@@ -1,5 +1,5 @@
 const zoomService = require('./zoomService');
-const { supabase } = require('../config/supabase');
+const supabase = require('../config/supabase');
 
 // ─── Start a Meeting ──────────────────────────────────────────────────────────
 async function startMeeting(bookingId) {

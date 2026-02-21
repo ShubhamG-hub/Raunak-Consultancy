@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const crypto = require('crypto');
-const { supabase } = require('../config/supabase');
+const supabase = require('../config/supabase');
 const notificationService = require('../services/notificationService');
 const zoomService = require('../services/zoomService');
 
