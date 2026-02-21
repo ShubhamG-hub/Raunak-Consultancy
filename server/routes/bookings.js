@@ -132,7 +132,7 @@ router.patch('/:id', authMiddleware, async (req, res) => {
     try {
         const { data, error } = await supabase
             .from('bookings')
-            .update({ status, updated_at: new Date().toISOString() })
+            .update({ status })
             .eq('id', req.params.id)
             .select();
 
@@ -143,7 +143,7 @@ router.patch('/:id', authMiddleware, async (req, res) => {
 
         // Trigger WhatsApp notification
         let msg = '';
-        const modeText = booking.meeting_mode === 'Online' ? '🖥️ Online (Zoom)' : '🏢 In-Person';
+        const modeText = (booking.meeting_mode && booking.meeting_mode === 'Online') ? '🖥️ Online (Zoom)' : '🏢 In-Person';
         if (status === 'Pending') {
             msg = `⏳ *Booking on Hold*\n\nHello ${booking.name},\nYour *${booking.service_type}* consultation is currently under review.\n\n📅 *Date:* ${booking.date}\n🕒 *Time:* ${booking.time}\n📍 *Mode:* ${modeText}\n\nWe will notify you once it's confirmed.`;
         } else if (status === 'Confirmed') {
