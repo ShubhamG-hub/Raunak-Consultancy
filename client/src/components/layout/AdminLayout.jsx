@@ -62,6 +62,8 @@ const AdminLayout = ({ children }) => {
         { path: '/admin/claims', icon: FileText, label: 'Claims' },
         { path: '/admin/certificates', icon: Award, label: 'Certificates' },
         { path: '/admin/gallery', icon: Image, label: 'Gallery' },
+        { path: '/admin/blogs', icon: FileText, label: 'Blogs' },
+        { path: '/admin/awards', icon: Award, label: 'Awards' },
         { path: '/admin/chat', icon: MessageSquare, label: 'Chat' },
         { path: '/admin/profile', icon: User, label: 'Profile' },
     ];

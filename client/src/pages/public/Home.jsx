@@ -1,6 +1,6 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, useScroll, useSpring } from 'framer-motion';
+import { motion, useScroll, useSpring, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import {
     Users,
@@ -24,13 +24,40 @@ import TestimonialList from '@/components/ui/TestimonialList';
 import TestimonialForm from '@/components/forms/TestimonialForm';
 import CertificateDisplay from '@/components/ui/CertificateDisplay';
 import GalleryGrid from '@/components/ui/GalleryGrid';
+import AwardsSection from '@/components/ui/AwardsSection';
+import BlogsPreview from '@/components/ui/BlogsPreview';
 
 import SectionHeader from '@/components/layout/SectionHeader';
 
 const Home = () => {
     const { t } = useLanguage();
     const [isBookingOpen, setIsBookingOpen] = useState(false);
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const containerRef = useRef(null);
+
+    const heroImages = [
+        "/images/posters/WhatsApp Image 2026-02-13 at 10.51.11 AM.jpeg",
+        "/images/posters/WhatsApp Image 2026-02-14 at 8.44.27 AM.jpeg",
+        "/images/posters/WhatsApp Image 2026-02-15 at 8.29.38 AM.jpeg",
+        "/images/posters/WhatsApp Image 2026-02-16 at 9.13.19 AM.jpeg",
+        "/images/posters/WhatsApp Image 2026-02-17 at 8.36.14 AM.jpeg",
+        "/images/posters/WhatsApp Image 2026-02-18 at 8.35.38 AM.jpeg",
+        "/images/posters/WhatsApp Image 2026-02-19 at 8.57.14 AM.jpeg",
+        "/images/posters/WhatsApp Image 2026-02-20 at 7.40.43 AM.jpeg"
+    ];
+
+    const nextImage = () => {
+        setCurrentImageIndex((prev) => (prev + 1) % heroImages.length);
+    };
+
+    const prevImage = () => {
+        setCurrentImageIndex((prev) => (prev - 1 + heroImages.length) % heroImages.length);
+    };
+
+    useEffect(() => {
+        const timer = setInterval(nextImage, 6000);
+        return () => clearInterval(timer);
+    }, [heroImages.length]);
 
     const { scrollYProgress } = useScroll();
 
@@ -62,38 +89,112 @@ const Home = () => {
                 style={{ scaleX }}
             />
 
-            {/* Hero Section */}
-            <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-slate-50 dark:bg-slate-900 pt-20 transition-colors duration-500">
-                {/* Modern Mesh Gradient Background */}
-                <div className="absolute inset-0 z-0 overflow-hidden">
-                    <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-blue-400/20 dark:bg-blue-600/10 blur-[120px] rounded-full animate-blob"></div>
-                    <div className="absolute top-[20%] -right-[10%] w-[35%] h-[35%] bg-indigo-400/20 dark:bg-indigo-600/10 blur-[120px] rounded-full animate-blob animation-delay-2000"></div>
-                    <div className="absolute -bottom-[10%] left-[20%] w-[30%] h-[30%] bg-sky-400/20 dark:bg-sky-600/10 blur-[120px] rounded-full animate-blob animation-delay-4000"></div>
-                </div>
-
-                <div className="container mx-auto px-6 relative z-10">
-                    <div className="max-w-4xl mx-auto text-center">
+            {/* Hero Section - Perfectly Balanced Layout */}
+            <section id="home" className="relative min-h-[85vh] flex items-center justify-center overflow-hidden bg-slate-50 dark:bg-slate-950 pt-32 lg:pt-36 pb-20 transition-colors duration-500">
+                <div className="container mx-auto px-6 relative z-10 h-full flex items-center">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center w-full">
+                        {/* Left Side: Content */}
                         <motion.div
-                            initial={{ opacity: 0, y: 30 }}
-                            animate={{ opacity: 1, y: 0 }}
+                            initial={{ opacity: 0, x: -30 }}
+                            animate={{ opacity: 1, x: 0 }}
                             transition={{ duration: 0.8, ease: "easeOut" }}
+                            className="max-w-lg px-4 lg:px-0"
                         >
-                            <span className="inline-block py-1.5 px-4 mb-6 font-bold text-xs tracking-widest uppercase text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 rounded-full border border-blue-100 dark:border-blue-800 animate-fade-in">
-                                Trusted Financial Advisor
+                            <span className="inline-block py-1 px-3 mb-6 font-bold text-[10px] tracking-[0.2em] uppercase text-blue-600 dark:text-blue-400 bg-blue-100/50 dark:bg-blue-900/30 rounded-full border border-blue-200 dark:border-blue-800">
+                                {t.nav.aboutOverview}
                             </span>
-                            <h1 className="text-4xl md:text-6xl font-extrabold text-slate-900 dark:text-white mb-6 leading-[1.1] tracking-tight">
-                                {t.hero.title} <span className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">{t.hero.titleHighlight}</span>
+
+                            <h1 className="text-3xl md:text-3xl lg:text-5xl font-black text-slate-900 dark:text-white mb-6 leading-[1.1] tracking-tight">
+                                {t.hero.title} <br />
+                                <span className="text-blue-600 dark:text-blue-500">
+                                    {t.hero.titleHighlight}
+                                </span>
                             </h1>
-                            <p className="text-lg text-slate-600 dark:text-slate-400 mb-10 max-w-2xl mx-auto leading-relaxed">
+
+                            <p className="text-sm md:text-base text-slate-600 dark:text-slate-400 mb-8 leading-relaxed max-w-lg font-medium">
                                 {t.hero.subtitle}
                             </p>
-                            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                                <Button size="lg" className="h-14 px-10 text-base rounded-full bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 shadow-lg shadow-blue-600/20 transition-all hover:scale-105 active:scale-95" onClick={() => setIsBookingOpen(true)}>
+
+                            <div className="flex flex-col sm:flex-row gap-4 items-center">
+                                <Button
+                                    size="lg"
+                                    className="w-full sm:w-auto h-14 px-10 text-base rounded-2xl bg-blue-600 text-white hover:bg-blue-700 transition-all hover:scale-105 active:scale-95 shadow-xl shadow-blue-600/20"
+                                    onClick={() => setIsBookingOpen(true)}
+                                >
                                     {t.hero.ctaPrimary}
+                                    <ArrowRight className="ml-2 w-4 h-4" />
                                 </Button>
-                                <Button variant="outline" size="lg" className="h-14 px-10 text-base rounded-full border-2 border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-all hover:scale-105 active:scale-95 dark:text-white" onClick={() => document.getElementById('services').scrollIntoView({ behavior: 'smooth' })}>
+                                <Button
+                                    variant="outline"
+                                    size="lg"
+                                    className="w-full sm:w-auto h-14 px-10 text-base rounded-2xl border-2 border-slate-200 dark:border-slate-800 bg-transparent text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-900 transition-all hover:scale-105 active:scale-90"
+                                    onClick={() => document.getElementById('services').scrollIntoView({ behavior: 'smooth' })}
+                                >
                                     {t.hero.ctaSecondary}
                                 </Button>
+                            </div>
+                        </motion.div>
+
+                        {/* Right Side: Interactive Single Image Slider */}
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ duration: 1 }}
+                            className="relative flex flex-col items-center gap-6 w-full"
+                        >
+                            {/* Slider Container - Perfectly Balanced */}
+                            <div className="relative w-full aspect-[3/4] md:aspect-[4/5] lg:aspect-auto lg:h-[75vh] rounded-[3rem] overflow-hidden shadow-2xl border-8 border-white dark:border-slate-800 bg-white dark:bg-slate-900 group">
+                                <AnimatePresence mode="wait">
+                                    <motion.img
+                                        key={currentImageIndex}
+                                        src={heroImages[currentImageIndex]}
+                                        initial={{ opacity: 0, x: 100 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        exit={{ opacity: 0, x: -100 }}
+                                        transition={{ duration: 0.5, ease: "easeInOut" }}
+                                        drag="x"
+                                        dragConstraints={{ left: 0, right: 0 }}
+                                        onDragEnd={(e, { offset, velocity }) => {
+                                            const swipe = Math.abs(offset.x) > 50;
+                                            if (swipe && offset.x > 0) prevImage();
+                                            else if (swipe && offset.x < 0) nextImage();
+                                        }}
+                                        className="w-full h-full object-contain bg-slate-100 dark:bg-slate-900 cursor-grab active:cursor-grabbing"
+                                        alt="Financial Service Poster"
+                                    />
+                                </AnimatePresence>
+
+                                {/* Manual Navigation Arrows */}
+                                <div className="absolute inset-0 flex items-center justify-between px-4 opacity-0 group-hover:opacity-100 transition-opacity bg-black/5">
+                                    <button
+                                        onClick={prevImage}
+                                        className="w-12 h-12 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/40 backdrop-blur-md text-white border border-white/30 transition-all hover:scale-110 active:scale-90"
+                                        aria-label="Previous image"
+                                    >
+                                        <ArrowRight className="w-6 h-6 rotate-180" />
+                                    </button>
+                                    <button
+                                        onClick={nextImage}
+                                        className="w-12 h-12 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/40 backdrop-blur-md text-white border border-white/30 transition-all hover:scale-110 active:scale-90"
+                                        aria-label="Next image"
+                                    >
+                                        <ArrowRight className="w-6 h-6" />
+                                    </button>
+                                </div>
+
+                                {/* Indicators */}
+                                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2">
+                                    {heroImages.map((_, i) => (
+                                        <button
+                                            key={i}
+                                            onClick={() => setCurrentImageIndex(i)}
+                                            className={`h-1.5 rounded-full transition-all duration-300 ${i === currentImageIndex
+                                                ? "w-8 bg-blue-600"
+                                                : "w-2 bg-slate-300 dark:bg-slate-600 hover:bg-slate-400"
+                                                }`}
+                                        />
+                                    ))}
+                                </div>
                             </div>
                         </motion.div>
                     </div>
@@ -102,7 +203,7 @@ const Home = () => {
 
             {/* Trust Counters - Modern Bento Style */}
             <section className="container mx-auto px-6 relative z-20">
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 -mt-16">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 -mt-12 lg:-mt-16">
                     {trustCounters.map((item, index) => {
                         const colors = colorMap[item.color];
                         return (
@@ -138,6 +239,18 @@ const Home = () => {
                 <About />
             </motion.section>
 
+            {/* Services Section */}
+            <motion.section
+                id="services"
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.8 }}
+                className="py-24 bg-slate-50 dark:bg-slate-900/50 transition-colors duration-500"
+            >
+                <Services />
+            </motion.section>
+
             {/* Financial Tools / Calculators Preview */}
             <motion.section
                 id="calculators"
@@ -145,7 +258,7 @@ const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.8 }}
-                className="py-24 bg-slate-50 dark:bg-slate-900/50 transition-colors duration-500 overflow-hidden relative"
+                className="py-24 bg-white dark:bg-slate-900 transition-colors duration-500 overflow-hidden relative"
             >
                 <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-slate-200 dark:via-slate-800 to-transparent" />
 
@@ -249,6 +362,18 @@ const Home = () => {
                 </div>
             </motion.section>
 
+            {/* Claims Section */}
+            <motion.section
+                id="claims"
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.8 }}
+                className="py-24 bg-slate-50 dark:bg-slate-900/50 transition-colors duration-500"
+            >
+                <Claims />
+            </motion.section>
+
             {/* Certificates Section */}
             <motion.section
                 id="certificates"
@@ -256,7 +381,7 @@ const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.8 }}
-                className="py-24 bg-slate-50 dark:bg-slate-900/50 transition-colors duration-500"
+                className="py-24 bg-white dark:bg-slate-900 transition-colors duration-500"
             >
                 <div className="container mx-auto px-6">
                     <SectionHeader title={t.certificates.title} description={t.certificates.subtitle} />
@@ -269,6 +394,18 @@ const Home = () => {
                         </Link>
                     </div>
                 </div>
+            </motion.section>
+
+            {/* Awards Section */}
+            <motion.section
+                id="awards"
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.8 }}
+                className="py-24 bg-slate-50 dark:bg-slate-900/50 transition-colors duration-500"
+            >
+                <AwardsSection />
             </motion.section>
 
             {/* Gallery Section */}
@@ -293,28 +430,16 @@ const Home = () => {
                 </div>
             </motion.section>
 
-            {/* Services Section */}
+            {/* Blogs Section */}
             <motion.section
-                id="services"
+                id="blogs"
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.8 }}
                 className="py-24 bg-slate-50 dark:bg-slate-900/50 transition-colors duration-500"
             >
-                <Services />
-            </motion.section>
-
-            {/* Claims Section */}
-            <motion.section
-                id="claims"
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ duration: 0.8 }}
-                className="py-24 bg-white dark:bg-slate-900 transition-colors duration-500"
-            >
-                <Claims />
+                <BlogsPreview />
             </motion.section>
 
             {/* Testimonials Section */}
@@ -324,7 +449,7 @@ const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.8 }}
-                className="py-24 bg-slate-50 dark:bg-slate-900/50 transition-colors duration-500"
+                className="py-24 bg-white dark:bg-slate-900 transition-colors duration-500"
             >
                 <div className="container mx-auto px-6">
                     <SectionHeader title={t.testimonials.title} description={t.testimonials.subtitle} />
@@ -350,7 +475,7 @@ const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.8 }}
-                className="py-24 bg-white dark:bg-slate-900 transition-colors duration-500"
+                className="py-24 bg-slate-50 dark:bg-slate-900/50 transition-colors duration-500"
             >
                 <Contact />
             </motion.section>

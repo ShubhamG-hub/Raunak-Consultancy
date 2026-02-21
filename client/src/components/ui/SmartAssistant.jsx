@@ -685,18 +685,18 @@ const SmartAssistant = () => {
                     onClick={() => { setIsOpen(!isOpen); setShowGreeting(false); }}
                     onMouseEnter={() => setShowGreeting(true)}
                     onMouseLeave={() => setShowGreeting(false)}
-                    className={`w-14 h-14 rounded-full shadow-2xl flex items-center justify-center transition-all duration-300 relative group overflow-hidden z-[60] ${isOpen
+                    className={`w-12 h-12 rounded-full shadow-2xl flex items-center justify-center transition-all duration-300 relative group overflow-hidden z-[60] ${isOpen
                         ? 'bg-zinc-800 dark:bg-zinc-100 text-white dark:text-zinc-900 border-zinc-700'
                         : 'bg-gradient-to-br from-primary to-primary/80 text-white'
                         }`}
                 >
                     <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity" />
                     {isOpen ? (
-                        <X className="relative z-10 w-6 h-6" />
+                        <X className="relative z-10 w-5 h-5" />
                     ) : (
-                        <Bot className="relative z-10 w-7 h-7" />
+                        <Bot className="relative z-10 w-6 h-6" />
                     )}
-                    {!isOpen && <div className="absolute top-3 right-3 w-2.5 h-2.5 rounded-full bg-white animate-ping" />}
+                    {!isOpen && <div className="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-white animate-ping" />}
                 </motion.button>
             </div>
         </div>

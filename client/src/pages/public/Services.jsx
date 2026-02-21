@@ -80,39 +80,52 @@ const Services = () => {
                         viewport={{ once: true }}
                         transition={{ duration: 0.5, delay: index * 0.1 }}
                         whileHover={{ y: -10 }}
-                        className="group relative bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-2xl hover:shadow-blue-500/10 p-8 transition-all duration-300"
+                        className="group relative bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-2xl hover:shadow-blue-500/10 p-8 transition-all duration-300 overflow-hidden"
                     >
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50 dark:bg-blue-900/10 rounded-bl-[100px] opacity-0 group-hover:opacity-100 transition-opacity -z-0"></div>
+                        {/* Decorative background pulse */}
+                        <div className="absolute -top-24 -right-24 w-48 h-48 bg-blue-600/5 dark:bg-blue-400/5 rounded-full group-hover:scale-150 transition-transform duration-700" />
 
-                        <div className="relative z-10">
-                            <div className="w-16 h-16 bg-blue-50 dark:bg-blue-900/30 rounded-3xl flex items-center justify-center mb-8 group-hover:bg-blue-600 dark:group-hover:bg-blue-500 group-hover:text-white transition-colors duration-300">
-                                <service.icon className="w-8 h-8 text-blue-600 dark:text-blue-400 group-hover:text-white transition-colors" />
+                        <div className="relative z-10 text-left">
+                            <div className="w-16 h-16 mb-8 relative group-hover:scale-110 transition-transform duration-500">
+                                <div className="absolute inset-0 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl rotate-6 group-hover:rotate-12 transition-transform duration-500 opacity-20" />
+                                <div className="absolute inset-0 bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl flex items-center justify-center shadow-sm">
+                                    <service.icon className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+                                </div>
                             </div>
-                            <h3 className="text-xl font-black text-slate-900 dark:text-white mb-4 tracking-tight">{service.title}</h3>
-                            <p className="text-slate-600 dark:text-slate-400 mb-8 leading-relaxed text-sm">
+
+                            <h3 className="text-xl font-black text-slate-900 dark:text-white mb-4 tracking-tight leading-tight">{service.title}</h3>
+                            <p className="text-slate-600 dark:text-slate-400 mb-8 leading-relaxed text-sm h-12 line-clamp-2">
                                 {service.description}
                             </p>
 
-                            <div className="flex flex-col gap-3">
-                                <div className="flex items-center gap-3 text-xs font-bold text-slate-700 dark:text-slate-300">
+                            <div className="space-y-3 mb-8">
+                                <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-slate-400">
                                     <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
-                                    {t.services.bestFor}: <span className="text-slate-500 dark:text-slate-400 font-medium">{service.title}</span>
-                                </div>
-                                <div className="flex items-center gap-3 text-xs font-bold text-slate-700 dark:text-slate-300">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
-                                    {t.services.riskProfile}: <span className="text-slate-500 dark:text-slate-400 font-medium">{t.services.riskProfile}</span>
+                                    {t.services.bestFor}: <span className="text-slate-900 dark:text-slate-200">{service.title}</span>
                                 </div>
                             </div>
 
                             <button
                                 onClick={() => document.getElementById('contact').scrollIntoView({ behavior: 'smooth' })}
-                                className="mt-10 flex items-center gap-2 text-blue-600 dark:text-blue-400 font-bold group-hover:gap-3 transition-all tracking-tight text-sm"
+                                className="flex items-center gap-2 text-blue-600 dark:text-blue-400 font-black group-hover:gap-3 transition-all tracking-widest text-[10px] uppercase"
                             >
                                 {t.services.learnMore} <ArrowRight className="w-4 h-4" />
                             </button>
                         </div>
                     </motion.div>
                 ))}
+            </div>
+
+            <div className="mt-16 text-center">
+                <Link to="/services">
+                    <Button
+                        size="lg"
+                        className="h-14 px-10 rounded-full bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700 text-blue-600 dark:text-blue-400 font-bold shadow-xl border border-slate-200 dark:border-slate-700 group transition-all duration-300"
+                    >
+                        {t.services.exploreAll}
+                        <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                    </Button>
+                </Link>
             </div>
 
             {/* Disclaimer Strip */}

@@ -50,9 +50,9 @@ const TestimonialList = () => {
                     viewport={{ once: true }}
                     transition={{ duration: 0.5, delay: index * 0.1 }}
                 >
-                    <Card className="h-full border-none shadow-sm hover:shadow-xl bg-white dark:bg-slate-900 rounded-2xl transition-all duration-300 group">
-                        <CardContent className="p-6 relative">
-                            <Quote className="w-10 h-10 text-blue-500/10 dark:text-blue-400/10 absolute top-4 right-4 group-hover:text-blue-500/20 transition-colors" />
+                    <Card className="h-full border-none shadow-sm hover:shadow-2xl hover:shadow-blue-500/10 bg-white dark:bg-slate-900 rounded-[2rem] transition-all duration-500 group overflow-hidden">
+                        <CardContent className="p-8 relative h-full flex flex-col">
+                            <Quote className="w-12 h-12 text-blue-500/5 dark:text-blue-400/5 absolute top-0 right-0 -translate-y-2 group-hover:text-blue-500/10 transition-all duration-500 group-hover:scale-125" />
 
                             <div className="flex gap-1 mb-4">
                                 {[1, 2, 3, 4, 5].map((star) => (

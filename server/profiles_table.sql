@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS public.profiles (
   full_name TEXT,
   mobile TEXT,
   email TEXT UNIQUE,
+  is_first_login BOOLEAN DEFAULT TRUE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
 );
 

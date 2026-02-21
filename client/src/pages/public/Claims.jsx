@@ -8,6 +8,14 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { motion } from 'framer-motion';
 import api from '@/lib/api';
 import { useLanguage } from '@/context/useLanguage';
+import {
+    ShieldCheck,
+    Phone,
+    Clock,
+    ClipboardList,
+    FileCheck,
+    CheckCircle2
+} from 'lucide-react';
 
 // Input sanitizers — block invalid characters in real-time
 const allowOnlyLetters = (e) => {
@@ -71,26 +79,34 @@ const Claims = () => {
 
                 {/* Steps & Emergency */}
                 <div className="space-y-10">
-                    <Card className="bg-red-50 dark:bg-red-900/10 border-red-100 dark:border-red-900/30 rounded-[2.5rem] overflow-hidden transition-colors">
+                    <Card className="bg-red-50 dark:bg-red-900/10 border-red-100 dark:border-red-900/30 rounded-[2.5rem] overflow-hidden transition-colors relative group">
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-red-600/5 rounded-bl-full group-hover:scale-110 transition-transform duration-700" />
                         <CardHeader className="p-8 pb-0">
-                            <CardTitle className="text-red-900 dark:text-red-400 text-xl font-black">{t.claims.emergency}</CardTitle>
+                            <div className="flex items-center gap-4 mb-2">
+                                <div className="p-3 bg-red-600 text-white rounded-2xl shadow-lg shadow-red-600/20 animate-pulse">
+                                    <ShieldCheck className="w-6 h-6" />
+                                </div>
+                                <CardTitle className="text-red-900 dark:text-red-400 text-xl font-black">{t.claims.emergency}</CardTitle>
+                            </div>
                         </CardHeader>
                         <CardContent className="p-8">
                             <p className="text-red-800 dark:text-red-300 mb-6 text-sm font-medium leading-relaxed">{t.claims.emergencyDesc}</p>
                             <a href="tel:+919137105476">
-                                <Button className="w-full sm:w-auto h-12 bg-red-600 hover:bg-red-700 text-white font-bold rounded-2xl shadow-lg shadow-red-600/20 transition-all active:scale-95">
-                                    {t.claims.callNow}: +91 9137105476
+                                <Button className="w-full sm:w-auto h-12 bg-red-600 hover:bg-red-700 text-white font-bold rounded-2xl shadow-lg shadow-red-600/20 transition-all active:scale-95 flex items-center gap-3">
+                                    <Phone className="w-4 h-4" /> {t.claims.callNow}: +91 9137105476
                                 </Button>
                             </a>
                         </CardContent>
                     </Card>
 
                     <div className="space-y-8">
-                        <h3 className="text-xl font-black text-slate-900 dark:text-white tracking-tight">{t.claims.processTitle}</h3>
+                        <h3 className="text-xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-3">
+                            <Clock className="w-6 h-6 text-blue-600" /> {t.claims.processTitle}
+                        </h3>
                         {[
-                            { step: 1, title: t.claims.step1, desc: t.claims.step1Desc },
-                            { step: 2, title: t.claims.step2, desc: t.claims.step2Desc },
-                            { step: 3, title: t.claims.step3, desc: t.claims.step3Desc },
+                            { step: 1, title: t.claims.step1, desc: t.claims.step1Desc, icon: ClipboardList },
+                            { step: 2, title: t.claims.step2, desc: t.claims.step2Desc, icon: FileCheck },
+                            { step: 3, title: t.claims.step3, desc: t.claims.step3Desc, icon: CheckCircle2 },
                         ].map((item, index) => (
                             <motion.div
                                 key={item.step}
@@ -98,10 +114,10 @@ const Claims = () => {
                                 whileInView={{ opacity: 1, x: 0 }}
                                 viewport={{ once: true }}
                                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                                className="flex gap-6"
+                                className="flex gap-6 group"
                             >
-                                <div className="flex-shrink-0 w-12 h-12 rounded-2xl bg-slate-900 dark:bg-slate-800 text-white flex items-center justify-center font-black text-lg shadow-lg">
-                                    {item.step}
+                                <div className="flex-shrink-0 w-12 h-12 rounded-2xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 text-slate-900 dark:text-white flex items-center justify-center font-black text-lg shadow-sm group-hover:scale-110 group-hover:bg-slate-900 group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-slate-900 transition-all duration-300">
+                                    <item.icon className="w-5 h-5" />
                                 </div>
                                 <div>
                                     <h4 className="font-bold text-slate-900 dark:text-white mb-1">{item.title}</h4>

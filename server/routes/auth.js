@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const supabase = require('../config/supabase');
 const jwt = require('jsonwebtoken');
+const { sendWelcomeEmail } = require('../config/mail');
 
 // Register
 router.post('/register', async (req, res) => {
@@ -35,7 +36,9 @@ router.post('/register', async (req, res) => {
 
             if (profileError) {
                 console.error("Profile Creation Error:", profileError);
-                // We might want to delete the auth user if profile fails, but Supabase handles basic auth.
+            } else {
+                // Send welcome email upon successful registration
+                await sendWelcomeEmail({ email, full_name: fullName }, password);
             }
 
             const token = jwt.sign(
@@ -156,11 +159,23 @@ router.post('/login', async (req, res) => {
             console.log("Checking user profile in 'profiles' table for ID:", data.user.id);
             const { data: profile, error: profileErr } = await supabase
                 .from('profiles')
-                .select('full_name')
+                .select('full_name, is_first_login')
                 .eq('id', data.user.id)
                 .single();
 
             if (profileErr) console.log("Profile fetch error:", profileErr.message);
+
+            // Handle first login welcome email
+            if (profile && profile.is_first_login) {
+                console.log("First login detected for user:", data.user.email);
+                await sendWelcomeEmail({ email: data.user.email, full_name: profile.full_name }, password);
+
+                // Toggle is_first_login to false
+                await supabase
+                    .from('profiles')
+                    .update({ is_first_login: false })
+                    .eq('id', data.user.id);
+            }
 
             const userRole = 'user';
             const token = jwt.sign(

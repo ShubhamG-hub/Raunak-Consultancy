@@ -28,13 +28,13 @@ const PhoneButton = () => {
                     boxShadow: "0 0 15px 2px rgba(59, 130, 246, 0.3)"
                 }}
                 whileTap={{ scale: 0.95 }}
-                className="bg-gradient-to-br from-blue-500 to-indigo-600 text-white p-4 rounded-full shadow-xl flex items-center justify-center relative overflow-hidden group"
+                className="bg-gradient-to-br from-blue-500 to-indigo-600 text-white p-3 rounded-full shadow-xl flex items-center justify-center relative overflow-hidden group"
                 aria-label="Call Us"
                 onMouseEnter={() => setShowLabel(true)}
                 onMouseLeave={() => setShowLabel(false)}
             >
                 <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity" />
-                <Phone className="w-8 h-8 fill-current" />
+                <Phone className="w-6 h-6 fill-current" />
             </motion.a>
         </div>
     );

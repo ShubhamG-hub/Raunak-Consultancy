@@ -12,7 +12,10 @@ export const translations = {
             calculators: "Calculators",
             certificates: "Certificates",
             gallery: "Gallery",
-            testimonials: "Testimonials"
+            testimonials: "Testimonials",
+            blogs: "Blogs",
+            awards: "Awards",
+            aboutOverview: "Overview"
         },
         hero: {
             title: "Secure Your Future with ",
@@ -47,7 +50,8 @@ export const translations = {
             goalFocusedDesc: "Strategic Planning",
             unbiased: "Unbiased Advice",
             hello: "Hello, I am",
-            associatedWith: "I am proud to be associated with the"
+            associatedWith: "I am proud to be associated with the",
+            readMore: "Read More About My Journey"
         },
         services: {
             title: "Our Expertise",
@@ -69,6 +73,7 @@ export const translations = {
             learnMore: "Learn more",
             startPlanning: "Start Planning",
             goalPlanner: "Goal Planner",
+            exploreAll: "Explore All Services",
             disclaimer: "Mutual Fund investments are subject to market risks, read all scheme related documents carefully. Past performance is not an indicator of future returns."
         },
         calculators: {
@@ -309,6 +314,24 @@ export const translations = {
             subtitle: "Moments from events, client meetings, and our office.",
             loading: "Loading gallery..."
         },
+        blogs: {
+            title: "Insights & Updates",
+            subtitle: "Expert advice, market trends, and financial tips to help you stay informed.",
+            readMore: "Read Full Article",
+            categories: {
+                all: "All",
+                tax: "Tax Saving",
+                investment: "Investment",
+                insurance: "Insurance",
+                planning: "Financial Planning"
+            },
+            noBlogs: "Coming soon! Stay tuned for our latest insights."
+        },
+        awards: {
+            title: "Honors & Achievements",
+            subtitle: "Recognized for excellence in financial advisory and client service.",
+            year: "Year"
+        },
         chatbot: {
             welcome: "Hello! I am Raunak AI Chatbot. How can I help you today?",
             mainMenu: "Please choose an option:",
@@ -397,7 +420,10 @@ export const translations = {
             calculators: "कैलकुलेटर",
             certificates: "प्रमाणपत्र",
             gallery: "गैलरी",
-            testimonials: "प्रशंसापत्र"
+            testimonials: "प्रशंसापत्र",
+            blogs: "ब्लॉग",
+            awards: "पुरस्कार",
+            aboutOverview: "अवलोकन"
         },
         hero: {
             title: "विशेषज्ञ वित्तीय योजना के साथ ",
@@ -432,7 +458,8 @@ export const translations = {
             goalFocusedDesc: "रणनीतिक योजना",
             unbiased: "निष्पक्ष सलाह",
             hello: "नमस्ते, मैं हूँ",
-            associatedWith: "मुझे गर्व है कि मैं इस टीम के साथ जुड़ा हूँ: "
+            associatedWith: "मुझे गर्व है कि मैं इस टीम के साथ जुड़ा हूँ: ",
+            readMore: "मेरी यात्रा के बारे में और पढ़ें"
         },
         services: {
             title: "हमारी विशेषज्ञता",
@@ -454,6 +481,7 @@ export const translations = {
             learnMore: "और जानें",
             startPlanning: "योजना शुरू करें",
             goalPlanner: "लक्ष्य योजनाकार",
+            exploreAll: "सभी सेवाएं देखें",
             disclaimer: "म्यूचुअल फंड निवेश बाजार के जोखिमों के अधीन हैं, सभी योजना संबंधी दस्तावेजों को ध्यान से पढ़ें। पिछला प्रदर्शन भविष्य के रिटर्न का संकेतक नहीं है।"
         },
         calculators: {
@@ -694,6 +722,24 @@ export const translations = {
             subtitle: "कार्यक्रमों, ग्राहक बैठकों और हमारे कार्यालय के पल।",
             loading: "गैलरी लोड हो रही है..."
         },
+        blogs: {
+            title: "लेख और अपडेट",
+            subtitle: "विशेषज्ञ सलाह, बाजार के रुझान और वित्तीय सुझाव आपको अपडेट रखने के लिए।",
+            readMore: "पूरा लेख पढ़ें",
+            categories: {
+                all: "सभी",
+                tax: "टैक्स बचत",
+                investment: "निवेश",
+                insurance: "बीमा",
+                planning: "वित्तीय योजना"
+            },
+            noBlogs: "जल्द ही आ रहा है! हमारे नवीनतम लेखों के लिए बने रहें।"
+        },
+        awards: {
+            title: "सम्मान और उपलब्धियां",
+            subtitle: "वित्तीय सलाहकार और ग्राहक सेवा में उत्कृष्टता के लिए मान्यता प्राप्त।",
+            year: "वर्ष"
+        },
         chatbot: {
             welcome: "नमस्ते! मैं आपका रौनक एआई चैटबॉट हूँ। मैं आज आपकी कैसे मदद कर सकता हूँ?",
             mainMenu: "कृपया एक विकल्प चुनें:",
@@ -782,7 +828,10 @@ export const translations = {
             calculators: "कॅल्क्युलेटर",
             certificates: "प्रमाणपत्रे",
             gallery: "गॅलरी",
-            testimonials: "प्रशंसापत्रे"
+            testimonials: "प्रशंसापत्रे",
+            blogs: "ब्लॉग",
+            awards: "पुरस्कार",
+            aboutOverview: "अवलोकन"
         },
         hero: {
             title: "तज्ञ आर्थिक नियोजनासह ",
@@ -839,6 +888,7 @@ export const translations = {
             learnMore: "अधिक जाणून घ्या",
             startPlanning: "नियोजन सुरू करा",
             goalPlanner: "ध्येय नियोजक",
+            exploreAll: "सर्व सेवा पहा",
             disclaimer: "म्युच्युअल फंड गुंतवणूक बाजार जोखमीच्या अधीन आहे, सर्व योजना संबंधित कागदपत्रे काळजीपूर्वक वाचा. मागील कामगिरी भविष्यातील परताव्याचा निदर्शक नाही।"
         },
         calculators: {

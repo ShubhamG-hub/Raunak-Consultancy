@@ -28,13 +28,13 @@ const MailButton = () => {
                     boxShadow: "0 0 15px 2px rgba(79, 70, 229, 0.3)"
                 }}
                 whileTap={{ scale: 0.95 }}
-                className="bg-gradient-to-br from-indigo-500 to-blue-600 text-white p-4 rounded-full shadow-xl flex items-center justify-center relative overflow-hidden group"
+                className="bg-gradient-to-br from-indigo-500 to-blue-600 text-white p-3 rounded-full shadow-xl flex items-center justify-center relative overflow-hidden group"
                 aria-label="Email Us"
                 onMouseEnter={() => setShowLabel(true)}
                 onMouseLeave={() => setShowLabel(false)}
             >
                 <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity" />
-                <Mail className="w-8 h-8 fill-transparent" />
+                <Mail className="w-6 h-6 fill-transparent" />
             </motion.a>
         </div>
     );

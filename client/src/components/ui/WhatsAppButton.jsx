@@ -30,13 +30,13 @@ const WhatsAppButton = () => {
                     boxShadow: "0 0 15px 2px rgba(16, 185, 129, 0.3)"
                 }}
                 whileTap={{ scale: 0.95 }}
-                className="bg-gradient-to-br from-emerald-500 to-green-600 text-white p-4 rounded-full shadow-xl flex items-center justify-center relative overflow-hidden group"
+                className="bg-gradient-to-br from-emerald-500 to-green-600 text-white p-3 rounded-full shadow-xl flex items-center justify-center relative overflow-hidden group"
                 aria-label="Chat on WhatsApp"
                 onMouseEnter={() => setShowLabel(true)}
                 onMouseLeave={() => setShowLabel(false)}
             >
                 <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity" />
-                <MessageCircle className="w-8 h-8 fill-current" />
+                <MessageCircle className="w-6 h-6 fill-current" />
             </motion.a>
         </div>
     );

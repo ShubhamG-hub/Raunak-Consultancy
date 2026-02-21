@@ -15,6 +15,8 @@ const chatRoutes = require('./routes/chat');
 const adminRoutes = require('./routes/admin');
 const notificationRoutes = require('./routes/notifications');
 const bookingRoutes = require('./routes/bookings');
+const blogRoutes = require('./routes/blogs');
+const awardRoutes = require('./routes/awards');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -37,6 +39,8 @@ app.use('/api/chat', chatRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/bookings', bookingRoutes);
+app.use('/api/blogs', blogRoutes);
+app.use('/api/awards', awardRoutes);
 
 app.get('/', (req, res) => {
     res.json({ message: 'Financial Advisory API is running 🚀' });

@@ -14,6 +14,10 @@ import Calculators from '@/pages/public/Calculators';
 import Gallery from '@/pages/public/Gallery';
 import CertificatesPage from '@/pages/public/CertificatesPage';
 import TestimonialsPage from '@/pages/public/TestimonialsPage';
+import ServicesDetails from '@/pages/public/ServicesDetails';
+import AboutDetails from '@/pages/public/AboutDetails';
+import Blogs from '@/pages/public/Blogs';
+import BlogDetail from '@/pages/public/BlogDetail';
 import AdminLogin from '@/pages/admin/Login';
 import AdminDashboard from '@/pages/admin/Dashboard';
 import BookingsManager from '@/pages/admin/BookingsManager';
@@ -22,6 +26,8 @@ import Certificates from '@/pages/admin/Certificates';
 import ContentEditor from '@/pages/admin/ContentEditor';
 import TestimonialsManager from '@/pages/admin/TestimonialsManager';
 import GalleryManager from '@/pages/admin/GalleryManager';
+import BlogsManager from '@/pages/admin/BlogsManager';
+import AwardsManager from '@/pages/admin/AwardsManager';
 import ClaimsManager from '@/pages/admin/ClaimsManager';
 import ChatManager from '@/pages/admin/ChatManager';
 import Profile from '@/pages/admin/Profile';
@@ -159,6 +165,10 @@ function App() {
             <Route path="/gallery" element={<Gallery />} />
             <Route path="/certificates" element={<CertificatesPage />} />
             <Route path="/testimonials" element={<TestimonialsPage />} />
+            <Route path="/services" element={<ServicesDetails />} />
+            <Route path="/about-details" element={<AboutDetails />} />
+            <Route path="/blogs" element={<Blogs />} />
+            <Route path="/blogs/:slug" element={<BlogDetail />} />
 
             {/* Admin Routes */}
             <Route path="/admin/login" element={<AdminLogin />} />
@@ -228,6 +238,26 @@ function App() {
                 <ProtectedRoute>
                   <AdminLayout>
                     <GalleryManager />
+                  </AdminLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/blogs"
+              element={
+                <ProtectedRoute>
+                  <AdminLayout>
+                    <BlogsManager />
+                  </AdminLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/awards"
+              element={
+                <ProtectedRoute>
+                  <AdminLayout>
+                    <AwardsManager />
                   </AdminLayout>
                 </ProtectedRoute>
               }

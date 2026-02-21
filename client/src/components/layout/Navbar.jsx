@@ -11,6 +11,7 @@ import BookingModal from '@/components/ui/BookingModal';
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
+    const [isAboutOpen, setIsAboutOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
     const [isBookingOpen, setIsBookingOpen] = useState(false);
     const navigate = useNavigate();
@@ -57,17 +58,28 @@ const Navbar = () => {
 
     const navLinks = [
         { name: t.nav.home, path: '#home' },
-        { name: t.nav.about, path: '#about' },
-        { name: t.nav.calculators, path: '#calculators' },
-        { name: t.nav.certificates, path: '#certificates' },
-        { name: t.nav.gallery, path: '#gallery' },
+        {
+            name: t.nav.about,
+            path: '#about',
+            isDropdown: true,
+            children: [
+                { name: t.nav.aboutOverview, path: '#about' },
+                { name: t.nav.certificates, path: '#certificates' },
+                { name: t.nav.awards, path: '#awards' },
+                { name: t.nav.gallery, path: '#gallery' },
+                { name: t.nav.testimonials, path: '#testimonials' },
+            ]
+        },
         { name: t.nav.services, path: '#services' },
+        { name: t.nav.calculators, path: '#calculators' },
+        { name: t.nav.blogs, path: '/blogs', isRoute: true },
         { name: t.nav.claims, path: '#claims' },
-        { name: t.nav.testimonials, path: '#testimonials' },
         { name: t.nav.contact, path: '#contact' },
     ];
 
     const handleNavClick = (link) => {
+        if (link.isDropdown) return; // Dropdown handled by hover/click events
+
         setIsOpen(false);
 
         if (link.isRoute) {
@@ -208,17 +220,44 @@ const Navbar = () => {
                     <div className="flex justify-center">
                         <div className="flex items-center bg-slate-100/80 dark:bg-slate-800/50 rounded-full px-1 py-1 shadow-inner shadow-slate-900/5">
                             {navLinks.map((link) => (
-                                <a
-                                    key={link.path}
-                                    href={link.path}
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        handleNavClick(link);
-                                    }}
-                                    className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-white dark:hover:bg-slate-700 px-5 py-2 rounded-full text-sm font-bold transition-all duration-200 cursor-pointer"
-                                >
-                                    {link.name}
-                                </a>
+                                link.isDropdown ? (
+                                    <div key={link.name} className="relative group px-1">
+                                        <button
+                                            className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-white dark:hover:bg-slate-700 px-5 py-2 rounded-full text-sm font-bold transition-all duration-200 cursor-pointer flex items-center gap-1 h-full"
+                                        >
+                                            {link.name} <ChevronDown className="w-4 h-4 group-hover:rotate-180 transition-transform duration-300" />
+                                        </button>
+                                        <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[60]">
+                                            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-700 p-2 min-w-[180px]">
+                                                {link.children.map((child) => (
+                                                    <a
+                                                        key={child.path}
+                                                        href={child.path}
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            handleNavClick(child);
+                                                        }}
+                                                        className="block px-4 py-2.5 text-sm font-bold text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-xl transition-all"
+                                                    >
+                                                        {child.name}
+                                                    </a>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <a
+                                        key={link.path}
+                                        href={link.path}
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            handleNavClick(link);
+                                        }}
+                                        className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-white dark:hover:bg-slate-700 px-5 py-2 rounded-full text-sm font-bold transition-all duration-200 cursor-pointer"
+                                    >
+                                        {link.name}
+                                    </a>
+                                )
                             ))}
                         </div>
                     </div>
@@ -288,16 +327,47 @@ const Navbar = () => {
                     >
                         <div className="px-4 pt-3 pb-6 space-y-1 max-h-[calc(100vh-100px)] overflow-y-auto">
                             {navLinks.map((link, index) => (
-                                <motion.div
-                                    key={link.path}
-                                    initial={{ opacity: 0, x: -20 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: index * 0.05 }}
-                                    className="text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white block px-4 py-3 rounded-2xl text-base font-medium cursor-pointer transition-colors"
-                                    onClick={() => handleNavClick(link)}
-                                >
-                                    {link.name}
-                                </motion.div>
+                                link.isDropdown ? (
+                                    <div key={link.name} className="space-y-1">
+                                        <button
+                                            onClick={() => setIsAboutOpen(!isAboutOpen)}
+                                            className="w-full text-left text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white flex items-center justify-between px-4 py-3 rounded-2xl text-base font-medium transition-colors"
+                                        >
+                                            {link.name} <ChevronDown className={`w-5 h-5 transition-transform duration-300 ${isAboutOpen ? 'rotate-180' : ''}`} />
+                                        </button>
+                                        <AnimatePresence>
+                                            {isAboutOpen && (
+                                                <motion.div
+                                                    initial={{ height: 0, opacity: 0 }}
+                                                    animate={{ height: 'auto', opacity: 1 }}
+                                                    exit={{ height: 0, opacity: 0 }}
+                                                    className="overflow-hidden bg-slate-50 dark:bg-slate-800/50 rounded-2xl mx-2"
+                                                >
+                                                    {link.children.map((child) => (
+                                                        <div
+                                                            key={child.path}
+                                                            className="px-6 py-3 text-sm font-semibold text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 cursor-pointer"
+                                                            onClick={() => handleNavClick(child)}
+                                                        >
+                                                            {child.name}
+                                                        </div>
+                                                    ))}
+                                                </motion.div>
+                                            )}
+                                        </AnimatePresence>
+                                    </div>
+                                ) : (
+                                    <motion.div
+                                        key={link.path}
+                                        initial={{ opacity: 0, x: -20 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        transition={{ delay: index * 0.05 }}
+                                        className="text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white block px-4 py-3 rounded-2xl text-base font-medium cursor-pointer transition-colors"
+                                        onClick={() => handleNavClick(link)}
+                                    >
+                                        {link.name}
+                                    </motion.div>
+                                )
                             ))}
                             {user ? (
                                 <>

@@ -36,12 +36,12 @@ const FloatingActions = () => {
     };
 
     return (
-        <div className="fixed z-50 pointer-events-none inset-0 flex flex-col md:justify-center md:items-end px-6">
+        <div className="fixed z-50 pointer-events-none inset-0 flex flex-col justify-end items-end p-6 pb-24 md:pb-6">
             <motion.div
                 variants={containerVariants}
                 initial="hidden"
                 animate="visible"
-                className="flex flex-row md:flex-col gap-4 pointer-events-auto items-center justify-center md:justify-end fixed bottom-6 left-0 right-0 md:relative md:bottom-auto md:left-auto md:right-auto px-4"
+                className="flex flex-col gap-3 pointer-events-auto items-end justify-end fixed bottom-6 right-6 px-4"
             >
                 <motion.div variants={itemVariants}>
                     <PhoneButton />

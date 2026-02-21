@@ -85,7 +85,7 @@ const GalleryGrid = () => {
                         onClick={() => openLightbox(index)}
                     >
                         <img
-                            src={image.image_url}
+                            src={image.image_url || `https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800&sig=${index}`}
                             alt={image.title}
                             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                         />
