@@ -6,6 +6,7 @@ const authMiddleware = require('../middleware/authMiddleware');
 const meetingService = require('../services/meetingService');
 const zoomService = require('../services/zoomService');
 const notificationService = require('../services/notificationService');
+const { sendWhatsApp } = require('../config/sms');
 
 // ─── Middleware: Validate booking access token ────────────────────────────────
 function bookingTokenMiddleware(req, res, next) {
@@ -53,11 +54,19 @@ router.post('/start', authMiddleware, async (req, res) => {
 
         const result = await meetingService.startMeeting(bookingId);
 
-        // Send email to client that meeting has started
+        // Send email and WhatsApp to client that meeting has started
         try {
             await notificationService.sendMeetingStartEmail(result.booking, result.meeting);
-        } catch (emailErr) {
-            console.warn('Failed to send meeting start email:', emailErr.message);
+
+            // Generate join link for WhatsApp
+            const token = jwt.sign({ bookingId: result.booking.id }, process.env.JWT_SECRET || 'fallback_secret', { expiresIn: '7d' });
+            const baseUrl = process.env.CLIENT_URL || 'http://localhost:5173';
+            const meetingUrl = `${baseUrl}/virtual-office?booking=${result.booking.id}&token=${token}`;
+
+            const msg = `🎥 *Meeting Started!*\n\nHello ${result.booking.name},\nYour consultation with Raunak Consultancy has started. Join now using the link below:\n\n🔗 *Join link:* ${meetingUrl}`;
+            sendWhatsApp(result.booking.phone, msg).catch(e => console.warn('WhatsApp error:', e.message));
+        } catch (err) {
+            console.warn('Failed to send meeting start notifications:', err.message);
         }
 
         res.json({ success: true, meeting: result.meeting, zoom: result.zoom });

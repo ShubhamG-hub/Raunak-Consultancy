@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const jwt = require('jsonwebtoken');
 const supabase = require('../config/supabase');
 const authMiddleware = require('../middleware/authMiddleware');
 const Joi = require('joi');
@@ -147,7 +148,13 @@ router.patch('/:id', authMiddleware, async (req, res) => {
         if (status === 'Pending') {
             msg = `⏳ *Booking on Hold*\n\nHello ${booking.name},\nYour *${booking.service_type}* consultation is currently under review.\n\n📅 *Date:* ${booking.date}\n🕒 *Time:* ${booking.time}\n📍 *Mode:* ${modeText}\n\nWe will notify you once it's confirmed.`;
         } else if (status === 'Confirmed') {
-            const zoomNote = booking.meeting_mode === 'Online' ? '\n📹 *Zoom link will be shared with you shortly.*' : '';
+            let zoomNote = '';
+            if (booking.meeting_mode === 'Online') {
+                const token = jwt.sign({ bookingId: booking.id }, process.env.JWT_SECRET || 'fallback_secret', { expiresIn: '7d' });
+                const baseUrl = process.env.CLIENT_URL || 'http://localhost:5173';
+                const meetingUrl = `${baseUrl}/virtual-office?booking=${booking.id}&token=${token}`;
+                zoomNote = `\n\n🎥 *Join Link:* ${meetingUrl}\n_(Please save this link to join at the scheduled time)_`;
+            }
             msg = `✅ *Booking Confirmed*\n\nHello ${booking.name},\nWe are pleased to confirm your *${booking.service_type}* consultation.\n\n📅 *Date:* ${booking.date}\n🕒 *Time:* ${booking.time}\n📍 *Mode:* ${modeText}${zoomNote}\n\nThank you for choosing Raunak Consultancy!`;
         } else if (status === 'Cancelled') {
             msg = `❌ *Booking Cancelled*\n\nHello ${booking.name},\nYour consultation on ${booking.date} at ${booking.time} has been cancelled.\n\nPlease contact us if you wish to reschedule.`;
