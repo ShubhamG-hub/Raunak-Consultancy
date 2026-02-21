@@ -315,7 +315,7 @@ router.get('/meetings', authMiddleware, async (req, res) => {
     try {
         const { data, error } = await supabase
             .from('virtual_meetings')
-            .select('*, bookings(name, email, service, date, time)')
+            .select('*, bookings(name, email, service_type, date, time)')
             .order('created_at', { ascending: false })
             .limit(50);
 

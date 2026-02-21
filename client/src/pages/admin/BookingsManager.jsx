@@ -39,6 +39,7 @@ const BookingsManager = () => {
     const [bookings, setBookings] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
+    const [searchInput, setSearchInput] = useState('');
     const [statusFilter, setStatusFilter] = useState('All');
     const [dateFilter, setDateFilter] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
@@ -50,6 +51,13 @@ const BookingsManager = () => {
     const debounceRef = useRef(null);
 
     const itemsPerPage = 10;
+
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setSearchTerm(searchInput);
+        }, 500);
+        return () => clearTimeout(handler);
+    }, [searchInput]);
 
     const fetchBookings = useCallback(async () => {
         try {
@@ -202,8 +210,8 @@ const BookingsManager = () => {
                             <Input
                                 placeholder="Search Name or Phone..."
                                 className="pl-10 h-11 bg-slate-50/50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 focus:bg-white dark:focus:bg-slate-800 transition-all"
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
+                                value={searchInput}
+                                onChange={(e) => setSearchInput(e.target.value)}
                             />
                         </div>
                         <div className="relative group">
