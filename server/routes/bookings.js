@@ -85,10 +85,6 @@ router.post('/', async (req, res) => {
 // GET /api/bookings (Admin Only) - Fetch all bookings with server-side filtering & pagination
 router.get('/', authMiddleware, async (req, res) => {
     try {
-        if (req.user.role !== 'admin' && req.user.role !== 'Administrator') {
-            return res.status(403).json({ error: 'Access denied. Admin only.' });
-        }
-
         const { status, search, date, page = 1, limit = 10 } = req.query;
         const pageNum = Math.max(1, parseInt(page));
         const limitNum = Math.min(100, Math.max(1, parseInt(limit)));
@@ -134,10 +130,6 @@ router.patch('/:id', authMiddleware, async (req, res) => {
     }
 
     try {
-        if (req.user.role !== 'admin' && req.user.role !== 'Administrator') {
-            return res.status(403).json({ error: 'Access denied. Admin only.' });
-        }
-
         const { data, error } = await supabase
             .from('bookings')
             .update({ status, updated_at: new Date().toISOString() })
@@ -175,10 +167,6 @@ router.patch('/:id', authMiddleware, async (req, res) => {
 // DELETE /api/bookings/:id (Admin Only) - Delete booking
 router.delete('/:id', authMiddleware, async (req, res) => {
     try {
-        if (req.user.role !== 'admin' && req.user.role !== 'Administrator') {
-            return res.status(403).json({ error: 'Access denied. Admin only.' });
-        }
-
         const { error } = await supabase
             .from('bookings')
             .delete()

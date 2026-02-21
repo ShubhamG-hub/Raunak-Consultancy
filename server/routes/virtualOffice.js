@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
-const { supabase } = require('../config/supabase');
+const supabase = require('../config/supabase');
 const authMiddleware = require('../middleware/authMiddleware');
 const meetingService = require('../services/meetingService');
 const zoomService = require('../services/zoomService');
