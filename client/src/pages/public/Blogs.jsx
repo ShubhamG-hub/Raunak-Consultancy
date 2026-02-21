@@ -113,7 +113,7 @@ const Blogs = () => {
                                     transition={{ duration: 0.4, delay: index * 0.05 }}
                                     className="group bg-white dark:bg-slate-800 rounded-[2.5rem] overflow-hidden border border-slate-100 dark:border-slate-700 hover:shadow-2xl transition-all duration-500 flex flex-col h-full"
                                 >
-                                    <div className="relative h-64 overflow-hidden">
+                                    <div className="relative h-48 md:h-64 overflow-hidden">
                                         <img
                                             src={blog.image_url || 'https://images.unsplash.com/photo-1454165833767-1330084bc6f8?auto=format&fit=crop&q=80&w=800'}
                                             alt={blog.title}
@@ -125,7 +125,7 @@ const Blogs = () => {
                                             </span>
                                         </div>
                                     </div>
-                                    <div className="p-8 flex-grow flex flex-col">
+                                    <div className="p-5 md:p-8 flex-grow flex flex-col">
                                         <div className="flex items-center gap-4 text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-4">
                                             <div className="flex items-center gap-1">
                                                 <Calendar className="w-3.5 h-3.5" />

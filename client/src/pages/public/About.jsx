@@ -13,7 +13,7 @@ const About = () => {
         <div className="container mx-auto px-6">
 
             {/* Introduction */}
-            <div className="flex flex-col md:flex-row gap-16 items-center mb-24">
+            <div className="flex flex-col md:flex-row gap-8 md:gap-16 items-center mb-10 md:mb-24">
                 <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
                     whileInView={{ opacity: 1, scale: 1 }}
@@ -22,7 +22,7 @@ const About = () => {
                     className="w-full md:w-1/3"
                 >
                     {/* Advisor Image with Premium Border */}
-                    <div className="relative aspect-[3/4] rounded-[3rem] overflow-hidden shadow-2xl group border-[12px] border-white dark:border-slate-800 shadow-blue-500/10">
+                    <div className="relative aspect-[3/4] rounded-[2rem] md:rounded-[3rem] overflow-hidden shadow-2xl group border-[6px] md:border-[12px] border-white dark:border-slate-800 shadow-blue-500/10">
                         <img
                             src="/advisor.jpg"
                             alt={t.about.name}
@@ -84,7 +84,7 @@ const About = () => {
             </div>
 
             {/* Mission & Vision - Modern Cards */}
-            <div className="grid md:grid-cols-2 gap-8 mb-24">
+            <div className="grid md:grid-cols-2 gap-6 md:gap-8 mb-10 md:mb-24">
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
@@ -92,7 +92,7 @@ const About = () => {
                     transition={{ duration: 0.6 }}
                 >
                     <Card className="bg-slate-900 dark:bg-slate-900/50 text-white border-none rounded-[2.5rem] overflow-hidden group h-full">
-                        <CardContent className="p-12 text-center space-y-6 relative h-full flex flex-col justify-center">
+                        <CardContent className="p-6 md:p-12 text-center space-y-6 relative h-full flex flex-col justify-center">
                             <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/10 rounded-bl-full group-hover:bg-blue-600/20 transition-all duration-500"></div>
                             <Target className="w-16 h-16 mx-auto text-blue-400 group-hover:scale-110 transition-transform duration-500" />
                             <h3 className="text-2xl font-black">{t.about.missionTitle}</h3>
@@ -110,7 +110,7 @@ const About = () => {
                     transition={{ duration: 0.6, delay: 0.2 }}
                 >
                     <Card className="bg-blue-600 dark:bg-blue-700 text-white border-none rounded-[2.5rem] overflow-hidden group h-full shadow-2xl shadow-blue-600/20">
-                        <CardContent className="p-12 text-center space-y-6 relative h-full flex flex-col justify-center">
+                        <CardContent className="p-6 md:p-12 text-center space-y-6 relative h-full flex flex-col justify-center">
                             <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-bl-full group-hover:bg-white/20 transition-all duration-500"></div>
                             <Heart className="w-16 h-16 mx-auto text-white group-hover:scale-110 transition-transform duration-500" />
                             <h3 className="text-2xl font-black">{t.about.valuesTitle}</h3>

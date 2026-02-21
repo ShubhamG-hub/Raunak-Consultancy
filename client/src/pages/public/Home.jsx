@@ -90,9 +90,9 @@ const Home = () => {
             />
 
             {/* Hero Section - Perfectly Balanced Layout */}
-            <section id="home" className="relative min-h-[85vh] flex items-center justify-center overflow-hidden bg-slate-50 dark:bg-slate-950 pt-32 lg:pt-36 pb-20 transition-colors duration-500">
+            <section id="home" className="relative min-h-[85vh] flex items-center justify-center overflow-hidden bg-slate-50 dark:bg-slate-950 pt-24 md:pt-32 lg:pt-36 pb-12 md:pb-20 transition-colors duration-500">
                 <div className="container mx-auto px-6 relative z-10 h-full flex items-center">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center w-full">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center w-full">
                         {/* Left Side: Content */}
                         <motion.div
                             initial={{ opacity: 0, x: -30 }}
@@ -143,7 +143,7 @@ const Home = () => {
                             className="relative flex flex-col items-center gap-6 w-full"
                         >
                             {/* Slider Container - Perfectly Balanced */}
-                            <div className="relative w-full aspect-[3/4] md:aspect-[4/5] lg:aspect-auto lg:h-[75vh] rounded-[3rem] overflow-hidden shadow-2xl border-8 border-white dark:border-slate-800 bg-white dark:bg-slate-900 group">
+                            <div className="relative w-full aspect-[4/5] sm:aspect-[3/4] md:aspect-[4/5] lg:aspect-auto lg:h-[70vh] max-h-[60vh] md:max-h-none rounded-[2rem] md:rounded-[3rem] overflow-hidden shadow-2xl border-4 md:border-8 border-white dark:border-slate-800 bg-white dark:bg-slate-900 group">
                                 <AnimatePresence mode="wait">
                                     <motion.img
                                         key={currentImageIndex}
@@ -203,7 +203,7 @@ const Home = () => {
 
             {/* Trust Counters - Modern Bento Style */}
             <section className="container mx-auto px-6 relative z-20">
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 -mt-12 lg:-mt-16">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 -mt-8 md:-mt-12 lg:-mt-16">
                     {trustCounters.map((item, index) => {
                         const colors = colorMap[item.color];
                         return (
@@ -214,12 +214,12 @@ const Home = () => {
                                 viewport={{ once: true }}
                                 transition={{ duration: 0.5, delay: index * 0.1 }}
                                 whileHover={{ y: -8 }}
-                                className={`bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl p-6 md:p-8 rounded-2xl md:rounded-3xl border border-slate-100 dark:border-slate-800 hover:shadow-2xl ${colors.shadow} transition-all duration-300`}
+                                className={`bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl p-4 md:p-8 rounded-2xl md:rounded-3xl border border-slate-100 dark:border-slate-800 hover:shadow-2xl ${colors.shadow} transition-all duration-300`}
                             >
                                 <div className={`w-10 h-10 md:w-12 md:h-12 ${colors.bg} rounded-xl md:rounded-2xl flex items-center justify-center mb-4 md:mb-6`}>
                                     <item.icon className={`w-5 h-5 md:w-6 md:h-6 ${colors.icon}`} />
                                 </div>
-                                <h3 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white mb-1">{item.value}</h3>
+                                <h3 className="text-lg sm:text-2xl md:text-3xl font-black text-slate-900 dark:text-white mb-1">{item.value}</h3>
                                 <p className="text-xs md:text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">{item.label}</p>
                             </motion.div>
                         );
@@ -234,7 +234,7 @@ const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.8 }}
-                className="py-24 bg-white dark:bg-slate-900 transition-colors duration-500"
+                className="py-14 md:py-24 bg-white dark:bg-slate-900 transition-colors duration-500"
             >
                 <About />
             </motion.section>
@@ -246,7 +246,7 @@ const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.8 }}
-                className="py-24 bg-slate-50 dark:bg-slate-900/50 transition-colors duration-500"
+                className="py-14 md:py-24 bg-slate-50 dark:bg-slate-900/50 transition-colors duration-500"
             >
                 <Services />
             </motion.section>
@@ -258,12 +258,12 @@ const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.8 }}
-                className="py-24 bg-white dark:bg-slate-900 transition-colors duration-500 overflow-hidden relative"
+                className="py-14 md:py-24 bg-white dark:bg-slate-900 transition-colors duration-500 overflow-hidden relative"
             >
                 <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-slate-200 dark:via-slate-800 to-transparent" />
 
                 <div className="container mx-auto px-6 relative z-10">
-                    <div className="flex flex-col lg:flex-row items-center gap-16">
+                    <div className="flex flex-col lg:flex-row items-center gap-10 md:gap-12 lg:gap-16">
                         <div className="lg:w-1/2">
                             <span className="inline-block py-1 px-3 mb-4 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs font-bold uppercase tracking-widest">
                                 Interactive Tools
@@ -369,7 +369,7 @@ const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.8 }}
-                className="py-24 bg-slate-50 dark:bg-slate-900/50 transition-colors duration-500"
+                className="py-14 md:py-24 bg-slate-50 dark:bg-slate-900/50 transition-colors duration-500"
             >
                 <Claims />
             </motion.section>
@@ -381,7 +381,7 @@ const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.8 }}
-                className="py-24 bg-white dark:bg-slate-900 transition-colors duration-500"
+                className="py-14 md:py-24 bg-white dark:bg-slate-900 transition-colors duration-500"
             >
                 <div className="container mx-auto px-6">
                     <SectionHeader title={t.certificates.title} description={t.certificates.subtitle} />
@@ -403,7 +403,7 @@ const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.8 }}
-                className="py-24 bg-slate-50 dark:bg-slate-900/50 transition-colors duration-500"
+                className="py-14 md:py-24 bg-slate-50 dark:bg-slate-900/50 transition-colors duration-500"
             >
                 <AwardsSection />
             </motion.section>
@@ -415,7 +415,7 @@ const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.8 }}
-                className="py-24 bg-white dark:bg-slate-900 transition-colors duration-500"
+                className="py-14 md:py-24 bg-white dark:bg-slate-900 transition-colors duration-500"
             >
                 <div className="container mx-auto px-6">
                     <SectionHeader title={t.gallery.title} description={t.gallery.subtitle} />
@@ -437,7 +437,7 @@ const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.8 }}
-                className="py-24 bg-slate-50 dark:bg-slate-900/50 transition-colors duration-500"
+                className="py-14 md:py-24 bg-slate-50 dark:bg-slate-900/50 transition-colors duration-500"
             >
                 <BlogsPreview />
             </motion.section>
@@ -449,7 +449,7 @@ const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.8 }}
-                className="py-24 bg-white dark:bg-slate-900 transition-colors duration-500"
+                className="py-14 md:py-24 bg-white dark:bg-slate-900 transition-colors duration-500"
             >
                 <div className="container mx-auto px-6">
                     <SectionHeader title={t.testimonials.title} description={t.testimonials.subtitle} />
@@ -475,7 +475,7 @@ const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.8 }}
-                className="py-24 bg-slate-50 dark:bg-slate-900/50 transition-colors duration-500"
+                className="py-14 md:py-24 bg-slate-50 dark:bg-slate-900/50 transition-colors duration-500"
             >
                 <Contact />
             </motion.section>

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import {
     Search,
     Filter,
@@ -16,7 +16,9 @@ import {
     Briefcase,
     MessageSquare,
     Trash2,
-    RefreshCw
+    RefreshCw,
+    Video,
+    MapPin
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '@/lib/supabase';
@@ -41,9 +43,11 @@ const BookingsManager = () => {
     const [dateFilter, setDateFilter] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [totalCount, setTotalCount] = useState(0);
+    const [totalPages, setTotalPages] = useState(1);
     const [selectedBooking, setSelectedBooking] = useState(null);
     const [isViewModalOpen, setIsViewModalOpen] = useState(false);
     const [exporting, setExporting] = useState(false);
+    const debounceRef = useRef(null);
 
     const itemsPerPage = 10;
 
@@ -58,8 +62,9 @@ const BookingsManager = () => {
                 date: dateFilter
             };
             const { data } = await api.get('/bookings', { params });
-            setBookings(data.data);
-            setTotalCount(data.count);
+            setBookings(data.data || []);
+            setTotalCount(data.count || 0);
+            setTotalPages(data.totalPages || 1);
         } catch (error) {
             console.error('Error fetching bookings:', error);
         } finally {
@@ -153,7 +158,7 @@ const BookingsManager = () => {
         }
     };
 
-    const totalPages = Math.ceil(totalCount / itemsPerPage);
+    const totalPages_ = totalPages;
 
     return (
         <div className="p-3 md:p-6 space-y-4 md:space-y-6">
@@ -241,6 +246,7 @@ const BookingsManager = () => {
                             <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-white/10">
                                 <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Customer</th>
                                 <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Schedule</th>
+                                <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Mode</th>
                                 <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Service</th>
                                 <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Status</th>
                                 <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider text-right">Actions</th>
@@ -250,7 +256,7 @@ const BookingsManager = () => {
                             {loading ? (
                                 Array(5).fill(0).map((_, i) => (
                                     <tr key={i} className="animate-pulse">
-                                        <td colSpan="5" className="px-6 py-6 h-16 bg-slate-50/50 dark:bg-slate-800/20" />
+                                        <td colSpan="6" className="px-6 py-6 h-16 bg-slate-50/50 dark:bg-slate-800/20" />
                                     </tr>
                                 ))
                             ) : bookings.length === 0 ? (
@@ -279,12 +285,21 @@ const BookingsManager = () => {
                                         <td className="px-6 py-4">
                                             <div className="flex flex-col">
                                                 <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                                                    {new Date(booking.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+                                                    {booking.date}
                                                 </span>
                                                 <span className="text-xs text-slate-500 flex items-center gap-1">
                                                     <Clock className="w-3 h-3" /> {booking.time}
                                                 </span>
                                             </div>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold uppercase tracking-tight ${booking.meeting_mode === 'Online'
+                                                ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400'
+                                                : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
+                                                }`}>
+                                                {booking.meeting_mode === 'Online' ? <Video className="w-3 h-3" /> : <MapPin className="w-3 h-3" />}
+                                                {booking.meeting_mode || 'In-Person'}
+                                            </span>
                                         </td>
                                         <td className="px-6 py-4">
                                             <span className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-[11px] font-bold uppercase tracking-tight">
@@ -363,7 +378,7 @@ const BookingsManager = () => {
                                     <div>
                                         <p className="text-[9px] uppercase tracking-wider text-slate-400 font-bold mb-1">Time & Date</p>
                                         <p className="text-[11px] font-semibold text-slate-700 dark:text-slate-300">
-                                            {new Date(booking.date).toLocaleDateString()}
+                                            {booking.date}
                                         </p>
                                         <p className="text-[10px] text-slate-500">{booking.time}</p>
                                     </div>
@@ -410,12 +425,12 @@ const BookingsManager = () => {
                             <ChevronLeft className="w-3 h-3" />
                         </Button>
                         <span className="text-[10px] font-bold text-slate-600 dark:text-slate-400 px-1">
-                            {currentPage} / {totalPages || 1}
+                            {currentPage} / {totalPages_ || 1}
                         </span>
                         <Button
                             variant="outline"
                             size="sm"
-                            disabled={currentPage === totalPages || loading || totalPages === 0}
+                            disabled={currentPage === totalPages_ || loading || totalPages_ === 0}
                             onClick={() => setCurrentPage(p => p + 1)}
                             className="h-7 w-7 p-0"
                         >
@@ -469,6 +484,16 @@ const BookingsManager = () => {
                                         <Briefcase className="w-3 h-3" /> Service Type
                                     </label>
                                     <p className="text-sm font-semibold text-slate-900 dark:text-white mt-1">{selectedBooking.service_type}</p>
+                                </div>
+                                <div>
+                                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1">
+                                        {selectedBooking.meeting_mode === 'Online' ? <Video className="w-3 h-3" /> : <MapPin className="w-3 h-3" />} Meeting Mode
+                                    </label>
+                                    <p className={`text-sm font-semibold mt-1 flex items-center gap-1.5 ${selectedBooking.meeting_mode === 'Online' ? 'text-blue-600 dark:text-blue-400' : 'text-slate-900 dark:text-white'
+                                        }`}>
+                                        {selectedBooking.meeting_mode === 'Online' ? <Video className="w-3.5 h-3.5" /> : <MapPin className="w-3.5 h-3.5" />}
+                                        {selectedBooking.meeting_mode || 'In-Person'}
+                                    </p>
                                 </div>
                                 <div>
                                     <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1">

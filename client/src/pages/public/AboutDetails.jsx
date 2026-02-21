@@ -34,7 +34,7 @@ const AboutDetails = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-white dark:bg-slate-900 pt-32 pb-24 transition-colors duration-500">
+        <div className="min-h-screen bg-white dark:bg-slate-900 pt-24 md:pt-32 pb-16 md:pb-24 transition-colors duration-500">
             <div className="container mx-auto px-6">
                 {/* Back Link */}
                 <Link to="/" className="inline-flex items-center text-blue-600 hover:text-blue-700 font-bold mb-12 group transition-colors">
@@ -42,13 +42,13 @@ const AboutDetails = () => {
                     Back to Home
                 </Link>
 
-                <div className="flex flex-col lg:flex-row gap-16 items-start">
+                <div className="flex flex-col lg:flex-row gap-8 md:gap-12 lg:gap-16 items-start">
                     {/* Left: Interactive Bio Card */}
                     <div className="lg:w-1/3 sticky top-32">
                         <motion.div
                             initial={{ opacity: 0, x: -50 }}
                             animate={{ opacity: 1, x: 0 }}
-                            className="bg-slate-50 dark:bg-slate-800 p-8 rounded-[2.5rem] border border-slate-100 dark:border-slate-700 shadow-xl"
+                            className="bg-slate-50 dark:bg-slate-800 p-5 md:p-8 rounded-[2rem] md:rounded-[2.5rem] border border-slate-100 dark:border-slate-700 shadow-xl"
                         >
                             <div className="relative mb-8 group">
                                 <div className="absolute inset-0 bg-blue-600 rounded-[2rem] rotate-6 group-hover:rotate-3 transition-transform duration-500 -z-10 opacity-20" />
@@ -58,10 +58,10 @@ const AboutDetails = () => {
                                     className="w-full aspect-[4/5] object-cover rounded-[2rem] shadow-2xl grayscale-[30%] group-hover:grayscale-0 transition-all duration-500"
                                     onError={(e) => e.target.src = "/advisor.jpg"}
                                 />
-                                <div className="absolute -bottom-6 -right-6 bg-blue-600 text-white p-6 rounded-3xl shadow-2xl flex flex-col items-center">
-                                    <Star className="w-6 h-6 mb-1 fill-white" />
-                                    <span className="text-xl font-black">25+</span>
-                                    <span className="text-[10px] uppercase font-bold tracking-widest text-blue-100">Years</span>
+                                <div className="absolute -bottom-3 -right-3 md:-bottom-6 md:-right-6 bg-blue-600 text-white p-3 md:p-6 rounded-2xl md:rounded-3xl shadow-2xl flex flex-col items-center">
+                                    <Star className="w-4 h-4 md:w-6 md:h-6 mb-1 fill-white" />
+                                    <span className="text-base md:text-xl font-black">25+</span>
+                                    <span className="text-[9px] md:text-[10px] uppercase font-bold tracking-widest text-blue-100">Years</span>
                                 </div>
                             </div>
 
@@ -94,7 +94,7 @@ const AboutDetails = () => {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.2 }}
                         >
-                            <h2 className="text-4xl md:text-5xl font-black text-slate-900 dark:text-white mb-8 leading-tight">
+                            <h2 className="text-2xl sm:text-3xl md:text-5xl font-black text-slate-900 dark:text-white mb-6 md:mb-8 leading-tight">
                                 From 2008 to 2024: <br />
                                 <span className="text-blue-600">Building Trust, One Family at a Time</span>
                             </h2>
@@ -112,9 +112,9 @@ const AboutDetails = () => {
                             </div>
 
                             {/* Stats Grid */}
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-20">
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 mb-12 md:mb-20">
                                 {stats.map((stat, i) => (
-                                    <div key={i} className="text-center p-6 bg-slate-50 dark:bg-slate-800/50 rounded-3xl border border-slate-100 dark:border-slate-800 transition-all hover:bg-white dark:hover:bg-slate-800">
+                                    <div key={i} className="text-center p-4 md:p-6 bg-slate-50 dark:bg-slate-800/50 rounded-2xl md:rounded-3xl border border-slate-100 dark:border-slate-800 transition-all hover:bg-white dark:hover:bg-slate-800">
                                         <stat.icon className={`w-8 h-8 ${stat.color} mx-auto mb-4`} />
                                         <h4 className="text-2xl font-black text-slate-900 dark:text-white mb-1">{stat.value}</h4>
                                         <p className="text-[10px] uppercase font-bold text-slate-500 tracking-wider leading-tight">{stat.label}</p>
@@ -139,10 +139,10 @@ const AboutDetails = () => {
                             </div>
 
                             {/* My Vision Table */}
-                            <div className="bg-blue-600 rounded-[3rem] p-8 md:p-12 text-white overflow-hidden relative">
+                            <div className="bg-blue-600 rounded-[2rem] md:rounded-[3rem] p-6 md:p-12 text-white overflow-hidden relative">
                                 <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 blur-[80px] rounded-full -mr-32 -mt-32" />
                                 <div className="relative z-10">
-                                    <h3 className="text-3xl font-black mb-8 leading-tight">My Commitment to You</h3>
+                                    <h3 className="text-xl md:text-3xl font-black mb-5 md:mb-8 leading-tight">My Commitment to You</h3>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                         {[
                                             { title: "Personalized Roadmap", desc: "No cookie-cutter plans. Every strategy is built around your specific cash flow, risk appetite, and time horizon." },

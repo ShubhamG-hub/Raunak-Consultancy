@@ -109,7 +109,7 @@ const ServicesDetails = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-32 pb-24 transition-colors duration-500">
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 pt-24 md:pt-32 pb-16 md:pb-24 transition-colors duration-500">
             <div className="container mx-auto px-6">
                 {/* Header Section */}
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-16 gap-8">
@@ -118,7 +118,7 @@ const ServicesDetails = () => {
                             <ArrowLeft className="mr-2 w-5 h-5 group-hover:-translate-x-1 transition-transform" />
                             {t.nav.home}
                         </Link>
-                        <h1 className="text-4xl md:text-6xl font-black text-slate-900 dark:text-white mb-4 leading-tight">
+                        <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-slate-900 dark:text-white mb-4 leading-tight">
                             {t.nav.services} <br />
                             <span className="text-blue-600">Tailored for Your Growth</span>
                         </h1>
@@ -145,7 +145,7 @@ const ServicesDetails = () => {
                             className="bg-white dark:bg-slate-900 rounded-[3rem] border border-slate-100 dark:border-slate-800 shadow-xl overflow-hidden group"
                         >
                             <div className="flex flex-col lg:flex-row">
-                                <div className={`lg:w-1/3 p-12 flex flex-col justify-center items-center text-center ${service.bg}`}>
+                                <div className={`lg:w-1/3 p-6 md:p-12 flex flex-col justify-center items-center text-center ${service.bg}`}>
                                     <div className="w-24 h-24 mb-6 relative">
                                         <div className="absolute inset-0 bg-white dark:bg-slate-800 rounded-3xl rotate-12 transition-transform duration-500 group-hover:rotate-[20deg] opacity-50 shadow-xl" />
                                         <div className="absolute inset-0 bg-white dark:bg-slate-800 rounded-3xl flex items-center justify-center border border-slate-100 dark:border-slate-700 shadow-2xl transition-transform duration-500 group-hover:-translate-y-2 group-hover:-translate-x-2">
@@ -157,7 +157,7 @@ const ServicesDetails = () => {
                                         {t.services.bestFor}: {service.title}
                                     </p>
                                 </div>
-                                <div className="lg:w-2/3 p-12">
+                                <div className="lg:w-2/3 p-6 md:p-12">
                                     <div className="flex flex-col h-full">
                                         <div className="flex-grow">
                                             <h3 className="text-blue-600 font-bold mb-4 uppercase tracking-widest text-sm flex items-center gap-2">
@@ -180,7 +180,7 @@ const ServicesDetails = () => {
                                             </div>
                                         </div>
 
-                                        <div className="flex gap-4">
+                                        <div className="flex flex-col sm:flex-row gap-4">
                                             <Link to="/#contact" className="flex-1">
                                                 <Button className="w-full h-14 rounded-2xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-black shadow-xl hover:scale-[1.02] transition-all">
                                                     Consult Now
@@ -201,14 +201,14 @@ const ServicesDetails = () => {
                 <motion.div
                     initial={{ opacity: 0, scale: 0.95 }}
                     whileInView={{ opacity: 1, scale: 1 }}
-                    className="mt-24 p-12 md:p-20 bg-blue-600 rounded-[4rem] text-center text-white relative overflow-hidden shadow-[0_40px_100px_-20px_rgba(37,99,235,0.4)]"
+                    className="mt-16 md:mt-24 p-8 md:p-12 lg:p-20 bg-blue-600 rounded-[2.5rem] md:rounded-[4rem] text-center text-white relative overflow-hidden shadow-[0_40px_100px_-20px_rgba(37,99,235,0.4)]"
                 >
                     <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-blue-500/20 to-transparent pointer-events-none" />
                     <div className="relative z-10">
                         <span className="inline-block py-2 px-6 bg-white/10 rounded-full text-blue-100 text-xs font-black uppercase tracking-widest mb-8">
                             Ready to transform your lifestyle?
                         </span>
-                        <h2 className="text-4xl md:text-6xl font-black mb-8 leading-tight">
+                        <h2 className="text-3xl md:text-5xl lg:text-6xl font-black mb-6 md:mb-8 leading-tight">
                             Start Your Financial <br /> Journey with Sudhir Gupta
                         </h2>
                         <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">

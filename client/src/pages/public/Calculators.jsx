@@ -83,7 +83,7 @@ const Calculators = () => {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 dark:bg-slate-900 pt-32 pb-20 transition-colors duration-500">
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-900 pt-24 md:pt-32 pb-16 md:pb-20 transition-colors duration-500">
             <div className="container mx-auto px-6">
                 <SectionHeader
                     title={t.calculators.title}
@@ -91,8 +91,7 @@ const Calculators = () => {
                     centered={true}
                 />
 
-                {/* Custom Premium Dropdown Selector - Mobile Only */}
-                <div id="calc-container" className="mb-12 flex justify-center lg:hidden">
+                <div id="calc-container" className="mb-12 flex justify-center px-4 lg:hidden">
                     <DropdownMenu>
                         <DropdownMenuTrigger>
                             <div className="group flex items-center justify-between gap-4 px-6 py-4 rounded-2xl bg-white dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 shadow-xl shadow-blue-500/5 hover:border-blue-500/50 transition-all duration-500 cursor-pointer w-full max-w-[320px]">

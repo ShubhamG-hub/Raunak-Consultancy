@@ -31,6 +31,9 @@ import AwardsManager from '@/pages/admin/AwardsManager';
 import ClaimsManager from '@/pages/admin/ClaimsManager';
 import ChatManager from '@/pages/admin/ChatManager';
 import Profile from '@/pages/admin/Profile';
+import VirtualOfficeManager from '@/pages/admin/VirtualOfficeManager';
+import VirtualOfficeAnalytics from '@/pages/admin/VirtualOfficeAnalytics';
+import VirtualOffice from '@/pages/public/VirtualOffice';
 import AdminLayout from '@/components/layout/AdminLayout';
 import ProtectedRoute from '@/components/layout/ProtectedRoute';
 
@@ -169,6 +172,7 @@ function App() {
             <Route path="/about-details" element={<AboutDetails />} />
             <Route path="/blogs" element={<Blogs />} />
             <Route path="/blogs/:slug" element={<BlogDetail />} />
+            <Route path="/virtual-office" element={<VirtualOffice />} />
 
             {/* Admin Routes */}
             <Route path="/admin/login" element={<AdminLogin />} />
@@ -288,6 +292,26 @@ function App() {
                 <ProtectedRoute>
                   <AdminLayout>
                     <Profile />
+                  </AdminLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/virtual-office"
+              element={
+                <ProtectedRoute>
+                  <AdminLayout>
+                    <VirtualOfficeManager />
+                  </AdminLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/virtual-office/analytics"
+              element={
+                <ProtectedRoute>
+                  <AdminLayout>
+                    <VirtualOfficeAnalytics />
                   </AdminLayout>
                 </ProtectedRoute>
               }

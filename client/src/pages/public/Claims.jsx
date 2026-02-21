@@ -75,7 +75,7 @@ const Claims = () => {
                 </motion.div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-start">
 
                 {/* Steps & Emergency */}
                 <div className="space-y-10">
@@ -89,7 +89,7 @@ const Claims = () => {
                                 <CardTitle className="text-red-900 dark:text-red-400 text-xl font-black">{t.claims.emergency}</CardTitle>
                             </div>
                         </CardHeader>
-                        <CardContent className="p-8">
+                        <CardContent className="p-5 md:p-8">
                             <p className="text-red-800 dark:text-red-300 mb-6 text-sm font-medium leading-relaxed">{t.claims.emergencyDesc}</p>
                             <a href="tel:+919137105476">
                                 <Button className="w-full sm:w-auto h-12 bg-red-600 hover:bg-red-700 text-white font-bold rounded-2xl shadow-lg shadow-red-600/20 transition-all active:scale-95 flex items-center gap-3">
@@ -129,7 +129,7 @@ const Claims = () => {
                 </div>
 
                 {/* Claim Form */}
-                <Card className="border border-slate-100 dark:border-slate-800 rounded-[3rem] p-8 shadow-2xl shadow-red-500/5 bg-white dark:bg-slate-900 relative overflow-hidden transition-colors">
+                <Card className="border border-slate-100 dark:border-slate-800 rounded-[2.5rem] md:rounded-[3rem] p-5 md:p-8 shadow-2xl shadow-red-500/5 bg-white dark:bg-slate-900 relative overflow-hidden transition-colors">
                     <div className="absolute top-0 right-0 w-40 h-40 bg-red-50 dark:bg-red-900/10 rounded-bl-full -z-0"></div>
 
                     <CardHeader className="p-0 mb-8 relative z-10">

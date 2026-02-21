@@ -69,7 +69,7 @@ const Contact = () => {
                 </motion.div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-start">
 
                 {/* Contact Info - Bento Style */}
                 <div className="space-y-8">
@@ -92,7 +92,7 @@ const Contact = () => {
                                 <p className="text-base text-slate-600 dark:text-slate-400 leading-relaxed mb-8">
                                     {t.contact.officeAddress}
                                 </p>
-                                <div className="h-72 w-full rounded-[2rem] overflow-hidden shadow-inner border border-slate-200 dark:border-slate-800">
+                                <div className="h-48 md:h-72 w-full rounded-[2rem] overflow-hidden shadow-inner border border-slate-200 dark:border-slate-800">
                                     <iframe
                                         src="https://www.google.com/maps?q=Om+Darshan+Heights+Hanuman+Nagar+Kalyan+East&output=embed"
                                         width="100%"
@@ -151,7 +151,7 @@ const Contact = () => {
                     viewport={{ once: true }}
                     transition={{ duration: 0.8 }}
                 >
-                    <Card className="border border-slate-100 dark:border-slate-800 rounded-[3rem] p-10 shadow-2xl shadow-blue-500/5 bg-white dark:bg-slate-900 relative overflow-hidden transition-colors">
+                    <Card className="border border-slate-100 dark:border-slate-800 rounded-[2.5rem] md:rounded-[3rem] p-6 md:p-10 shadow-2xl shadow-blue-500/5 bg-white dark:bg-slate-900 relative overflow-hidden transition-colors">
                         <div className="absolute top-0 right-0 w-40 h-40 bg-blue-50 dark:bg-blue-900/10 rounded-bl-full -z-0"></div>
 
                         <CardHeader className="p-0 mb-10 relative z-10 text-center">

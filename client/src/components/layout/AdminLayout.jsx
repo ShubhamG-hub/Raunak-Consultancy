@@ -14,7 +14,9 @@ import {
     X,
     ChevronRight,
     User,
-    Search
+    Search,
+    Video,
+    BarChart2
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -65,6 +67,8 @@ const AdminLayout = ({ children }) => {
         { path: '/admin/blogs', icon: FileText, label: 'Blogs' },
         { path: '/admin/awards', icon: Award, label: 'Awards' },
         { path: '/admin/chat', icon: MessageSquare, label: 'Chat' },
+        { path: '/admin/virtual-office', icon: Video, label: 'Virtual Office' },
+        { path: '/admin/virtual-office/analytics', icon: BarChart2, label: 'VO Analytics' },
         { path: '/admin/profile', icon: User, label: 'Profile' },
     ];
 

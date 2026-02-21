@@ -80,7 +80,7 @@ const Services = () => {
                         viewport={{ once: true }}
                         transition={{ duration: 0.5, delay: index * 0.1 }}
                         whileHover={{ y: -10 }}
-                        className="group relative bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-2xl hover:shadow-blue-500/10 p-8 transition-all duration-300 overflow-hidden"
+                        className="group relative bg-white dark:bg-slate-900 rounded-[2rem] md:rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-2xl hover:shadow-blue-500/10 p-5 md:p-8 transition-all duration-300 overflow-hidden"
                     >
                         {/* Decorative background pulse */}
                         <div className="absolute -top-24 -right-24 w-48 h-48 bg-blue-600/5 dark:bg-blue-400/5 rounded-full group-hover:scale-150 transition-transform duration-700" />
@@ -129,7 +129,7 @@ const Services = () => {
             </div>
 
             {/* Disclaimer Strip */}
-            <div className="mt-16 bg-slate-100 dark:bg-slate-900/50 p-6 rounded-lg text-center text-xs text-slate-500 dark:text-slate-400 transition-colors">
+            <div className="mt-12 md:mt-16 bg-slate-100 dark:bg-slate-900/50 p-4 md:p-6 rounded-lg text-center text-xs text-slate-500 dark:text-slate-400 transition-colors">
                 <p><strong>Disclaimer:</strong> {t.services.disclaimer}</p>
             </div>
         </div>
