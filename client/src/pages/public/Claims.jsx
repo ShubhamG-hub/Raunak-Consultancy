@@ -55,7 +55,8 @@ const Claims = () => {
             setSuccess(true);
             reset();
         } catch (err) {
-            setError(err.response?.data?.error || 'Failed to submit claim request.');
+            const rawError = err.response?.data?.error;
+            setError(typeof rawError === 'string' ? rawError : rawError?.message || rawError?.code || 'Failed to submit claim request.');
         } finally {
             setIsSubmitting(false);
         }

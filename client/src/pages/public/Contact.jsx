@@ -48,7 +48,8 @@ const Contact = () => {
             setSuccess(true);
             reset();
         } catch (err) {
-            setError(err.response?.data?.error || 'Failed to submit. Please try again.');
+            const rawError = err.response?.data?.error;
+            setError(typeof rawError === 'string' ? rawError : rawError?.message || rawError?.code || 'Failed to submit. Please try again.');
         } finally {
             setIsSubmitting(false);
         }

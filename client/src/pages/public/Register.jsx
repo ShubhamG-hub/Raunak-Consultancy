@@ -38,7 +38,8 @@ const Register = () => {
                 setTimeout(() => navigate('/login'), 2000);
             }
         } catch (err) {
-            setError(err.response?.data?.error || 'Registration failed');
+            const rawError = err.response?.data?.error;
+            setError(typeof rawError === 'string' ? rawError : rawError?.message || rawError?.code || 'Registration failed');
         } finally {
             setLoading(false);
         }

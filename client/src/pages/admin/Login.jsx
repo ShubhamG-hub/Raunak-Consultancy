@@ -25,7 +25,10 @@ const Login = () => {
         if (result.success) {
             navigate('/admin/dashboard');
         } else {
-            setError(result.error);
+            const errMsg = typeof result.error === 'string'
+                ? result.error
+                : result.error?.message || result.error?.code || 'Login failed';
+            setError(errMsg);
         }
         setLoading(false);
     };
