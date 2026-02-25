@@ -33,20 +33,10 @@ const BlogsPreview = () => {
     return (
         <section id="blogs-preview" className="py-24 bg-slate-50 dark:bg-slate-900/50 transition-colors duration-500">
             <div className="container mx-auto px-6">
-                <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
-                    <div className="max-w-2xl">
-                        <SectionHeader
-                            title={t.blogs.title}
-                            description={t.blogs.subtitle}
-                            className="text-left mx-0"
-                        />
-                    </div>
-                    <Link to="/blogs">
-                        <Button variant="outline" className="rounded-full px-8 border-2 font-bold group">
-                            View All Blogs <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                        </Button>
-                    </Link>
-                </div>
+                <SectionHeader
+                    title={t.blogs.title}
+                    description={t.blogs.subtitle}
+                />
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {loading ? (
@@ -102,6 +92,14 @@ const BlogsPreview = () => {
                             </motion.div>
                         ))
                     )}
+                </div>
+
+                <div className="mt-12 text-center">
+                    <Link to="/blogs">
+                        <Button variant="outline" size="lg" className="rounded-full px-8 font-bold border-2 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group">
+                            View All Blogs <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                        </Button>
+                    </Link>
                 </div>
             </div>
         </section>
