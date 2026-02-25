@@ -62,8 +62,14 @@ router.post('/login', async (req, res) => {
 
         // 1. Admin Login (Env based)
         if (email === adminEmail && password === adminPassword) {
-            const [admins] = await db.query('SELECT * FROM admins WHERE email = ?', [email]);
-            const admin = admins[0];
+            // Try to get admin details from DB, but don't fail if DB is unavailable
+            let admin = null;
+            try {
+                const [admins] = await db.query('SELECT * FROM admins WHERE email = ?', [email]);
+                admin = admins[0] || null;
+            } catch (dbErr) {
+                console.warn('Admin DB lookup failed (DB may be unavailable), using env defaults:', dbErr.message);
+            }
 
             const userPayload = {
                 email,
