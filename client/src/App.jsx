@@ -169,18 +169,28 @@ function App() {
           <Routes>
             {/* Public Routes */}
             <Route path="/" element={<Home />} />
+
+            {/* Services */}
             <Route path="/services" element={<AllServices />} />
             <Route path="/services/:categorySlug" element={<CategoryPage />} />
             <Route path="/services/:categorySlug/:serviceSlug" element={<ServiceDetail />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+
+            {/* Calculators */}
             <Route path="/calculators" element={<Calculators />} />
-            <Route path="/gallery" element={<Gallery />} />
-            <Route path="/certificates" element={<CertificatesPage />} />
-            <Route path="/testimonials" element={<TestimonialsPage />} />
+
+            {/* About Dropdown Related Pages */}
             <Route path="/about-details" element={<AboutDetails />} />
+            <Route path="/certificates" element={<CertificatesPage />} />
+            <Route path="/gallery" element={<Gallery />} />
+            <Route path="/testimonials" element={<TestimonialsPage />} />
+
+            {/* Blogs */}
             <Route path="/blogs" element={<Blogs />} />
             <Route path="/blogs/:slug" element={<BlogDetail />} />
+
+            {/* Auth */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
 
 
             {/* Admin Routes */}

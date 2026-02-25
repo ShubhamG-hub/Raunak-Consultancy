@@ -410,16 +410,26 @@ const Home = () => {
                 <AwardsSection />
             </motion.section>
 
-            {/* Blogs Section */}
+            {/* Gallery Section */}
             <motion.section
-                id="blogs"
+                id="gallery"
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.8 }}
-                className="py-14 md:py-24 bg-slate-50 dark:bg-slate-900/50 transition-colors duration-500"
+                className="py-14 md:py-24 bg-white dark:bg-slate-900 transition-colors duration-500"
             >
-                <BlogsPreview />
+                <div className="container mx-auto px-6">
+                    <SectionHeader title={t.gallery.title} description={t.gallery.subtitle} />
+                    <GalleryGrid />
+                    <div className="mt-12 text-center">
+                        <Link to="/gallery">
+                            <Button variant="outline" size="lg" className="rounded-full px-8 font-bold border-2 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group">
+                                Explore Full Gallery <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                            </Button>
+                        </Link>
+                    </div>
+                </div>
             </motion.section>
 
             {/* Testimonials Section */}
@@ -448,26 +458,16 @@ const Home = () => {
                 </div>
             </motion.section>
 
-            {/* Gallery Section */}
+            {/* Blogs Section */}
             <motion.section
-                id="gallery"
+                id="blogs"
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.8 }}
-                className="py-14 md:py-24 bg-white dark:bg-slate-900 transition-colors duration-500"
+                className="py-14 md:py-24 bg-slate-50 dark:bg-slate-900/50 transition-colors duration-500"
             >
-                <div className="container mx-auto px-6">
-                    <SectionHeader title={t.gallery.title} description={t.gallery.subtitle} />
-                    <GalleryGrid />
-                    <div className="mt-12 text-center">
-                        <Link to="/gallery">
-                            <Button variant="outline" size="lg" className="rounded-full px-8 font-bold border-2 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group">
-                                Explore Full Gallery <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                            </Button>
-                        </Link>
-                    </div>
-                </div>
+                <BlogsPreview />
             </motion.section>
 
             {/* Contact Section */}
