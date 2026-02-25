@@ -107,12 +107,12 @@ const Navbar = () => {
             return (
                 <div className="flex items-center gap-3">
                     <div className="hidden lg:flex flex-col items-end mr-1">
-                        <span className="text-[8px] font-black text-primary-theme uppercase tracking-[0.2em] leading-none mb-1 opacity-80">{user.role}</span>
-                        <span className="text-[13px] font-black text-slate-900 dark:text-white leading-none tracking-tight">{user.name}</span>
+                        <span className="text-[10px] font-black tracking-widest text-primary-theme uppercase block leading-tight">Administrator</span>
+                        <span className="text-xs xl:text-sm font-bold text-slate-800 dark:text-white block leading-tight">{user.name || 'Admin'}</span>
                     </div>
                     {isAdmin ? (
                         <Link to="/admin/dashboard">
-                            <Button size="sm" variant="outline" className="rounded-2xl border-primary-theme/30 text-primary-theme h-12 px-6 font-black uppercase tracking-widest text-[10px] hover:bg-primary-theme hover:text-white transition-all duration-300 shadow-xl shadow-primary-theme/5">
+                            <Button size="sm" variant="outline" className="rounded-2xl border-primary-theme/30 text-primary-theme h-10 xl:h-12 px-3 xl:px-6 font-black uppercase tracking-widest text-[9px] xl:text-[10px] hover:bg-primary-theme hover:text-white transition-all duration-300 shadow-xl shadow-primary-theme/5 whitespace-nowrap">
                                 {t.auth.dashboard}
                             </Button>
                         </Link>
@@ -123,10 +123,10 @@ const Navbar = () => {
                     )}
                     <button
                         onClick={logout}
-                        className="h-12 px-4 lg:px-5 rounded-2xl flex items-center gap-3 text-slate-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-300 ring-1 ring-slate-200 dark:ring-slate-800 bg-white dark:bg-slate-900 shadow-lg shadow-black/5 group/logout"
+                        className="h-10 xl:h-12 px-3 xl:px-5 rounded-2xl flex items-center gap-2 xl:gap-3 text-slate-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-300 ring-1 ring-slate-200 dark:ring-slate-800 bg-white dark:bg-slate-900 shadow-lg shadow-black/5 group/logout whitespace-nowrap"
                     >
-                        <LogOut className="w-4.5 h-4.5 transition-transform group-hover/logout:-translate-x-1" />
-                        <span className="text-[10px] font-black uppercase tracking-widest hidden sm:inline">Logout</span>
+                        <LogOut className="w-4 h-4 xl:w-4.5 xl:h-4.5 transition-transform group-hover/logout:-translate-x-1" />
+                        <span className="text-[10px] font-black uppercase tracking-widest hidden lg:inline">Logout</span>
                     </button>
                 </div>
             );
@@ -197,6 +197,10 @@ const Navbar = () => {
                                         ))}
                                     </div>
                                     <div className="flex items-center gap-4">
+                                        <div className="flex items-center gap-2 px-3 xl:px-4 py-2 xl:py-2.5 bg-primary-theme/5 dark:bg-primary-theme/10 rounded-full border border-primary-theme/20 hover:bg-primary-theme/10 transition-colors">
+                                            <LayoutDashboard className="w-3.5 h-3.5 xl:w-4 xl:h-4 text-primary-theme" />
+                                            <span className="text-[10px] xl:text-xs font-bold text-primary-theme uppercase tracking-wider">Client Dashboard</span>
+                                        </div>
                                         <div className="flex items-center bg-white/5 backdrop-blur-md rounded-full px-2 py-1 ring-1 ring-white/10">
                                             <LanguageToggle />
                                             <div className="w-px h-4 bg-white/10 mx-1" />
@@ -224,9 +228,9 @@ const Navbar = () => {
                     <div className="absolute -top-24 -left-24 w-64 h-64 bg-primary-theme/5 blur-[100px] rounded-full" />
                     <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-primary-theme/5 blur-[100px] rounded-full" />
 
-                    <div className="container mx-auto px-4 xl:px-6 flex items-center h-20 relative z-10 gap-4 xl:gap-8">
+                    <div className="container mx-auto px-4 xl:px-6 flex items-center h-20 relative z-10 gap-2 lg:gap-4 xl:gap-8">
                         {/* Branding Area - Left Column */}
-                        <div className="flex-shrink-0">
+                        <div className="flex-shrink-0 min-w-max">
                             <Link to="/" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="flex items-center gap-2.5 group">
                                 <div className="w-10 h-10 xl:w-12 xl:h-12 bg-gradient-to-br from-primary-theme via-primary-theme to-primary-theme/80 rounded-[14px] xl:rounded-[18px] flex items-center justify-center shadow-xl shadow-primary-theme/20 group-hover:rotate-6 group-hover:scale-110 transition-all duration-500 relative ring-2 ring-primary-theme/20 dark:ring-white/10 shrink-0">
                                     <div className="absolute inset-0 bg-white/30 opacity-20 group-hover:opacity-0 transition-opacity rounded-[14px] xl:rounded-[18px]" />
@@ -252,7 +256,7 @@ const Navbar = () => {
                                 {navLinks.map((link) => (
                                     link.isDropdown ? (
                                         <div key={link.name} className="relative group">
-                                            <button className="relative text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white px-3 xl:px-5 py-2 rounded-full text-[10px] xl:text-[12px] font-black uppercase tracking-[0.08em] transition-all cursor-pointer flex items-center gap-1 hover:bg-black/[0.03] dark:hover:bg-white/[0.05] whitespace-nowrap">
+                                            <button className="relative text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white px-2 xl:px-5 py-2 rounded-full text-[10px] xl:text-[12px] font-black uppercase tracking-[0.08em] transition-all cursor-pointer flex items-center gap-1 hover:bg-black/[0.03] dark:hover:bg-white/[0.05] whitespace-nowrap">
                                                 {link.name}
                                                 <ChevronDown className="w-3 h-3 group-hover:rotate-180 transition-transform duration-500" />
                                                 <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary-theme opacity-0 scale-0 group-hover:opacity-100 group-hover:scale-100 transition-all duration-300" />
@@ -264,7 +268,8 @@ const Navbar = () => {
                                                             key={child.path}
                                                             href={child.path}
                                                             onClick={(e) => { e.preventDefault(); handleNavClick(child); }}
-                                                            className="flex items-center justify-between px-6 py-4 text-[12px] font-black uppercase tracking-[0.2em] text-slate-600 dark:text-slate-400 hover:text-primary-theme hover:bg-primary-theme/5 rounded-2xl transition-all duration-300 group/item border border-transparent hover:border-primary-theme/10"
+                                                            className="relative px-2 xl:px-4 py-2 text-[11px] xl:text-[13px] font-bold uppercase tracking-wider transition-all duration-300 rounded-full flex items-center gap-1.5
+                                                            text-slate-600 dark:text-slate-300 hover:text-primary-theme hover:bg-slate-100 dark:hover:bg-white/5"
                                                         >
                                                             <div className="flex items-center gap-4">
                                                                 <div className="w-1.5 h-1.5 rounded-full bg-primary-theme/20 group-hover/item:bg-primary-theme transition-colors duration-300 shrink-0" />
@@ -281,7 +286,7 @@ const Navbar = () => {
                                             key={link.path}
                                             href={link.path}
                                             onClick={(e) => { e.preventDefault(); handleNavClick(link); }}
-                                            className="relative text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white px-3 xl:px-5 py-2 rounded-full text-[10px] xl:text-[12px] font-black uppercase tracking-[0.08em] transition-all cursor-pointer hover:bg-black/[0.03] dark:hover:bg-white/[0.05] group whitespace-nowrap"
+                                            className="relative text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white px-2 xl:px-5 py-2 rounded-full text-[10px] xl:text-[12px] font-black uppercase tracking-[0.08em] transition-all cursor-pointer hover:bg-black/[0.03] dark:hover:bg-white/[0.05] group whitespace-nowrap"
                                         >
                                             {link.name}
                                             <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary-theme opacity-0 scale-0 group-hover:opacity-100 group-hover:scale-100 transition-all duration-300" />
@@ -292,7 +297,7 @@ const Navbar = () => {
                         </div>
 
                         {/* Actions Area - Right Column */}
-                        <div className="flex-shrink-0">
+                        <div className="flex items-center gap-2 xl:gap-3 flex-shrink-0 min-w-max">
                             <div className="flex items-center border-l border-primary-theme/10 pl-3 xl:pl-5">
                                 {renderActions()}
                             </div>
