@@ -86,8 +86,9 @@ app.use((err, req, res, next) => {
         body: req.body
     };
 
+    const logPath = process.env.VERCEL ? '/tmp/error.log' : path.join(__dirname, 'error.log');
     try {
-        fs.appendFileSync(path.join(__dirname, 'error.log'), JSON.stringify(errorDetail, null, 2) + '\n');
+        fs.appendFileSync(logPath, JSON.stringify(errorDetail, null, 2) + '\n');
     } catch (logErr) {
         console.error('Failed to write to error.log:', logErr.message);
     }
@@ -98,12 +99,15 @@ app.use((err, req, res, next) => {
         error: 'Something went wrong!',
         message: err.message,
         sql: err.sql,
-        stack: process.env.NODE_ENV === 'development' || !process.env.NODE_ENV ? err.stack : undefined
+        stack: err.stack // Temporarily expose stack trace everywhere for deep debugging
     });
 });
 
 app.listen(PORT, () => {
+    const logPath = process.env.VERCEL ? '/tmp/error.log' : path.join(__dirname, 'error.log');
     const startupMsg = `✅ Server started at ${new Date().toISOString()} on http://localhost:${PORT}\n`;
-    fs.appendFileSync(path.join(__dirname, 'error.log'), startupMsg);
+    try {
+        fs.appendFileSync(logPath, startupMsg);
+    } catch (e) { }
     console.log(`✅ Server running on http://localhost:${PORT}`);
 });

@@ -5,9 +5,11 @@ const authMiddleware = require('../middleware/authMiddleware');
 const fs = require('fs');
 const path = require('path');
 
+const logPath = process.env.VERCEL ? '/tmp/error.log' : path.join(__dirname, '../error.log');
+
 const logToFile = (msg) => {
     try {
-        fs.appendFileSync(path.join(__dirname, '../error.log'), `[${new Date().toISOString()}] ${msg}\n`);
+        fs.appendFileSync(logPath, `[${new Date().toISOString()}] ${msg}\n`);
     } catch (e) { }
 };
 
