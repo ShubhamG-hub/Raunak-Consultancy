@@ -112,11 +112,13 @@ app.use((err, req, res, next) => {
         body: req.body
     };
 
-    const logPath = process.env.VERCEL ? '/tmp/error.log' : path.join(__dirname, 'error.log');
+    const isVercel = !!process.env.VERCEL;
+    const logPath = isVercel ? '/tmp/error.log' : path.join(__dirname, 'error.log');
+
     try {
         fs.appendFileSync(logPath, JSON.stringify(errorDetail, null, 2) + '\n');
     } catch (logErr) {
-        console.error('Failed to write to error.log:', logErr.message);
+        // Silently fail if fs is read-only (standard for serverless)
     }
 
     console.error('🔴 Server Error:', errorDetail);
@@ -129,11 +131,16 @@ app.use((err, req, res, next) => {
     });
 });
 
-app.listen(PORT, () => {
-    const logPath = process.env.VERCEL ? '/tmp/error.log' : path.join(__dirname, 'error.log');
-    const startupMsg = `✅ Server started at ${new Date().toISOString()} on http://localhost:${PORT}\n`;
-    try {
-        fs.appendFileSync(logPath, startupMsg);
-    } catch (e) { }
+const server = app.listen(PORT, () => {
     console.log(`✅ Server running on http://localhost:${PORT}`);
+    const isVercel = !!process.env.VERCEL;
+    if (!isVercel) {
+        const logPath = path.join(__dirname, 'error.log');
+        const startupMsg = `✅ Server started at ${new Date().toISOString()} on http://localhost:${PORT}\n`;
+        try {
+            fs.appendFileSync(logPath, startupMsg);
+        } catch (e) { }
+    }
 });
+
+module.exports = app;

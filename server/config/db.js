@@ -11,15 +11,5 @@ const pool = mysql.createPool({
     queueLimit: 0
 });
 
-// Test connection
-(async () => {
-    try {
-        const connection = await pool.getConnection();
-        console.log('✅ MySQL Database Connected Successfully');
-        connection.release();
-    } catch (err) {
-        console.error('❌ MySQL Connection Failed:', err.message);
-    }
-})();
-
+// Connection will be tested via routes or health checks
 module.exports = pool;

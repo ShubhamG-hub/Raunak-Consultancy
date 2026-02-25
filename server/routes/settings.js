@@ -5,9 +5,11 @@ const authMiddleware = require('../middleware/authMiddleware');
 const fs = require('fs');
 const path = require('path');
 
-const logPath = process.env.VERCEL ? '/tmp/error.log' : path.join(__dirname, '../error.log');
+const isVercel = !!process.env.VERCEL;
+const logPath = isVercel ? '/tmp/error.log' : path.join(__dirname, '../error.log');
 
 const logToFile = (msg) => {
+    if (isVercel) return; // Skip file logs on Vercel to save IO/latency
     try {
         fs.appendFileSync(logPath, `[${new Date().toISOString()}] ${msg}\n`);
     } catch (e) { }
