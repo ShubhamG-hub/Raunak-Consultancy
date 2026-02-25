@@ -41,7 +41,12 @@ export const ThemeProvider = ({ children }) => {
                     }
                 }
             } catch (err) {
-                console.warn('Could not fetch global settings from backend:', err?.message);
+                console.error('❌ Could not fetch global settings from backend:', {
+                    message: err?.message,
+                    status: err?.response?.status,
+                    data: err?.response?.data,
+                    url: err?.config?.url
+                });
             } finally {
                 if (!cancelled) setThemeLoading(false);
             }

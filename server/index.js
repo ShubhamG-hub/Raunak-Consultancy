@@ -4,6 +4,8 @@ const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const path = require('path');
+const fs = require('fs');
+
 
 // Routes
 const authRoutes = require('./routes/auth');
@@ -67,17 +69,41 @@ app.get('/', (req, res) => {
     res.json({ message: 'Financial Advisory API is running with MySQL 🚀' });
 });
 
+app.get('/api/health', (req, res) => {
+    res.json({ status: 'OK', timestamp: new Date().toISOString() });
+});
+
+
 // Global Error Handler
 app.use((err, req, res, next) => {
-    console.error('🔴 Server Error:', err.stack);
+    const errorDetail = {
+        timestamp: new Date().toISOString(),
+        message: err.message,
+        stack: err.stack,
+        url: req.url,
+        method: req.method,
+        headers: req.headers,
+        body: req.body
+    };
+
+    try {
+        fs.appendFileSync(path.join(__dirname, 'error.log'), JSON.stringify(errorDetail, null, 2) + '\n');
+    } catch (logErr) {
+        console.error('Failed to write to error.log:', logErr.message);
+    }
+
+    console.error('🔴 Server Error:', errorDetail);
+
     res.status(500).json({
         error: 'Something went wrong!',
         message: err.message,
         sql: err.sql,
-        stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
+        stack: process.env.NODE_ENV === 'development' || !process.env.NODE_ENV ? err.stack : undefined
     });
 });
 
 app.listen(PORT, () => {
+    const startupMsg = `✅ Server started at ${new Date().toISOString()} on http://localhost:${PORT}\n`;
+    fs.appendFileSync(path.join(__dirname, 'error.log'), startupMsg);
     console.log(`✅ Server running on http://localhost:${PORT}`);
 });

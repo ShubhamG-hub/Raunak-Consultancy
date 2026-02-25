@@ -2,6 +2,18 @@ const express = require('express');
 const router = express.Router();
 const db = require('../config/db');
 const authMiddleware = require('../middleware/authMiddleware');
+const fs = require('fs');
+const path = require('path');
+
+const logToFile = (msg) => {
+    try {
+        fs.appendFileSync(path.join(__dirname, '../error.log'), `[${new Date().toISOString()}] ${msg}\n`);
+    } catch (e) { }
+};
+
+
+console.log('📝 Settings route initialized');
+
 
 // Default settings when DB is unavailable
 const DEFAULT_SETTINGS = {
@@ -12,23 +24,35 @@ const DEFAULT_SETTINGS = {
 // GET /api/settings/:key - Public or Private (depending on key)
 router.get('/:key', async (req, res) => {
     const key = req.params.key;
-    console.log(`🔍 Fetching setting: ${key}`);
+    logToFile(`🔍 [GET /api/settings/${key}] Fetching setting...`);
     try {
+        if (!db) {
+            throw new Error('Database object is undefined');
+        }
         const [rows] = await db.query('SELECT setting_value FROM settings WHERE setting_key = ?', [key]);
         if (rows.length === 0) {
             // Return default if we have one, otherwise 404
             if (DEFAULT_SETTINGS[key] !== undefined) {
+                logToFile(`ℹ️ [GET /api/settings/${key}] Not found in DB, using default`);
                 return res.json({ value: DEFAULT_SETTINGS[key] });
             }
-            console.log(`⚠️ Setting not found: ${key}`);
+            logToFile(`⚠️ [GET /api/settings/${key}] Not found`);
             return res.status(404).json({ error: 'Setting not found' });
         }
-        console.log(`✅ Found setting ${key}: ${rows[0].setting_value}`);
+        logToFile(`✅ [GET /api/settings/${key}] Found: ${rows[0].setting_value}`);
         res.json({ value: rows[0].setting_value });
     } catch (err) {
-        console.warn(`⚠️ DB unavailable for setting ${key}, using default:`, err.message);
+        logToFile(`🔴 [GET /api/settings/${key}] Error: ${err.message}`);
+
+        console.error(`🔴 [GET /api/settings/${key}] Error:`, {
+            message: err.message,
+            stack: err.stack,
+            sql: err.sql
+        });
+
         // Return a default instead of crashing with 500
         if (DEFAULT_SETTINGS[key] !== undefined) {
+            console.log(`ℹ️ [GET /api/settings/${key}] Returning default value: ${DEFAULT_SETTINGS[key]}`);
             return res.json({ value: DEFAULT_SETTINGS[key] });
         }
         res.status(404).json({ error: 'Setting not found' });
