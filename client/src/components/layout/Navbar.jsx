@@ -248,7 +248,7 @@ const Navbar = () => {
 
                         {/* Navigation Links - Center Column (flex-1 to fill remaining space, centered) */}
                         <div className="flex-1 flex justify-center min-w-0 px-2">
-                            <div className="flex items-center gap-0 bg-white/60 dark:bg-black/30 backdrop-blur-2xl p-1 rounded-full ring-1 ring-black/[0.03] dark:ring-white/[0.05] shadow-[0_8px_32px_rgba(0,0,0,0.06)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.2)] overflow-hidden">
+                            <div className="flex items-center gap-0.5 xl:gap-1 bg-white/60 dark:bg-black/30 backdrop-blur-2xl p-1 rounded-full ring-1 ring-black/[0.03] dark:ring-white/[0.05] shadow-[0_8px_32px_rgba(0,0,0,0.06)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.2)]">
                                 {navLinks.map((link) => (
                                     link.isDropdown ? (
                                         <div key={link.name} className="relative group">
