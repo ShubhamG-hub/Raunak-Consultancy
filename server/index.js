@@ -73,6 +73,32 @@ app.get('/api/health', (req, res) => {
     res.json({ status: 'OK', timestamp: new Date().toISOString() });
 });
 
+app.get('/api/test-db', async (req, res) => {
+    const db = require('./config/db');
+    try {
+        const connection = await db.getConnection();
+        connection.release();
+        res.json({
+            status: 'success',
+            message: 'MySQL Database Connected Successfully',
+            config: {
+                host: process.env.DB_HOST || 'localhost',
+                user: process.env.DB_USER || 'root',
+                database: process.env.DB_NAME || 'portfolio_db'
+            }
+        });
+    } catch (err) {
+        res.status(500).json({
+            status: 'error',
+            message: 'MySQL Connection Failed',
+            error: err.message,
+            code: err.code,
+            stack: err.stack
+        });
+    }
+});
+
+
 
 // Global Error Handler
 app.use((err, req, res, next) => {
