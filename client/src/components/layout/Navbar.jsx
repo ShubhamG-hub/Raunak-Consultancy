@@ -206,9 +206,9 @@ const Navbar = () => {
                                             <div className="w-px h-4 bg-white/10 mx-1" />
                                             <button
                                                 onClick={toggleDarkMode}
-                                                className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-primary-theme/20 hover:text-primary-theme transition-all duration-300"
+                                                className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-primary-theme/20 hover:text-primary-theme transition-all duration-300"
                                             >
-                                                {isDark ? <Sun size={14} className="text-yellow-400" /> : <Moon size={14} />}
+                                                {isDark ? <Sun size={20} className="text-yellow-400" /> : <Moon size={20} />}
                                             </button>
                                         </div>
                                     </div>
@@ -342,8 +342,8 @@ const Navbar = () => {
                     <div className="flex items-center gap-2">
                         <div className="flex items-center bg-black/5 dark:bg-white/5 p-1 rounded-full ring-1 ring-black/5 dark:ring-white/5">
                             <LanguageToggle />
-                            <button onClick={toggleDarkMode} className="w-8 h-8 rounded-full flex items-center justify-center text-slate-500 hover:text-primary-theme transition-all duration-300">
-                                {isDark ? <Sun size={15} className="text-yellow-400" /> : <Moon size={15} />}
+                            <button onClick={toggleDarkMode} className="w-10 h-10 rounded-full flex items-center justify-center text-slate-500 hover:text-primary-theme transition-all duration-300">
+                                {isDark ? <Sun size={20} className="text-yellow-400" /> : <Moon size={20} />}
                             </button>
                         </div>
                         <Button
