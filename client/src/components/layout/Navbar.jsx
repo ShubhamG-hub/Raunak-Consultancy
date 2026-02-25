@@ -106,7 +106,7 @@ const Navbar = () => {
         if (user) {
             return (
                 <div className="flex items-center gap-3">
-                    <div className="hidden lg:flex flex-col items-end mr-1">
+                    <div className="hidden xl:flex flex-col items-end mr-1">
                         <span className="text-[10px] font-black tracking-widest text-primary-theme uppercase block leading-tight">Administrator</span>
                         <span className="text-xs xl:text-sm font-bold text-slate-800 dark:text-white block leading-tight">{user.name || 'Admin'}</span>
                     </div>
@@ -126,7 +126,7 @@ const Navbar = () => {
                         className="h-10 xl:h-12 px-3 xl:px-5 rounded-2xl flex items-center gap-2 xl:gap-3 text-slate-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-300 ring-1 ring-slate-200 dark:ring-slate-800 bg-white dark:bg-slate-900 shadow-lg shadow-black/5 group/logout whitespace-nowrap"
                     >
                         <LogOut className="w-4 h-4 xl:w-4.5 xl:h-4.5 transition-transform group-hover/logout:-translate-x-1" />
-                        <span className="text-[10px] font-black uppercase tracking-widest hidden lg:inline">Logout</span>
+                        <span className="text-[10px] font-black uppercase tracking-widest hidden xl:inline">Logout</span>
                     </button>
                 </div>
             );
@@ -136,7 +136,7 @@ const Navbar = () => {
             <div className="flex items-center">
                 <Button
                     onClick={() => setIsBookingOpen(true)}
-                    className="relative px-4 xl:px-6 h-10 xl:h-11 rounded-[24px] bg-gradient-to-br from-primary-theme via-primary-theme to-accent-theme text-white font-black uppercase tracking-widest text-[9px] xl:text-[10px] shadow-xl shadow-primary-theme/20 hover:shadow-primary-theme/40 transition-all duration-500 overflow-hidden group/book ring-2 ring-white/10 whitespace-nowrap"
+                    className="relative px-3 xl:px-6 h-10 xl:h-11 rounded-[24px] bg-gradient-to-br from-primary-theme via-primary-theme to-accent-theme text-white font-black uppercase tracking-widest text-[9px] xl:text-[10px] shadow-xl shadow-primary-theme/20 hover:shadow-primary-theme/40 transition-all duration-500 overflow-hidden group/book ring-2 ring-white/10 whitespace-nowrap"
                 >
                     {/* Animated Shine Effect */}
                     <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover/book:animate-[shimmer_1.5s_infinite]" />
@@ -228,7 +228,7 @@ const Navbar = () => {
                     <div className="absolute -top-24 -left-24 w-64 h-64 bg-primary-theme/5 blur-[100px] rounded-full" />
                     <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-primary-theme/5 blur-[100px] rounded-full" />
 
-                    <div className="container mx-auto px-4 xl:px-6 flex items-center h-20 relative z-10 gap-2 lg:gap-4 xl:gap-8">
+                    <div className="container mx-auto px-4 xl:px-6 flex items-center h-20 relative z-10 gap-1 lg:gap-1.5 xl:gap-8">
                         {/* Branding Area - Left Column */}
                         <div className="flex-shrink-0 min-w-max">
                             <Link to="/" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="flex items-center gap-2.5 group">
@@ -256,7 +256,7 @@ const Navbar = () => {
                                 {navLinks.map((link) => (
                                     link.isDropdown ? (
                                         <div key={link.name} className="relative group">
-                                            <button className="relative text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white px-2 xl:px-5 py-2 rounded-full text-[10px] xl:text-[12px] font-black uppercase tracking-[0.08em] transition-all cursor-pointer flex items-center gap-1 hover:bg-black/[0.03] dark:hover:bg-white/[0.05] whitespace-nowrap">
+                                            <button className="relative text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white px-1.5 xl:px-5 py-2 rounded-full text-[9.5px] xl:text-[12px] font-black uppercase tracking-[0.05em] xl:tracking-[0.08em] transition-all cursor-pointer flex items-center gap-1 hover:bg-black/[0.03] dark:hover:bg-white/[0.05] whitespace-nowrap">
                                                 {link.name}
                                                 <ChevronDown className="w-3 h-3 group-hover:rotate-180 transition-transform duration-500" />
                                                 <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary-theme opacity-0 scale-0 group-hover:opacity-100 group-hover:scale-100 transition-all duration-300" />
@@ -286,7 +286,7 @@ const Navbar = () => {
                                             key={link.path}
                                             href={link.path}
                                             onClick={(e) => { e.preventDefault(); handleNavClick(link); }}
-                                            className="relative text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white px-2 xl:px-5 py-2 rounded-full text-[10px] xl:text-[12px] font-black uppercase tracking-[0.08em] transition-all cursor-pointer hover:bg-black/[0.03] dark:hover:bg-white/[0.05] group whitespace-nowrap"
+                                            className="relative text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white px-1.5 xl:px-5 py-2 rounded-full text-[9.5px] xl:text-[12px] font-black uppercase tracking-[0.05em] xl:tracking-[0.08em] transition-all cursor-pointer hover:bg-black/[0.03] dark:hover:bg-white/[0.05] group whitespace-nowrap"
                                         >
                                             {link.name}
                                             <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary-theme opacity-0 scale-0 group-hover:opacity-100 group-hover:scale-100 transition-all duration-300" />
