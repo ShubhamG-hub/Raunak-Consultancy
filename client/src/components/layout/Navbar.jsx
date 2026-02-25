@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Menu, X, Sun, Moon, LogOut, Facebook, Instagram, Linkedin, MessageCircle, ChevronDown, ArrowRight } from 'lucide-react';
+import { Menu, X, Sun, Moon, LogOut, Facebook, Instagram, Linkedin, MessageCircle, ChevronDown, ArrowRight, LayoutDashboard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/context/AuthContext';
