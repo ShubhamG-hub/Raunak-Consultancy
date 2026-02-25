@@ -3,7 +3,9 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
+const path = require('path');
 
+// Routes
 const authRoutes = require('./routes/auth');
 const leadRoutes = require('./routes/leads');
 const testimonialRoutes = require('./routes/testimonials');
@@ -19,17 +21,27 @@ const blogRoutes = require('./routes/blogs');
 const awardRoutes = require('./routes/awards');
 const virtualOfficeRoutes = require('./routes/virtualOffice');
 const zoomWebhookRoutes = require('./routes/zoomWebhook');
+const settingsRoutes = require('./routes/settings');
+const aboutRoutes = require('./routes/about');
+const serviceRoutes = require('./routes/services');
+const categoryRoutes = require('./routes/categories');
+
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
-app.use(helmet());
+app.use(helmet({
+    crossOriginResourcePolicy: false, // For local file access if needed
+}));
 app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
 
-// Routes
+// Serve Static Files (for uploads)
+app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
+
+// Routes API
 app.use('/api/auth', authRoutes);
 app.use('/api/leads', leadRoutes);
 app.use('/api/testimonials', testimonialRoutes);
@@ -44,16 +56,26 @@ app.use('/api/bookings', bookingRoutes);
 app.use('/api/blogs', blogRoutes);
 app.use('/api/awards', awardRoutes);
 app.use('/api/virtual-office', virtualOfficeRoutes);
+app.use('/api/settings', settingsRoutes);
+app.use('/api/about', aboutRoutes);
+app.use('/api/services', serviceRoutes);
+app.use('/api/categories', categoryRoutes);
 app.use('/api/zoom/webhook', express.raw({ type: 'application/json' }), zoomWebhookRoutes);
 
+
 app.get('/', (req, res) => {
-    res.json({ message: 'Financial Advisory API is running 🚀' });
+    res.json({ message: 'Financial Advisory API is running with MySQL 🚀' });
 });
 
 // Global Error Handler
 app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({ error: 'Something went wrong!' });
+    console.error('🔴 Server Error:', err.stack);
+    res.status(500).json({
+        error: 'Something went wrong!',
+        message: err.message,
+        sql: err.sql,
+        stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
+    });
 });
 
 app.listen(PORT, () => {

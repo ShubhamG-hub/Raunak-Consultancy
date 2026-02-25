@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { useState } from 'react';
 import { useLanguage } from '@/context/useLanguage';
 import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 import { Calculator, Coins } from 'lucide-react';
 
 const RDCalculator = () => {
@@ -10,34 +10,26 @@ const RDCalculator = () => {
     const [interestRate, setInterestRate] = useState(7);
     const [period, setPeriod] = useState(5);
 
-    const [results, setResults] = useState({
-        investedAmount: 0,
-        estReturns: 0,
-        totalValue: 0
-    });
+    const P = monthlyInvestment;
+    const R = interestRate;
+    // Quarterly compounding (n_comp = 4 used inline)
+    const t_years = period;
+    const totalMonths = t_years * 12;
 
-    useEffect(() => {
-        const P = monthlyInvestment;
-        const R = interestRate;
-        const n = 4; // Quarterly compounding
-        const t_years = period;
-        const totalMonths = t_years * 12;
+    // Formula for RD Maturity Amount compounded quarterly
+    // Maturity Value = P * [ (1+i)^n - 1 ] / [ 1 - (1+i)^(-1/3) ]
+    // where i = r/400
+    const i = R / 400;
+    const totalValue = P * (Math.pow(1 + i, 4 * t_years) - 1) / (1 - Math.pow(1 + i, -1 / 3));
 
-        // Formula for RD Maturity Amount compounded quarterly
-        // Maturity Value = P * [ (1+i)^n - 1 ] / [ 1 - (1+i)^(-1/3) ]
-        // where i = r/400
-        const i = R / 400;
-        const totalValue = P * (Math.pow(1 + i, 4 * t_years) - 1) / (1 - Math.pow(1 + i, -1 / 3));
+    const investedAmount = P * totalMonths;
+    const estReturns = totalValue - investedAmount;
 
-        const investedAmount = P * totalMonths;
-        const estReturns = totalValue - investedAmount;
-
-        setResults({
-            investedAmount: Math.round(investedAmount),
-            estReturns: Math.round(estReturns),
-            totalValue: Math.round(totalValue)
-        });
-    }, [monthlyInvestment, interestRate, period]);
+    const results = {
+        investedAmount: Math.round(investedAmount),
+        estReturns: Math.round(estReturns),
+        totalValue: Math.round(totalValue)
+    };
 
     const formatCurrency = (val) => {
         return new Intl.NumberFormat('en-IN', {
@@ -48,7 +40,7 @@ const RDCalculator = () => {
     };
 
     return (
-        <div className="bg-white dark:bg-slate-800 p-8 rounded-[2rem] border border-slate-100 dark:border-slate-700 shadow-xl">
+        <div className="bg-white dark:bg-slate-800 p-5 md:p-8 rounded-[2rem] border border-slate-100 dark:border-slate-700 shadow-xl">
             <div className="flex items-center gap-4 mb-8">
                 <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-2xl flex items-center justify-center">
                     <Coins className="text-purple-600 w-6 h-6" />
@@ -59,12 +51,20 @@ const RDCalculator = () => {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
                 <div className="space-y-8">
                     <div className="space-y-4">
                         <div className="flex justify-between items-center">
                             <Label className="text-sm font-bold text-slate-700 dark:text-slate-300">{t.calculators.rd.monthlyInvestment}</Label>
-                            <span className="text-purple-600 font-black">{formatCurrency(monthlyInvestment)}</span>
+                            <div className="relative w-36">
+                                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold">₹</span>
+                                <Input
+                                    type="number"
+                                    value={monthlyInvestment}
+                                    onChange={(e) => setMonthlyInvestment(Number(e.target.value))}
+                                    className="pl-7 h-9 rounded-lg border-slate-200 focus:ring-purple-600 font-black text-purple-600"
+                                />
+                            </div>
                         </div>
                         <input
                             type="range" min="500" max="100000" step="500"
@@ -77,7 +77,15 @@ const RDCalculator = () => {
                     <div className="space-y-4">
                         <div className="flex justify-between items-center">
                             <Label className="text-sm font-bold text-slate-700 dark:text-slate-300">{t.calculators.rd.interestRate}</Label>
-                            <span className="text-purple-600 font-black">{interestRate}%</span>
+                            <div className="relative w-24">
+                                <Input
+                                    type="number"
+                                    value={interestRate}
+                                    onChange={(e) => setInterestRate(Number(e.target.value))}
+                                    className="pr-8 h-9 rounded-lg border-slate-200 focus:ring-purple-600 font-black text-purple-600"
+                                />
+                                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold">%</span>
+                            </div>
                         </div>
                         <input
                             type="range" min="1" max="15" step="0.1"
@@ -90,7 +98,15 @@ const RDCalculator = () => {
                     <div className="space-y-4">
                         <div className="flex justify-between items-center">
                             <Label className="text-sm font-bold text-slate-700 dark:text-slate-300">{t.calculators.rd.period}</Label>
-                            <span className="text-purple-600 font-black">{period} yr</span>
+                            <div className="relative w-24">
+                                <Input
+                                    type="number"
+                                    value={period}
+                                    onChange={(e) => setPeriod(Number(e.target.value))}
+                                    className="pr-8 h-9 rounded-lg border-slate-200 focus:ring-purple-600 font-black text-purple-600"
+                                />
+                                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs font-bold">yr</span>
+                            </div>
                         </div>
                         <input
                             type="range" min="1" max="25" step="1"
@@ -101,7 +117,7 @@ const RDCalculator = () => {
                     </div>
                 </div>
 
-                <div className="bg-slate-50 dark:bg-slate-900/50 p-8 rounded-[1.5rem] border border-slate-100 dark:border-slate-800 flex flex-col justify-center">
+                <div className="bg-slate-50 dark:bg-slate-900/50 p-6 md:p-8 rounded-[1.5rem] border border-slate-100 dark:border-slate-800 flex flex-col justify-center">
                     <div className="space-y-6">
                         <div className="flex justify-between items-center p-3 rounded-xl hover:bg-white dark:hover:bg-slate-800 transition-colors">
                             <div className="flex items-center gap-3">

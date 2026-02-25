@@ -29,7 +29,7 @@ const CertificateDisplay = () => {
         return (
             <div className="text-center py-10">
                 <div className="inline-flex items-center gap-2 text-slate-500 dark:text-slate-400">
-                    <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+                    <div className="w-5 h-5 border-2 border-primary-theme border-t-transparent rounded-full animate-spin" />
                     {t.certificates.loading}
                 </div>
             </div>
@@ -68,8 +68,8 @@ const CertificateDisplay = () => {
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                                 </div>
                             ) : (
-                                <div className="aspect-[4/3] bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 flex items-center justify-center">
-                                    <Award className="w-16 h-16 text-blue-300 dark:text-blue-700" />
+                                <div className="aspect-[4/3] bg-gradient-to-br from-primary-theme/10 to-accent-theme/10 flex items-center justify-center">
+                                    <Award className="w-16 h-16 text-primary-theme/40" />
                                 </div>
                             )}
                             <div className="p-5">

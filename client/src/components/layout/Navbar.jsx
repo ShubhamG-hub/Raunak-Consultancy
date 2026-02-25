@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Menu, X, Sun, Moon, LogOut, Facebook, Instagram, Linkedin, Twitter, ChevronDown } from 'lucide-react';
+import { Menu, X, Sun, Moon, LogOut, Facebook, Instagram, Linkedin, MessageCircle, ChevronDown, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/context/AuthContext';
@@ -17,7 +17,7 @@ const Navbar = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { user, logout, isAdmin } = useAuth();
-    const { theme, toggleTheme } = useTheme();
+    const { isDark, toggleDarkMode } = useTheme();
     const { t } = useLanguage();
 
     useEffect(() => {
@@ -35,13 +35,7 @@ const Navbar = () => {
             const element = document.getElementById(targetId);
             if (element) {
                 setTimeout(() => {
-                    const navHeight = 120;
-                    const elementPosition = element.getBoundingClientRect().top;
-                    const offsetPosition = elementPosition + window.pageYOffset - navHeight;
-                    window.scrollTo({
-                        top: offsetPosition,
-                        behavior: 'smooth'
-                    });
+                    element.scrollIntoView({ behavior: 'smooth' });
                 }, 100);
             }
         }
@@ -50,14 +44,17 @@ const Navbar = () => {
     const toggleMenu = () => setIsOpen(!isOpen);
 
     const socialLinks = [
-        { icon: Linkedin, href: "https://linkedin.com", color: "hover:text-blue-500" },
-        { icon: Facebook, href: "https://facebook.com", color: "hover:text-blue-600" },
-        { icon: Instagram, href: "https://instagram.com", color: "hover:text-pink-500" },
-        { icon: Twitter, href: "https://twitter.com", color: "hover:text-sky-400" },
+        { icon: Linkedin, href: "https://linkedin.com", color: "hover:text-primary-theme" },
+        { icon: Facebook, href: "https://facebook.com", color: "hover:text-primary-theme" },
+        { icon: Instagram, href: "https://instagram.com", color: "hover:text-primary-theme" },
+        { icon: MessageCircle, href: "https://whatsapp.com/channel/0029VaVlXym42DcomEobtW3O", color: "hover:text-[#25D366]" },
     ];
 
     const navLinks = [
         { name: t.nav.home, path: '#home' },
+        { name: t.nav.services, path: '#services' },
+        { name: t.nav.calculators, path: '#calculators' },
+        { name: t.nav.claims, path: '#claims' },
         {
             name: t.nav.about,
             path: '#about',
@@ -70,10 +67,7 @@ const Navbar = () => {
                 { name: t.nav.testimonials, path: '#testimonials' },
             ]
         },
-        { name: t.nav.services, path: '#services' },
-        { name: t.nav.calculators, path: '#calculators' },
         { name: t.nav.blogs, path: '/blogs', isRoute: true },
-        { name: t.nav.claims, path: '#claims' },
         { name: t.nav.contact, path: '#contact' },
     ];
 
@@ -98,10 +92,7 @@ const Navbar = () => {
                 } else {
                     navigate('/' + link.path, { replace: false });
                     if (element) {
-                        const navHeight = 120;
-                        const elementPosition = element.getBoundingClientRect().top;
-                        const offsetPosition = elementPosition + window.pageYOffset - navHeight;
-                        window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+                        element.scrollIntoView({ behavior: 'smooth' });
                     }
                 }
             } else {
@@ -115,187 +106,248 @@ const Navbar = () => {
         if (user) {
             return (
                 <div className="flex items-center gap-3">
-                    <div className="flex flex-col items-end mr-2 hidden lg:flex">
-                        <span className="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest">{user.role}</span>
-                        <span className="text-sm font-black text-slate-900 dark:text-white leading-none">{user.name}</span>
+                    <div className="hidden lg:flex flex-col items-end mr-1">
+                        <span className="text-[8px] font-black text-primary-theme uppercase tracking-[0.2em] leading-none mb-1 opacity-80">{user.role}</span>
+                        <span className="text-[13px] font-black text-slate-900 dark:text-white leading-none tracking-tight">{user.name}</span>
                     </div>
                     {isAdmin ? (
                         <Link to="/admin/dashboard">
-                            <Button size="sm" variant="outline" className="rounded-full border-blue-600/20 text-blue-600 h-10 px-6 font-bold hover:bg-blue-600 hover:text-white transition-all">
+                            <Button size="sm" variant="outline" className="rounded-2xl border-primary-theme/30 text-primary-theme h-12 px-6 font-black uppercase tracking-widest text-[10px] hover:bg-primary-theme hover:text-white transition-all duration-300 shadow-xl shadow-primary-theme/5">
                                 {t.auth.dashboard}
                             </Button>
                         </Link>
                     ) : (
-                        <Button size="sm" variant="ghost" className="rounded-full font-bold h-10 px-4">
+                        <Button size="sm" variant="ghost" className="rounded-2xl font-black uppercase tracking-widest text-[10px] h-11 px-5 hover:bg-primary-theme/5 text-slate-600 dark:text-slate-400 hover:text-primary-theme">
                             {t.auth.profile}
                         </Button>
                     )}
-                    <Button
-                        size="icon"
-                        variant="ghost"
+                    <button
                         onClick={logout}
-                        className="rounded-full h-10 w-10 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"
+                        className="h-12 px-4 lg:px-5 rounded-2xl flex items-center gap-3 text-slate-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-300 ring-1 ring-slate-200 dark:ring-slate-800 bg-white dark:bg-slate-900 shadow-lg shadow-black/5 group/logout"
                     >
-                        <LogOut className="w-5 h-5" />
-                    </Button>
+                        <LogOut className="w-4.5 h-4.5 transition-transform group-hover/logout:-translate-x-1" />
+                        <span className="text-[10px] font-black uppercase tracking-widest hidden sm:inline">Logout</span>
+                    </button>
                 </div>
             );
         }
 
         return (
-            <div className="flex items-center gap-2">
-                <Link to="/login" className="hidden sm:block">
-                    <Button variant="ghost" className="rounded-full h-10 px-6 font-bold">
-                        {t.auth.loginBtn}
-                    </Button>
-                </Link>
+            <div className="flex items-center">
                 <Button
                     onClick={() => setIsBookingOpen(true)}
-                    className="rounded-full h-10 px-6 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 shadow-lg shadow-blue-600/20 hover:shadow-blue-600/30 transition-all font-bold"
+                    className="relative px-4 xl:px-6 h-10 xl:h-11 rounded-[24px] bg-gradient-to-br from-primary-theme via-primary-theme to-accent-theme text-white font-black uppercase tracking-widest text-[9px] xl:text-[10px] shadow-xl shadow-primary-theme/20 hover:shadow-primary-theme/40 transition-all duration-500 overflow-hidden group/book ring-2 ring-white/10 whitespace-nowrap"
                 >
-                    {t.nav.bookConsultation}
+                    {/* Animated Shine Effect */}
+                    <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover/book:animate-[shimmer_1.5s_infinite]" />
+
+                    {/* Hover Glow */}
+                    <div className="absolute inset-0 bg-white opacity-0 group-hover/book:opacity-10 transition-opacity duration-500" />
+
+                    <span className="relative z-10 flex items-center gap-1.5">
+                        {t.nav.bookConsultation}
+                        <ArrowRight className="w-3.5 h-3.5 group-hover/book:translate-x-1 transition-transform" strokeWidth={3} />
+                    </span>
                 </Button>
             </div>
         );
     };
 
     return (
-        <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled
-            ? 'bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200/50 dark:border-slate-800/50 shadow-sm shadow-slate-900/5'
-            : 'bg-transparent border-b border-transparent'
-            }`}>
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                {/* Desktop: Two-Line Layout */}
-                <div className="hidden md:flex flex-col py-3">
-                    {/* Line 1: Logo & Actions */}
-                    <div className="flex items-center justify-between h-14 mb-2">
-                        <div className="flex items-center gap-6">
-                            {/* Logo */}
-                            <Link to="/" onClick={() => window.scrollTo(0, 0)} className="flex-shrink-0 flex items-center gap-2 group">
-                                <img
-                                    src="/Logo.png"
-                                    alt={t.footer.companyName}
-                                    className="w-10 h-10 object-contain drop-shadow-md group-hover:scale-110 transition-transform duration-300"
-                                />
-                                <span className="text-2xl font-bold text-slate-900 dark:text-white hidden sm:inline">{t.footer.companyName}</span>
-                            </Link>
+        <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500`}>
+            {/* Desktop: 1.5 Line Layout */}
+            <div className="hidden md:block">
+                {/* Line 0.5: Top Info Bar (Collapsible) */}
+                <AnimatePresence>
+                    {!scrolled && (
+                        <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: '60px', opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            className="bg-slate-950 dark:bg-black text-white/90 border-b border-white/5 overflow-hidden relative"
+                        >
+                            {/* Theme accent blur */}
+                            <div className="absolute top-0 right-0 w-64 h-full bg-primary-theme/10 blur-3xl -z-10" />
 
-                            {/* Social Media Links */}
-                            <div className="hidden lg:flex items-center gap-3 pl-6 border-l border-slate-200 dark:border-slate-800">
-                                {socialLinks.map((social, idx) => (
-                                    <a
-                                        key={idx}
-                                        href={social.href}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className={`p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 ${social.color} transition-all duration-300 hover:scale-110`}
-                                    >
-                                        <social.icon size={16} />
+                            <div className="container mx-auto px-6 h-full flex items-center justify-between text-xs font-bold uppercase tracking-wider">
+                                <div className="flex items-center gap-8">
+                                    <div className="flex items-center gap-3 group">
+                                        <div className="relative flex items-center justify-center">
+                                            <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 ring-4 ring-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.4)]" />
+                                            <div className="absolute inset-0 w-2.5 h-2.5 rounded-full bg-emerald-500 animate-[ping_2s_cubic-bezier(0,0,0.2,1)_infinite]" />
+                                        </div>
+                                        <span className="text-white/60 group-hover:text-primary-theme transition-colors duration-300 flex items-center gap-2">
+                                            <span className="w-1 h-3 bg-emerald-500/30 rounded-full" />
+                                            Kalyan, Mumbai
+                                        </span>
+                                    </div>
+                                    <div className="w-px h-6 bg-white/10" />
+                                    <a href="tel:+919137105476" className="flex items-center gap-2 text-white/60 hover:text-primary-theme transition-all duration-300 group">
+                                        <span className="bg-primary-theme/20 text-primary-theme px-1.5 py-0.5 rounded text-[10px] ring-1 ring-primary-theme/50">IN</span>
+                                        <span className="tracking-widest">+91 9137105476</span>
                                     </a>
+                                </div>
+
+                                <div className="flex items-center gap-8">
+                                    <div className="flex items-center gap-5 pr-8 border-r border-white/10">
+                                        {socialLinks.map((social, idx) => (
+                                            <a key={idx} href={social.href} className="text-white/40 hover:text-primary-theme transition-all duration-300 transform hover:-translate-y-1">
+                                                <social.icon size={18} strokeWidth={2.5} />
+                                            </a>
+                                        ))}
+                                    </div>
+                                    <div className="flex items-center gap-4">
+                                        <div className="flex items-center bg-white/5 backdrop-blur-md rounded-full px-2 py-1 ring-1 ring-white/10">
+                                            <LanguageToggle />
+                                            <div className="w-px h-4 bg-white/10 mx-1" />
+                                            <button
+                                                onClick={toggleDarkMode}
+                                                className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-primary-theme/20 hover:text-primary-theme transition-all duration-300"
+                                            >
+                                                {isDark ? <Sun size={14} className="text-yellow-400" /> : <Moon size={14} />}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+
+                {/* Line 1.0: Main Navigation Bar */}
+                <div className={`transition-all duration-500 overflow-hidden relative ${scrolled
+                    ? 'bg-white/80 dark:bg-slate-950/80 backdrop-blur-2xl border-b border-primary-theme/10 shadow-2xl shadow-primary-theme/5 py-1'
+                    : 'bg-white/90 dark:bg-slate-900/40 backdrop-blur-xl border-b border-primary-theme/5 pt-3 pb-1'
+                    }`}>
+
+                    {/* Background decoration */}
+                    <div className="absolute -top-24 -left-24 w-64 h-64 bg-primary-theme/5 blur-[100px] rounded-full" />
+                    <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-primary-theme/5 blur-[100px] rounded-full" />
+
+                    <div className="container mx-auto px-4 xl:px-6 flex items-center h-20 relative z-10 gap-2">
+                        {/* Branding Area - Left Column */}
+                        <div className="flex-shrink-0">
+                            <Link to="/" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="flex items-center gap-2.5 group">
+                                <div className="w-10 h-10 xl:w-12 xl:h-12 bg-gradient-to-br from-primary-theme via-primary-theme to-primary-theme/80 rounded-[14px] xl:rounded-[18px] flex items-center justify-center shadow-xl shadow-primary-theme/20 group-hover:rotate-6 group-hover:scale-110 transition-all duration-500 relative ring-2 ring-primary-theme/20 dark:ring-white/10 shrink-0">
+                                    <div className="absolute inset-0 bg-white/30 opacity-20 group-hover:opacity-0 transition-opacity rounded-[14px] xl:rounded-[18px]" />
+                                    <img src="/Logo.png" alt="Logo" className="w-7 h-7 xl:w-8 xl:h-8 invert drop-shadow-2xl object-contain" />
+                                </div>
+                                <div className="flex flex-col">
+                                    <span className="text-base xl:text-xl font-black text-slate-900 dark:text-white tracking-tighter leading-tight drop-shadow-sm whitespace-nowrap">
+                                        {t.footer.companyName}
+                                    </span>
+                                    <div className="flex items-center gap-1.5 mt-0.5">
+                                        <div className="h-[2px] w-6 bg-primary-theme/30 rounded-full overflow-hidden shrink-0">
+                                            <div className="h-full w-full bg-primary-theme animate-[shimmer_2s_infinite]" />
+                                        </div>
+                                        <span className="text-[8px] xl:text-[10px] font-black text-primary-theme/70 uppercase tracking-[0.3em] whitespace-nowrap">Financial Consultancy</span>
+                                    </div>
+                                </div>
+                            </Link>
+                        </div>
+
+                        {/* Navigation Links - Center Column (flex-1 to fill remaining space, centered) */}
+                        <div className="flex-1 flex justify-center min-w-0 px-2">
+                            <div className="flex items-center gap-0 bg-white/60 dark:bg-black/30 backdrop-blur-2xl p-1 rounded-full ring-1 ring-black/[0.03] dark:ring-white/[0.05] shadow-[0_8px_32px_rgba(0,0,0,0.06)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.2)] overflow-hidden">
+                                {navLinks.map((link) => (
+                                    link.isDropdown ? (
+                                        <div key={link.name} className="relative group">
+                                            <button className="relative text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white px-3 xl:px-5 py-2 rounded-full text-[10px] xl:text-[12px] font-black uppercase tracking-[0.08em] transition-all cursor-pointer flex items-center gap-1 hover:bg-black/[0.03] dark:hover:bg-white/[0.05] whitespace-nowrap">
+                                                {link.name}
+                                                <ChevronDown className="w-3 h-3 group-hover:rotate-180 transition-transform duration-500" />
+                                                <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary-theme opacity-0 scale-0 group-hover:opacity-100 group-hover:scale-100 transition-all duration-300" />
+                                            </button>
+                                            <div className="absolute top-[calc(100%+14px)] left-1/2 -translate-x-1/2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-500 z-[60] scale-95 group-hover:scale-100">
+                                                <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-3xl rounded-[32px] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] dark:shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)] border border-primary-theme/10 p-5 min-w-[280px]">
+                                                    {link.children.map((child) => (
+                                                        <a
+                                                            key={child.path}
+                                                            href={child.path}
+                                                            onClick={(e) => { e.preventDefault(); handleNavClick(child); }}
+                                                            className="flex items-center justify-between px-6 py-4 text-[12px] font-black uppercase tracking-[0.2em] text-slate-600 dark:text-slate-400 hover:text-primary-theme hover:bg-primary-theme/5 rounded-2xl transition-all duration-300 group/item border border-transparent hover:border-primary-theme/10"
+                                                        >
+                                                            <div className="flex items-center gap-4">
+                                                                <div className="w-1.5 h-1.5 rounded-full bg-primary-theme/20 group-hover/item:bg-primary-theme transition-colors duration-300 shrink-0" />
+                                                                <span className="truncate">{child.name}</span>
+                                                            </div>
+                                                            <ArrowRight className="w-4 h-4 opacity-0 -translate-x-2 group-hover/item:opacity-100 group-hover/item:translate-x-0 transition-all duration-300 text-primary-theme" />
+                                                        </a>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <a
+                                            key={link.path}
+                                            href={link.path}
+                                            onClick={(e) => { e.preventDefault(); handleNavClick(link); }}
+                                            className="relative text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white px-3 xl:px-5 py-2 rounded-full text-[10px] xl:text-[12px] font-black uppercase tracking-[0.08em] transition-all cursor-pointer hover:bg-black/[0.03] dark:hover:bg-white/[0.05] group whitespace-nowrap"
+                                        >
+                                            {link.name}
+                                            <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary-theme opacity-0 scale-0 group-hover:opacity-100 group-hover:scale-100 transition-all duration-300" />
+                                        </a>
+                                    )
                                 ))}
                             </div>
                         </div>
 
-                        <div className="flex items-center gap-4">
-                            <div className="flex items-center gap-1">
-                                <LanguageToggle />
-                                <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    onClick={toggleTheme}
-                                    className="rounded-full w-9 h-9 hover:bg-slate-100 dark:hover:bg-slate-800"
-                                >
-                                    {theme === 'light' ? (
-                                        <Moon className="h-4 w-4 text-slate-600" />
-                                    ) : (
-                                        <Sun className="h-4 w-4 text-yellow-400" />
-                                    )}
-                                </Button>
+                        {/* Actions Area - Right Column */}
+                        <div className="flex-shrink-0">
+                            <div className="flex items-center border-l border-primary-theme/10 pl-3 xl:pl-5">
+                                {renderActions()}
                             </div>
-                            {renderActions()}
-                        </div>
-                    </div>
-
-                    {/* Line 2: Navigation Links (Centered) */}
-                    <div className="flex justify-center">
-                        <div className="flex items-center bg-slate-100/80 dark:bg-slate-800/50 rounded-full px-1 py-1 shadow-inner shadow-slate-900/5">
-                            {navLinks.map((link) => (
-                                link.isDropdown ? (
-                                    <div key={link.name} className="relative group px-1">
-                                        <button
-                                            className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-white dark:hover:bg-slate-700 px-5 py-2 rounded-full text-sm font-bold transition-all duration-200 cursor-pointer flex items-center gap-1 h-full"
-                                        >
-                                            {link.name} <ChevronDown className="w-4 h-4 group-hover:rotate-180 transition-transform duration-300" />
-                                        </button>
-                                        <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[60]">
-                                            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-700 p-2 min-w-[180px]">
-                                                {link.children.map((child) => (
-                                                    <a
-                                                        key={child.path}
-                                                        href={child.path}
-                                                        onClick={(e) => {
-                                                            e.preventDefault();
-                                                            handleNavClick(child);
-                                                        }}
-                                                        className="block px-4 py-2.5 text-sm font-bold text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-xl transition-all"
-                                                    >
-                                                        {child.name}
-                                                    </a>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    </div>
-                                ) : (
-                                    <a
-                                        key={link.path}
-                                        href={link.path}
-                                        onClick={(e) => {
-                                            e.preventDefault();
-                                            handleNavClick(link);
-                                        }}
-                                        className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-white dark:hover:bg-slate-700 px-5 py-2 rounded-full text-sm font-bold transition-all duration-200 cursor-pointer"
-                                    >
-                                        {link.name}
-                                    </a>
-                                )
-                            ))}
                         </div>
                     </div>
                 </div>
+            </div>
 
-                {/* Mobile Menu Layout (Compact) */}
-                <div className="md:hidden flex items-center justify-between h-20">
-                    {/* Logo */}
-                    <Link to="/" onClick={() => window.scrollTo(0, 0)} className="flex-shrink-0 flex items-center gap-2 group">
-                        <img
-                            src="/Logo.png"
-                            alt={t.footer.companyName}
-                            className="w-10 h-10 object-contain drop-shadow-md group-hover:scale-110 transition-transform duration-300"
-                        />
-                        <span className="text-xl font-bold text-slate-900 dark:text-white sm:inline">{t.footer.companyName}</span>
+            {/* Mobile Menu Layout (Compact) - Theme Based */}
+            <div className="md:hidden flex flex-col pt-4 pb-3 gap-4 border-b border-primary-theme/5 bg-white/95 dark:bg-slate-950/95 backdrop-blur-xl relative overflow-hidden">
+                {/* Background decoration */}
+                <div className="absolute top-0 right-0 w-32 h-32 bg-primary-theme/5 blur-3xl -z-10" />
+
+                {/* Line 1: Centered Logo & Brand */}
+                <div className="flex justify-center w-full px-6">
+                    <Link to="/" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="flex items-center gap-3 group">
+                        <div className="w-12 h-12 bg-gradient-to-br from-primary-theme to-primary-theme/80 rounded-2xl flex items-center justify-center shadow-xl shadow-primary-theme/20 transform group-active:scale-95 transition-all duration-300 relative ring-2 ring-primary-theme/10">
+                            <div className="absolute inset-0 bg-white opacity-20 rounded-2xl" />
+                            <img src="/Logo.png" alt="Logo" className="w-7 h-7 invert object-contain" />
+                        </div>
+                        <div className="flex flex-col">
+                            <span className="text-2xl font-black text-slate-900 dark:text-white tracking-tighter leading-tight drop-shadow-sm">{t.footer.companyName}</span>
+                            <div className="flex items-center gap-1.5 mt-0.5">
+                                <div className="h-[1.5px] w-6 bg-primary-theme/40 rounded-full overflow-hidden">
+                                    <div className="h-full w-full bg-primary-theme animate-[shimmer_2s_infinite]" />
+                                </div>
+                                <span className="text-[10px] font-black text-primary-theme uppercase tracking-[0.3em]">Financial Consultancy</span>
+                            </div>
+                        </div>
                     </Link>
+                </div>
 
-                    <div className="flex items-center gap-1">
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={toggleTheme}
-                            className="rounded-full w-9 h-9"
-                        >
-                            {theme === 'light' ? (
-                                <Moon className="h-4 w-4 text-slate-600" />
-                            ) : (
-                                <Sun className="h-4 w-4 text-yellow-400" />
-                            )}
-                        </Button>
-                        <LanguageToggle />
+                {/* Line 2: Actions & Menu Toggle */}
+                <div className="flex items-center justify-between px-6">
+                    <div className="flex items-center gap-1.5 bg-black/5 dark:bg-white/5 p-1 rounded-full px-3">
+                        {socialLinks.map((social, idx) => (
+                            <a key={idx} href={social.href} className="p-2 text-slate-400 hover:text-primary-theme active:scale-90 transition-all duration-300">
+                                <social.icon size={16} strokeWidth={2.5} />
+                            </a>
+                        ))}
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <div className="flex items-center bg-black/5 dark:bg-white/5 p-1 rounded-full ring-1 ring-black/5 dark:ring-white/5">
+                            <LanguageToggle />
+                            <button onClick={toggleDarkMode} className="w-8 h-8 rounded-full flex items-center justify-center text-slate-500 hover:text-primary-theme transition-all duration-300">
+                                {isDark ? <Sun size={15} className="text-yellow-400" /> : <Moon size={15} />}
+                            </button>
+                        </div>
                         <Button
                             variant="ghost"
                             size="icon"
                             onClick={toggleMenu}
-                            className="rounded-full w-10 h-10 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                            className="rounded-xl w-10 h-10 bg-primary-theme/10 text-primary-theme hover:bg-primary-theme hover:text-white transition-all duration-300 shadow-lg shadow-primary-theme/5"
                         >
-                            {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+                            {isOpen ? <X size={20} strokeWidth={3} /> : <Menu size={20} strokeWidth={3} />}
                         </Button>
                     </div>
                 </div>
@@ -310,7 +362,7 @@ const Navbar = () => {
                         exit={{ opacity: 0 }}
                         onClick={() => setIsOpen(false)}
                         className="fixed inset-0 bg-slate-900/40 backdrop-blur-[2px] z-40 md:hidden"
-                        style={{ top: '120px' }} // Start below the taller navbar
+                        style={{ top: '130px' }}
                     />
                 )}
             </AnimatePresence>
@@ -331,25 +383,30 @@ const Navbar = () => {
                                     <div key={link.name} className="space-y-1">
                                         <button
                                             onClick={() => setIsAboutOpen(!isAboutOpen)}
-                                            className="w-full text-left text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white flex items-center justify-between px-4 py-3 rounded-2xl text-base font-medium transition-colors"
+                                            className="w-full text-left flex items-center justify-between px-5 py-4 rounded-2xl text-[14px] font-black uppercase tracking-widest text-slate-900 dark:text-white bg-black/5 dark:bg-white/5 hover:bg-primary-theme/10 hover:text-primary-theme transition-all duration-300 shadow-sm"
                                         >
-                                            {link.name} <ChevronDown className={`w-5 h-5 transition-transform duration-300 ${isAboutOpen ? 'rotate-180' : ''}`} />
+                                            <span className="flex items-center gap-3">
+                                                <div className="w-1.5 h-1.5 rounded-full bg-primary-theme" />
+                                                {link.name}
+                                            </span>
+                                            <ChevronDown className={`w-4 h-4 transition-transform duration-500 text-primary-theme ${isAboutOpen ? 'rotate-180' : ''}`} />
                                         </button>
                                         <AnimatePresence>
                                             {isAboutOpen && (
                                                 <motion.div
-                                                    initial={{ height: 0, opacity: 0 }}
-                                                    animate={{ height: 'auto', opacity: 1 }}
-                                                    exit={{ height: 0, opacity: 0 }}
-                                                    className="overflow-hidden bg-slate-50 dark:bg-slate-800/50 rounded-2xl mx-2"
+                                                    initial={{ height: 0, opacity: 0, y: -10 }}
+                                                    animate={{ height: 'auto', opacity: 1, y: 0 }}
+                                                    exit={{ height: 0, opacity: 0, y: -10 }}
+                                                    className="overflow-hidden bg-primary-theme/5 rounded-[24px] mx-1 border border-primary-theme/10"
                                                 >
                                                     {link.children.map((child) => (
                                                         <div
                                                             key={child.path}
-                                                            className="px-6 py-3 text-sm font-semibold text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 cursor-pointer"
+                                                            className="px-8 py-4 text-[13px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 hover:text-primary-theme hover:bg-white dark:hover:bg-slate-800 transition-all duration-300 flex items-center justify-between group/child"
                                                             onClick={() => handleNavClick(child)}
                                                         >
                                                             {child.name}
+                                                            <div className="w-1 h-1 rounded-full bg-primary-theme opacity-0 group-hover/child:opacity-100 transition-opacity" />
                                                         </div>
                                                     ))}
                                                 </motion.div>
@@ -362,31 +419,35 @@ const Navbar = () => {
                                         initial={{ opacity: 0, x: -20 }}
                                         animate={{ opacity: 1, x: 0 }}
                                         transition={{ delay: index * 0.05 }}
-                                        className="text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white block px-4 py-3 rounded-2xl text-base font-medium cursor-pointer transition-colors"
+                                        className="text-slate-900 dark:text-white block px-6 py-4 rounded-2xl text-[14px] font-black uppercase tracking-widest bg-black/5 dark:bg-white/5 hover:bg-primary-theme/10 hover:text-primary-theme transition-all duration-300 shadow-sm flex items-center gap-3"
                                         onClick={() => handleNavClick(link)}
                                     >
+                                        <div className="w-1.5 h-1.5 rounded-full bg-slate-300 dark:bg-slate-600" />
                                         {link.name}
                                     </motion.div>
                                 )
                             ))}
                             {user ? (
                                 <>
-                                    <Link to={isAdmin ? "/admin/dashboard" : "/profile"} onClick={() => setIsOpen(false)} className="block px-4 py-3 rounded-2xl text-base font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">
+                                    <Link to={isAdmin ? "/admin/dashboard" : "/profile"} onClick={() => setIsOpen(false)} className="block px-4 py-3 rounded-2xl text-[13px] font-black uppercase tracking-widest text-primary-theme">
                                         {isAdmin ? t.auth.dashboard : t.auth.profile}
                                     </Link>
-                                    <button onClick={() => { logout(); setIsOpen(false); }} className="w-full text-left px-4 py-3 rounded-2xl text-base font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20">
+                                    <button onClick={() => { logout(); setIsOpen(false); }} className="w-full text-left px-4 py-3 rounded-2xl text-[13px] font-black uppercase tracking-widest text-red-500">
                                         {t.nav.logout}
                                     </button>
                                 </>
                             ) : (
-                                <div className="pt-2 space-y-2">
-                                    <Link to="/login" onClick={() => setIsOpen(false)} className="block">
-                                        <Button variant="outline" className="w-full rounded-2xl h-12 border-2 font-bold">
-                                            {t.auth.loginBtn}
-                                        </Button>
-                                    </Link>
-                                    <Button className="w-full rounded-2xl h-12 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 shadow-lg font-bold" onClick={() => { setIsBookingOpen(true); setIsOpen(false); }}>
-                                        {t.nav.bookConsultation}
+                                <div className="pt-4 px-2">
+                                    <Button
+                                        className="w-full rounded-[24px] h-14 bg-gradient-to-br from-primary-theme via-primary-theme to-accent-theme text-white shadow-xl shadow-primary-theme/20 font-black uppercase tracking-widest text-[11px] relative overflow-hidden group/mbook ring-2 ring-white/10"
+                                        onClick={() => { setIsBookingOpen(true); setIsOpen(false); }}
+                                    >
+                                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover/mbook:animate-[shimmer_1.5s_infinite]" />
+                                        <div className="absolute inset-0 bg-white opacity-0 group-hover/mbook:opacity-10 transition-opacity duration-500" />
+                                        <span className="relative z-10 flex items-center justify-center gap-2">
+                                            {t.nav.bookConsultation}
+                                            <ArrowRight className="w-4 h-4 group-hover/mbook:translate-x-1 transition-transform" strokeWidth={3} />
+                                        </span>
                                     </Button>
                                 </div>
                             )}
@@ -396,10 +457,7 @@ const Navbar = () => {
             </AnimatePresence>
 
             {/* Booking Modal */}
-            <BookingModal
-                isOpen={isBookingOpen}
-                onClose={() => setIsBookingOpen(false)}
-            />
+            <BookingModal isOpen={isBookingOpen} onClose={() => setIsBookingOpen(false)} />
         </nav>
     );
 };

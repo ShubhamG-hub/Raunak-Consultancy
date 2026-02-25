@@ -51,7 +51,7 @@ const AwardsSection = () => {
                                 className="group bg-slate-50 dark:bg-slate-800/50 p-8 rounded-[2rem] border border-slate-100 dark:border-slate-800 hover:shadow-2xl hover:bg-white dark:hover:bg-slate-800 transition-all duration-300"
                             >
                                 <div className="flex items-start justify-between mb-6">
-                                    <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-2xl overflow-hidden flex items-center justify-center text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-all duration-500">
+                                    <div className="w-16 h-16 bg-primary-theme/10 rounded-2xl overflow-hidden flex items-center justify-center text-primary-theme group-hover:scale-110 transition-all duration-500">
                                         {award.image_url ? (
                                             <img
                                                 src={award.image_url}
@@ -62,11 +62,11 @@ const AwardsSection = () => {
                                             <Trophy className="w-8 h-8" />
                                         )}
                                     </div>
-                                    <span className="bg-blue-600 text-white px-4 py-1.5 rounded-full text-[10px] font-black shadow-lg shadow-blue-600/20 uppercase tracking-widest">
+                                    <span className="bg-primary-theme text-white px-4 py-1.5 rounded-full text-[10px] font-black shadow-lg shadow-primary-theme/20 uppercase tracking-widest">
                                         {award.year}
                                     </span>
                                 </div>
-                                <h3 className="text-xl font-black text-slate-900 dark:text-white mb-3 group-hover:text-blue-600 transition-colors">
+                                <h3 className="text-xl font-black text-slate-900 dark:text-white mb-3 group-hover:text-primary-theme transition-colors">
                                     {award.title}
                                 </h3>
                                 <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">

@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import {
     LayoutDashboard,
     Users,
@@ -15,13 +15,152 @@ import {
     ChevronRight,
     User,
     Search,
-    Video,
-    BarChart2
+    Palette,
+    Info,
+    Briefcase,
+    Layout
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import NotificationDropdown from '@/components/admin/NotificationDropdown';
+
+// Shared sidebar content (used for both desktop and mobile)
+const SidebarContent = ({
+    isMobile = false,
+    setMobileOpen,
+    setSidebarOpen,
+    sidebarOpen,
+    handleLogout,
+    menuGroups,
+    menuItems,
+    location,
+    isOpen
+}) => {
+    // const isOpen = isMobile ? true : sidebarOpen; // Passed as prop now
+
+    return (
+        <>
+            {/* Logo Section */}
+            <div className={`h-20 flex items-center justify-between ${isOpen ? 'px-6' : 'px-2'} border-b border-slate-200 dark:border-white/10 transition-all duration-300`}>
+                <div className={`flex items-center gap-3 overflow-hidden ${!isOpen && 'hidden'}`}>
+                    <div className="w-8 h-8 flex-shrink-0">
+                        <img src="/Logo.png" alt="Logo" className="w-full h-full object-contain" />
+                    </div>
+                    <span className="font-bold text-lg whitespace-nowrap bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-400 bg-clip-text text-transparent">
+                        Admin Panel
+                    </span>
+                </div>
+
+                {!isOpen && (
+                    <div className="w-8 h-8 flex-shrink-0 mx-auto">
+                        <img src="/Logo.png" alt="Logo" className="w-full h-full object-contain" />
+                    </div>
+                )}
+
+                {isMobile ? (
+                    <button
+                        onClick={() => setMobileOpen(false)}
+                        className="p-2 rounded-lg text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
+                    >
+                        <X className="w-5 h-5" />
+                    </button>
+                ) : (
+                    <button
+                        onClick={() => setSidebarOpen(!sidebarOpen)}
+                        className={`p-2 rounded-lg text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 transition-colors ${!isOpen && 'mx-auto'}`}
+                    >
+                        {sidebarOpen ? <ChevronRight className="w-5 h-5 rotate-180" /> : <ChevronRight className="w-5 h-5" />}
+                    </button>
+                )}
+            </div>
+
+            {/* Navigation */}
+            <nav className="flex-1 p-4 space-y-6 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-white/10">
+                {menuItems && !sidebarOpen ? (
+                    <div className="space-y-2">
+                        {menuItems.map((item) => {
+                            const Icon = item.icon;
+                            const isActive = location.pathname === item.path;
+                            return (
+                                <Link key={item.path} to={item.path}>
+                                    <motion.div
+                                        className={`relative flex items-center justify-center py-3 rounded-xl transition-all group ${isActive
+                                            ? 'text-primary dark:text-white'
+                                            : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5'
+                                            }`}
+                                    >
+                                        {isActive && (
+                                            <motion.div
+                                                layoutId={isMobile ? "activeTabMobile" : "activeTab"}
+                                                className="absolute inset-0 bg-primary/10 dark:bg-primary/20 border border-primary/20 dark:border-primary/30 rounded-xl"
+                                                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                                            />
+                                        )}
+                                        <Icon className="w-6 h-6 z-10 relative transition-transform group-hover:scale-110" />
+                                    </motion.div>
+                                </Link>
+                            );
+                        })}
+                    </div>
+                ) : (
+                    menuGroups.map((group) => (
+                        <div key={group.label} className="space-y-2">
+                            {isOpen && (
+                                <p className="px-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 dark:text-slate-500 mb-2">
+                                    {group.label}
+                                </p>
+                            )}
+                            {group.items.map((item) => {
+                                const Icon = item.icon;
+                                const isActive = location.pathname === item.path;
+
+                                return (
+                                    <Link key={item.path} to={item.path}>
+                                        <motion.div
+                                            className={`relative flex items-center gap-3 ${isOpen ? 'px-4' : 'px-2 justify-center'} py-3 rounded-xl transition-all group ${isActive
+                                                ? 'text-primary dark:text-white'
+                                                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5'
+                                                }`}
+                                        >
+                                            {isActive && (
+                                                <motion.div
+                                                    layoutId={isMobile ? "activeTabMobile" : "activeTab"}
+                                                    className="absolute inset-0 bg-primary/10 dark:bg-primary/20 border border-primary/20 dark:border-primary/30 rounded-xl"
+                                                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                                                />
+                                            )}
+                                            <Icon className={`${isOpen ? 'w-5 h-5' : 'w-6 h-6'} z-10 relative transition-transform group-hover:scale-110 ${isActive ? 'text-primary dark:text-primary' : ''}`} />
+
+                                            {isOpen && (
+                                                <span className="font-medium z-10 relative whitespace-nowrap overflow-hidden">
+                                                    {item.label}
+                                                </span>
+                                            )}
+                                        </motion.div>
+                                    </Link>
+                                );
+                            })}
+                        </div>
+                    ))
+                )}
+            </nav>
+
+            {/* Sidebar Footer */}
+            <div className="p-4 border-t border-slate-200 dark:border-white/10">
+                <button
+                    onClick={handleLogout}
+                    className={`flex items-center gap-3 ${isOpen ? 'px-4' : 'px-2 justify-center'} py-3 w-full rounded-xl text-slate-600 dark:text-slate-400 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-600 dark:hover:text-red-400 transition-all group`}
+                >
+                    <LogOut className={`${isOpen ? 'w-5 h-5' : 'w-8 h-8'} flex-shrink-0 transition-transform group-hover:-translate-x-1`} />
+                    {isOpen && (
+                        <span className="font-medium whitespace-nowrap overflow-hidden">
+                            Logout
+                        </span>
+                    )}
+                </button>
+            </div>
+        </>
+    );
+};
 
 const AdminLayout = ({ children }) => {
     const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -30,8 +169,55 @@ const AdminLayout = ({ children }) => {
     const navigate = useNavigate();
     const { user, logout } = useAuth();
 
+    const menuGroups = useMemo(() => [
+        {
+            label: 'Main',
+            items: [
+                { path: '/admin/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+                { path: '/admin/profile', icon: User, label: 'Profile' },
+            ]
+        },
+        {
+            label: 'Management',
+            items: [
+                { path: '/admin/bookings', icon: FileText, label: 'Bookings' },
+                { path: '/admin/leads', icon: Users, label: 'Leads' },
+                { path: '/admin/claims', icon: FileText, label: 'Claims' },
+                { path: '/admin/chat', icon: MessageSquare, label: 'Chat' },
+            ]
+        },
+        {
+            label: 'Business',
+            items: [
+                { path: '/admin/services', icon: Briefcase, label: 'Services' },
+                { path: '/admin/categories', icon: Layout, label: 'Categories' },
+            ]
+        },
+        {
+            label: 'Content & Authority',
+            items: [
+                { path: '/admin/blogs', icon: FileText, label: 'Blogs' },
+                { path: '/admin/testimonials', icon: MessageSquare, label: 'Testimonials' },
+                { path: '/admin/gallery', icon: Image, label: 'Gallery' },
+                { path: '/admin/certificates', icon: Award, label: 'Certificates' },
+                { path: '/admin/awards', icon: Award, label: 'Awards' },
+                { path: '/admin/about', icon: Info, label: 'About Us' },
+            ]
+        },
+        {
+            label: 'System',
+            items: [
+                { path: '/admin/settings/theme', icon: Palette, label: 'Appearance' },
+            ]
+        }
+    ], []);
+
+    const menuItems = useMemo(() => menuGroups.flatMap(group => group.items), [menuGroups]);
+
+
     // Close mobile sidebar on route change
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setMobileOpen(false);
     }, [location.pathname]);
 
@@ -39,7 +225,7 @@ const AdminLayout = ({ children }) => {
     useEffect(() => {
         const page = menuItems.find(item => item.path === location.pathname);
         document.title = page ? `${page.label} | Admin Panel` : 'Admin Panel';
-    }, [location.pathname]);
+    }, [location.pathname, menuItems]);
 
     // Prevent body scroll when mobile sidebar is open
     useEffect(() => {
@@ -56,22 +242,6 @@ const AdminLayout = ({ children }) => {
         navigate('/admin/login');
     };
 
-    const menuItems = [
-        { path: '/admin/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-        { path: '/admin/bookings', icon: FileText, label: 'Bookings' },
-        { path: '/admin/leads', icon: Users, label: 'Leads' },
-        { path: '/admin/testimonials', icon: MessageSquare, label: 'Testimonials' },
-        { path: '/admin/claims', icon: FileText, label: 'Claims' },
-        { path: '/admin/certificates', icon: Award, label: 'Certificates' },
-        { path: '/admin/gallery', icon: Image, label: 'Gallery' },
-        { path: '/admin/blogs', icon: FileText, label: 'Blogs' },
-        { path: '/admin/awards', icon: Award, label: 'Awards' },
-        { path: '/admin/chat', icon: MessageSquare, label: 'Chat' },
-        { path: '/admin/virtual-office', icon: Video, label: 'Virtual Office' },
-        { path: '/admin/virtual-office/analytics', icon: BarChart2, label: 'VO Analytics' },
-        { path: '/admin/profile', icon: User, label: 'Profile' },
-    ];
-
     const currentPage = menuItems.find(item => item.path === location.pathname);
 
     // Animation Variants
@@ -80,104 +250,12 @@ const AdminLayout = ({ children }) => {
         closed: { width: 80, transition: { type: "spring", stiffness: 300, damping: 30 } }
     };
 
-    // Shared sidebar content (used for both desktop and mobile)
-    const SidebarContent = ({ isMobile = false }) => {
-        const isOpen = isMobile ? true : sidebarOpen;
-
-        return (
-            <>
-                {/* Logo Section */}
-                <div className={`h-20 flex items-center justify-between ${isOpen ? 'px-6' : 'px-2'} border-b border-slate-200 dark:border-white/10 transition-all duration-300`}>
-                    <div className={`flex items-center gap-3 overflow-hidden ${!isOpen && 'hidden'}`}>
-                        <div className="w-8 h-8 flex-shrink-0">
-                            <img src="/Logo.png" alt="Logo" className="w-full h-full object-contain" />
-                        </div>
-                        <span className="font-bold text-lg whitespace-nowrap bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-400 bg-clip-text text-transparent">
-                            Admin Panel
-                        </span>
-                    </div>
-
-                    {!isOpen && (
-                        <div className="w-8 h-8 flex-shrink-0 mx-auto">
-                            <img src="/Logo.png" alt="Logo" className="w-full h-full object-contain" />
-                        </div>
-                    )}
-
-                    {isMobile ? (
-                        <button
-                            onClick={() => setMobileOpen(false)}
-                            className="p-2 rounded-lg text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
-                        >
-                            <X className="w-5 h-5" />
-                        </button>
-                    ) : (
-                        <button
-                            onClick={() => setSidebarOpen(!sidebarOpen)}
-                            className={`p-2 rounded-lg text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 transition-colors ${!isOpen && 'mx-auto'}`}
-                        >
-                            {sidebarOpen ? <ChevronRight className="w-5 h-5 rotate-180" /> : <ChevronRight className="w-5 h-5" />}
-                        </button>
-                    )}
-                </div>
-
-                {/* Navigation */}
-                <nav className="flex-1 p-4 space-y-2 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-white/10">
-                    {menuItems.map((item) => {
-                        const Icon = item.icon;
-                        const isActive = location.pathname === item.path;
-
-                        return (
-                            <Link key={item.path} to={item.path}>
-                                <motion.div
-                                    className={`relative flex items-center gap-3 ${isOpen ? 'px-4' : 'px-2 justify-center'} py-3 rounded-xl transition-all group ${isActive
-                                        ? 'text-blue-600 dark:text-white'
-                                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5'
-                                        }`}
-                                >
-                                    {isActive && (
-                                        <motion.div
-                                            layoutId={isMobile ? "activeTabMobile" : "activeTab"}
-                                            className="absolute inset-0 bg-blue-100/50 dark:bg-blue-600/20 border border-blue-200 dark:border-blue-500/30 rounded-xl"
-                                            transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                                        />
-                                    )}
-                                    <Icon className={`${isOpen ? 'w-5 h-5' : 'w-8 h-8'} z-10 relative transition-transform group-hover:scale-110 ${isActive ? 'text-blue-600 dark:text-blue-400' : ''}`} />
-
-                                    {isOpen && (
-                                        <span className="font-medium z-10 relative whitespace-nowrap overflow-hidden">
-                                            {item.label}
-                                        </span>
-                                    )}
-                                </motion.div>
-                            </Link>
-                        );
-                    })}
-                </nav>
-
-                {/* Sidebar Footer */}
-                <div className="p-4 border-t border-slate-200 dark:border-white/10">
-                    <button
-                        onClick={handleLogout}
-                        className={`flex items-center gap-3 ${isOpen ? 'px-4' : 'px-2 justify-center'} py-3 w-full rounded-xl text-slate-600 dark:text-slate-400 hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-600 dark:hover:text-red-400 transition-all group`}
-                    >
-                        <LogOut className={`${isOpen ? 'w-5 h-5' : 'w-8 h-8'} flex-shrink-0 transition-transform group-hover:-translate-x-1`} />
-                        {isOpen && (
-                            <span className="font-medium whitespace-nowrap overflow-hidden">
-                                Logout
-                            </span>
-                        )}
-                    </button>
-                </div>
-            </>
-        );
-    };
-
     return (
         <div className="flex h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 overflow-hidden relative selection:bg-blue-500/30 transition-colors duration-300">
             {/* Ambient Background Glows */}
             <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
-                <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-500/10 dark:bg-blue-600/20 rounded-full blur-[120px]" />
-                <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-500/10 dark:bg-purple-600/20 rounded-full blur-[120px]" />
+                <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/10 dark:bg-primary/20 rounded-full blur-[120px]" />
+                <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-accent/10 dark:bg-accent/20 rounded-full blur-[120px]" />
             </div>
 
             {/* Mobile Sidebar Overlay */}
@@ -200,7 +278,17 @@ const AdminLayout = ({ children }) => {
                             transition={{ type: "spring", stiffness: 300, damping: 30 }}
                             className="fixed inset-y-0 left-0 w-[280px] z-50 flex flex-col bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-r border-slate-200 dark:border-white/10 md:hidden"
                         >
-                            <SidebarContent isMobile={true} />
+                            <SidebarContent
+                                isMobile={true}
+                                setMobileOpen={setMobileOpen}
+                                setSidebarOpen={setSidebarOpen}
+                                sidebarOpen={sidebarOpen}
+                                handleLogout={handleLogout}
+                                menuGroups={menuGroups}
+                                menuItems={menuItems}
+                                location={location}
+                                isOpen={true}
+                            />
                         </motion.aside>
                     </>
                 )}
@@ -213,7 +301,17 @@ const AdminLayout = ({ children }) => {
                 variants={sidebarVariants}
                 className="relative z-20 hidden md:flex flex-col h-full border-r border-slate-200 dark:border-white/10 bg-white/80 dark:bg-slate-900/50 backdrop-blur-xl transition-colors duration-300"
             >
-                <SidebarContent isMobile={false} />
+                <SidebarContent
+                    isMobile={false}
+                    setMobileOpen={setMobileOpen}
+                    setSidebarOpen={setSidebarOpen}
+                    sidebarOpen={sidebarOpen}
+                    handleLogout={handleLogout}
+                    menuGroups={menuGroups}
+                    menuItems={menuItems}
+                    location={location}
+                    isOpen={sidebarOpen}
+                />
             </motion.aside>
 
             {/* Main Content Wrapper */}
@@ -235,7 +333,7 @@ const AdminLayout = ({ children }) => {
                             <div className="hidden sm:flex items-center gap-2 text-sm text-slate-500 mt-1">
                                 <span>Admin</span>
                                 <ChevronRight className="w-4 h-4" />
-                                <span className="text-blue-600 dark:text-blue-400">{currentPage?.label}</span>
+                                <span className="text-primary dark:text-primary">{currentPage?.label}</span>
                             </div>
                         </div>
                     </div>
@@ -248,7 +346,7 @@ const AdminLayout = ({ children }) => {
                             <input
                                 type="text"
                                 placeholder="Search..."
-                                className="bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-white/10 rounded-full pl-10 pr-4 py-2 text-sm text-slate-900 dark:text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 w-64 transition-all focus:w-80"
+                                className="bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-white/10 rounded-full pl-10 pr-4 py-2 text-sm text-slate-900 dark:text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-primary/50 w-64 transition-all focus:w-80"
                             />
                         </div>
 
@@ -264,9 +362,9 @@ const AdminLayout = ({ children }) => {
                                 <p className="text-sm font-medium text-slate-900 dark:text-white">{user?.name || 'Admin User'}</p>
                                 <p className="text-xs text-slate-500">{user?.role || 'Administrator'}</p>
                             </div>
-                            <div className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 p-[2px] ring-2 ring-slate-100 dark:ring-white/10">
+                            <div className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-gradient-to-br from-primary to-accent p-[2px] ring-2 ring-slate-100 dark:ring-white/10">
                                 <div className="w-full h-full rounded-full bg-white dark:bg-slate-900 flex items-center justify-center">
-                                    <span className="text-blue-600 dark:text-white font-bold text-sm">
+                                    <span className="text-primary dark:text-white font-bold text-sm">
                                         {user?.name ? user.name.charAt(0) : 'A'}
                                     </span>
                                 </div>

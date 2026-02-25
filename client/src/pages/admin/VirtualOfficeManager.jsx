@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Video, VideoOff, Users, Clock, Play, Square, Copy, CheckCircle2,
@@ -94,6 +94,12 @@ export default function VirtualOfficeManager() {
 
     const adminName = 'Sudhir Gupta';
 
+    const statStyles = {
+        blue: { bg: 'bg-blue-100 dark:bg-blue-900/20', text: 'text-blue-600 dark:text-blue-400' },
+        green: { bg: 'bg-green-100 dark:bg-green-900/20', text: 'text-green-600 dark:text-green-400' },
+        slate: { bg: 'bg-slate-100 dark:bg-slate-700', text: 'text-slate-600 dark:text-slate-400' },
+    };
+
     // ── IDLE: Meeting Setup ────────────────────────────────────────────────────
     if (appState === 'idle') {
         return (
@@ -114,15 +120,18 @@ export default function VirtualOfficeManager() {
                     {[
                         { label: 'Pending Bookings', value: bookings.length, icon: Clock, color: 'blue' },
                         { label: 'Active Meeting', value: appState === 'meeting' ? 'Live' : 'None', icon: Video, color: appState === 'meeting' ? 'green' : 'slate' },
-                    ].map(stat => (
-                        <div key={stat.label} className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 p-5">
-                            <div className={`w-10 h-10 rounded-xl bg-${stat.color}-100 dark:bg-${stat.color}-900/20 flex items-center justify-center mb-3`}>
-                                <stat.icon className={`w-5 h-5 text-${stat.color}-600 dark:text-${stat.color}-400`} />
+                    ].map(stat => {
+                        const style = statStyles[stat.color] || statStyles.slate;
+                        return (
+                            <div key={stat.label} className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 p-5">
+                                <div className={`w-10 h-10 rounded-xl ${style.bg} flex items-center justify-center mb-3`}>
+                                    <stat.icon className={`w-5 h-5 ${style.text}`} />
+                                </div>
+                                <p className="text-2xl font-black text-slate-900 dark:text-white">{stat.value}</p>
+                                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{stat.label}</p>
                             </div>
-                            <p className="text-2xl font-black text-slate-900 dark:text-white">{stat.value}</p>
-                            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{stat.label}</p>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
 
                 {/* Booking selector + Start */}
@@ -297,8 +306,8 @@ function RecentMeetings() {
                             </a>
                         )}
                         <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-full flex-shrink-0 ${m.status === 'active' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400' :
-                                m.status === 'ended' ? 'bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-400' :
-                                    'bg-amber-100 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400'
+                            m.status === 'ended' ? 'bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-400' :
+                                'bg-amber-100 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400'
                             }`}>{m.status}</span>
                     </div>
                 ))}

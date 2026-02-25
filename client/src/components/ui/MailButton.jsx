@@ -1,8 +1,10 @@
 import { Mail } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
+import { useLanguage } from '@/context/useLanguage';
 
 const MailButton = () => {
+    const { t } = useLanguage();
     const [showLabel, setShowLabel] = useState(false);
 
     return (
@@ -14,9 +16,9 @@ const MailButton = () => {
                         animate={{ opacity: 1, x: 0, scale: 1 }}
                         exit={{ opacity: 0, x: 20, scale: 0.9 }}
                         transition={{ duration: 0.2 }}
-                        className="mr-3 bg-white/95 dark:bg-slate-800/95 backdrop-blur-md text-indigo-600 dark:text-indigo-400 px-3 py-1.5 rounded-lg shadow-sm font-bold text-xs border border-indigo-100/50 dark:border-indigo-900/50 whitespace-nowrap hidden md:block"
+                        className="mr-3 bg-white/95 dark:bg-slate-900/90 backdrop-blur-xl text-primary-theme px-3 py-1.5 rounded-xl shadow-2xl font-bold text-xs border border-primary-theme/20 whitespace-nowrap hidden md:block"
                     >
-                        Email Us
+                        {t.chatbot.floatingActions?.email || "Email Us"}
                     </motion.div>
                 )}
             </AnimatePresence>
@@ -25,10 +27,10 @@ const MailButton = () => {
                 href="mailto:ms.sudhirgupta@rediffmail.com"
                 whileHover={{
                     scale: 1.1,
-                    boxShadow: "0 0 15px 2px rgba(79, 70, 229, 0.3)"
+                    boxShadow: "0 0 20px 2px var(--primary-glow)"
                 }}
                 whileTap={{ scale: 0.95 }}
-                className="bg-gradient-to-br from-indigo-500 to-blue-600 text-white p-3 rounded-full shadow-xl flex items-center justify-center relative overflow-hidden group"
+                className="w-12 h-12 bg-gradient-to-br from-primary-theme to-accent-theme text-white rounded-full shadow-2xl flex items-center justify-center relative overflow-hidden group border border-white/20"
                 aria-label="Email Us"
                 onMouseEnter={() => setShowLabel(true)}
                 onMouseLeave={() => setShowLabel(false)}

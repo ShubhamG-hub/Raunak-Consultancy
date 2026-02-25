@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { useState } from 'react';
 import { useLanguage } from '@/context/useLanguage';
 import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 import { Clock, AlertTriangle } from 'lucide-react';
 
 const SIPDelayCalculator = () => {
@@ -11,27 +11,19 @@ const SIPDelayCalculator = () => {
     const [expectedReturn, setExpectedReturn] = useState(12);
     const [delayMonths, setDelayMonths] = useState(6);
 
-    const [results, setResults] = useState({
-        withoutDelay: 0,
-        withDelay: 0,
-        costOfDelay: 0
-    });
+    const p = monthlyInvestment;
+    const i = expectedReturn / 100 / 12;
+    const n_months = period * 12;
+    const d = delayMonths;
 
-    useEffect(() => {
-        const p = monthlyInvestment;
-        const i = expectedReturn / 100 / 12;
-        const n = period * 12;
-        const d = delayMonths;
+    const fvNormal = p * ((Math.pow(1 + i, n_months) - 1) / i) * (1 + i);
+    const fvDelayed = p * ((Math.pow(1 + i, n_months - d) - 1) / i) * (1 + i);
 
-        const fvNormal = p * ((Math.pow(1 + i, n) - 1) / i) * (1 + i);
-        const fvDelayed = p * ((Math.pow(1 + i, n - d) - 1) / i) * (1 + i);
-
-        setResults({
-            withoutDelay: Math.round(fvNormal),
-            withDelay: Math.round(fvDelayed),
-            costOfDelay: Math.round(fvNormal - fvDelayed)
-        });
-    }, [monthlyInvestment, period, expectedReturn, delayMonths]);
+    const results = {
+        withoutDelay: Math.round(fvNormal),
+        withDelay: Math.round(fvDelayed),
+        costOfDelay: Math.round(fvNormal - fvDelayed)
+    };
 
     const formatCurrency = (val) => {
         return new Intl.NumberFormat('en-IN', {
@@ -42,7 +34,7 @@ const SIPDelayCalculator = () => {
     };
 
     return (
-        <div className="bg-white dark:bg-slate-800 p-8 rounded-[2rem] border border-slate-100 dark:border-slate-700 shadow-xl">
+        <div className="bg-white dark:bg-slate-800 p-5 md:p-8 rounded-[2rem] border border-slate-100 dark:border-slate-700 shadow-xl">
             <div className="flex items-center gap-4 mb-8">
                 <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-2xl flex items-center justify-center">
                     <Clock className="text-orange-600 w-6 h-6" />
@@ -53,12 +45,20 @@ const SIPDelayCalculator = () => {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
                 <div className="space-y-8">
                     <div className="space-y-4">
                         <div className="flex justify-between items-center">
                             <Label className="text-sm font-bold text-slate-700 dark:text-slate-300">{t.calculators.delay.monthlyInvestment}</Label>
-                            <span className="text-orange-600 font-black">{formatCurrency(monthlyInvestment)}</span>
+                            <div className="relative w-36">
+                                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold">₹</span>
+                                <Input
+                                    type="number"
+                                    value={monthlyInvestment}
+                                    onChange={(e) => setMonthlyInvestment(Number(e.target.value))}
+                                    className="pl-7 h-9 rounded-lg border-slate-200 focus:ring-orange-600 font-black text-orange-600"
+                                />
+                            </div>
                         </div>
                         <input
                             type="range" min="500" max="100000" step="500"
@@ -72,7 +72,15 @@ const SIPDelayCalculator = () => {
                         <div className="space-y-4">
                             <div className="flex justify-between items-center">
                                 <Label className="text-sm font-bold text-slate-700 dark:text-slate-300">{t.calculators.delay.period}</Label>
-                                <span className="text-orange-600 font-bold">{period} yr</span>
+                                <div className="relative w-24">
+                                    <Input
+                                        type="number"
+                                        value={period}
+                                        onChange={(e) => setPeriod(Number(e.target.value))}
+                                        className="pr-8 h-9 rounded-lg border-slate-200 focus:ring-orange-600 font-black text-orange-600"
+                                    />
+                                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs font-bold">yr</span>
+                                </div>
                             </div>
                             <input
                                 type="range" min="1" max="40" step="1"
@@ -84,7 +92,15 @@ const SIPDelayCalculator = () => {
                         <div className="space-y-4">
                             <div className="flex justify-between items-center">
                                 <Label className="text-sm font-bold text-slate-700 dark:text-slate-300">{t.calculators.delay.delayPeriod}</Label>
-                                <span className="text-orange-600 font-bold">{delayMonths} mo</span>
+                                <div className="relative w-24">
+                                    <Input
+                                        type="number"
+                                        value={delayMonths}
+                                        onChange={(e) => setDelayMonths(Number(e.target.value))}
+                                        className="pr-8 h-9 rounded-lg border-slate-200 focus:ring-orange-600 font-black text-orange-600"
+                                    />
+                                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs font-bold">mo</span>
+                                </div>
                             </div>
                             <input
                                 type="range" min="1" max="120" step="1"
@@ -98,7 +114,15 @@ const SIPDelayCalculator = () => {
                     <div className="space-y-4">
                         <div className="flex justify-between items-center">
                             <Label className="text-sm font-bold text-slate-700 dark:text-slate-300">{t.calculators.delay.expectedReturn}</Label>
-                            <span className="text-orange-600 font-black">{expectedReturn}%</span>
+                            <div className="relative w-24">
+                                <Input
+                                    type="number"
+                                    value={expectedReturn}
+                                    onChange={(e) => setExpectedReturn(Number(e.target.value))}
+                                    className="pr-8 h-9 rounded-lg border-slate-200 focus:ring-orange-600 font-black text-orange-600"
+                                />
+                                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold">%</span>
+                            </div>
                         </div>
                         <input
                             type="range" min="1" max="30" step="0.5"
@@ -109,7 +133,7 @@ const SIPDelayCalculator = () => {
                     </div>
                 </div>
 
-                <div className="bg-slate-50 dark:bg-slate-900/50 p-8 rounded-[1.5rem] border border-slate-100 dark:border-slate-800 flex flex-col justify-center">
+                <div className="bg-slate-50 dark:bg-slate-900/50 p-6 md:p-8 rounded-[1.5rem] border border-slate-100 dark:border-slate-800 flex flex-col justify-center">
                     <div className="space-y-6">
                         <div className="flex justify-between items-center opacity-60">
                             <span className="text-sm font-bold text-slate-500">{t.calculators.delay.valueWithoutDelay}</span>
@@ -124,14 +148,11 @@ const SIPDelayCalculator = () => {
                                 <AlertTriangle className="w-4 h-4 text-orange-600" />
                                 <span className="text-xs font-bold text-orange-600 uppercase tracking-widest">{t.calculators.delay.costOfDelay}</span>
                             </div>
-                            <motion.span
-                                key={results.costOfDelay}
-                                initial={{ scale: 0.9, opacity: 0 }}
-                                animate={{ scale: 1, opacity: 1 }}
+                            <span
                                 className="text-3xl font-black text-orange-600"
                             >
                                 {formatCurrency(results.costOfDelay)}
-                            </motion.span>
+                            </span>
                             <p className="text-[10px] text-slate-400 mt-4 text-center leading-relaxed">
                                 Compound interest waits for no one. A small delay today leads to massive wealth loss in the long run.
                             </p>

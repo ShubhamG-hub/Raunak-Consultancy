@@ -1,21 +1,21 @@
 const express = require('express');
 const router = express.Router();
 const crypto = require('crypto');
-const supabase = require('../config/supabase');
+const db = require('../config/db');
 const notificationService = require('../services/notificationService');
 const zoomService = require('../services/zoomService');
 
 // ─── Zoom Webhook Handler ─────────────────────────────────────────────────────
-// POST /api/zoom/webhook
 router.post('/', async (req, res) => {
     const secret = process.env.ZOOM_WEBHOOK_SECRET_TOKEN;
+    if (!secret) return res.status(500).json({ error: 'Webhook secret not configured' });
 
     // Validate Zoom webhook signature
     const message = `v0:${req.headers['x-zm-request-timestamp']}:${JSON.stringify(req.body)}`;
     const expectedSignature = `v0=${crypto.createHmac('sha256', secret).update(message).digest('hex')}`;
     const receivedSignature = req.headers['x-zm-signature'];
 
-    // Handle URL validation challenge (Zoom sends this when first configuring webhook)
+    // Handle URL validation challenge
     if (req.body.event === 'endpoint.url_validation') {
         const hashForValidate = crypto.createHmac('sha256', secret)
             .update(req.body.payload.plainToken)
@@ -52,25 +52,20 @@ router.post('/', async (req, res) => {
 async function handleMeetingEnded(payload) {
     const zoomMeetingId = String(payload.id);
 
-    const { data: meeting } = await supabase
-        .from('virtual_meetings')
-        .select('*, bookings(name, email)')
-        .eq('zoom_meeting_id', zoomMeetingId)
-        .maybeSingle();
+    const [rows] = await db.query(
+        'SELECT * FROM virtual_meetings WHERE zoom_meeting_id = ?',
+        [zoomMeetingId]
+    );
+    const meeting = rows[0];
 
     if (!meeting) return;
 
-    // Update meeting status if not already ended
     if (meeting.status !== 'ended') {
         const durationMinutes = Math.round(payload.duration || 0);
-        await supabase
-            .from('virtual_meetings')
-            .update({
-                status: 'ended',
-                ended_at: new Date().toISOString(),
-                duration_minutes: durationMinutes,
-            })
-            .eq('id', meeting.id);
+        await db.query(
+            'UPDATE virtual_meetings SET status = "ended", ended_at = ?, duration_minutes = ? WHERE id = ?',
+            [new Date(), durationMinutes, meeting.id]
+        );
     }
 }
 
@@ -79,30 +74,27 @@ async function handleRecordingCompleted(payload) {
     const zoomMeetingId = String(payload.id);
     const recordingFiles = payload.recording_files || [];
 
-    // Find the best recording (prefer MP4 video)
     const videoRecording = recordingFiles.find(f => f.file_type === 'MP4') || recordingFiles[0];
     if (!videoRecording) return;
 
     const recordingUrl = videoRecording.play_url || videoRecording.download_url;
 
-    const { data: meeting } = await supabase
-        .from('virtual_meetings')
-        .select('*, bookings(name, email, service)')
-        .eq('zoom_meeting_id', zoomMeetingId)
-        .maybeSingle();
+    const [rows] = await db.query(
+        'SELECT vm.*, b.name, b.email, b.service_type FROM virtual_meetings vm JOIN bookings b ON vm.booking_id = b.id WHERE vm.zoom_meeting_id = ?',
+        [zoomMeetingId]
+    );
+    const meeting = rows[0];
 
     if (!meeting) return;
 
-    // Store recording URL in database
-    await supabase
-        .from('virtual_meetings')
-        .update({ recording_url: recordingUrl })
-        .eq('id', meeting.id);
+    await db.query(
+        'UPDATE virtual_meetings SET recording_url = ? WHERE id = ?',
+        [recordingUrl, meeting.id]
+    );
 
-    // Send recording email to client
-    if (meeting.bookings?.email) {
+    if (meeting.email) {
         try {
-            await notificationService.sendRecordingEmail(meeting.bookings, recordingUrl);
+            await notificationService.sendRecordingEmail(meeting, recordingUrl);
         } catch (emailErr) {
             console.warn('Failed to send recording email:', emailErr.message);
         }

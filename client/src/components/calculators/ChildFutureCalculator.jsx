@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/context/useLanguage';
 import { Label } from '@/components/ui/label';
@@ -12,17 +12,10 @@ const ChildFutureCalculator = () => {
     const [currentCost, setCurrentCost] = useState(1000000); // 10 Lakhs
     const [inflation, setInflation] = useState(8);
 
-    const [targetSavings, setTargetSavings] = useState(0);
-
-    useEffect(() => {
-        const yearsToGoal = higherEdAge - childAge;
-        if (yearsToGoal > 0) {
-            const futureCost = currentCost * Math.pow(1 + (inflation / 100), yearsToGoal);
-            setTargetSavings(Math.round(futureCost));
-        } else {
-            setTargetSavings(currentCost);
-        }
-    }, [childAge, higherEdAge, currentCost, inflation]);
+    const yearsToGoal = higherEdAge - childAge;
+    const targetSavings = yearsToGoal > 0
+        ? Math.round(currentCost * Math.pow(1 + (inflation / 100), yearsToGoal))
+        : currentCost;
 
     const formatCurrency = (val) => {
         return new Intl.NumberFormat('en-IN', {
@@ -33,7 +26,7 @@ const ChildFutureCalculator = () => {
     };
 
     return (
-        <div className="bg-white dark:bg-slate-800 p-8 rounded-[2rem] border border-slate-100 dark:border-slate-700 shadow-xl">
+        <div className="bg-white dark:bg-slate-800 p-5 md:p-8 rounded-[2rem] border border-slate-100 dark:border-slate-700 shadow-xl">
             <div className="flex items-center gap-4 mb-8">
                 <div className="w-12 h-12 bg-rose-100 dark:bg-rose-900/30 rounded-2xl flex items-center justify-center">
                     <Baby className="text-rose-600 w-6 h-6" />
@@ -44,7 +37,7 @@ const ChildFutureCalculator = () => {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
                 <div className="space-y-8">
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
@@ -70,12 +63,41 @@ const ChildFutureCalculator = () => {
                     <div className="space-y-4">
                         <div className="flex justify-between items-center">
                             <Label className="text-sm font-bold text-slate-700 dark:text-slate-300">{t.calculators.child.currentCost}</Label>
-                            <span className="text-rose-600 font-black">{formatCurrency(currentCost)}</span>
+                            <div className="relative w-36">
+                                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold">₹</span>
+                                <Input
+                                    type="number"
+                                    value={currentCost}
+                                    onChange={(e) => setCurrentCost(Number(e.target.value))}
+                                    className="pl-7 h-9 rounded-lg border-slate-200 focus:ring-rose-600 font-black text-rose-600"
+                                />
+                            </div>
                         </div>
                         <input
                             type="range" min="100000" max="10000000" step="100000"
                             value={currentCost}
                             onChange={(e) => setCurrentCost(Number(e.target.value))}
+                            className="w-full h-2 bg-slate-100 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-rose-600"
+                        />
+                    </div>
+
+                    <div className="space-y-4">
+                        <div className="flex justify-between items-center">
+                            <Label className="text-sm font-bold text-slate-700 dark:text-slate-300">{t.calculators.child.inflation}</Label>
+                            <div className="relative w-24">
+                                <Input
+                                    type="number"
+                                    value={inflation}
+                                    onChange={(e) => setInflation(Number(e.target.value))}
+                                    className="pr-8 h-9 rounded-lg border-slate-200 focus:ring-rose-600 font-black text-rose-600"
+                                />
+                                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold">%</span>
+                            </div>
+                        </div>
+                        <input
+                            type="range" min="1" max="15" step="0.5"
+                            value={inflation}
+                            onChange={(e) => setInflation(Number(e.target.value))}
                             className="w-full h-2 bg-slate-100 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-rose-600"
                         />
                     </div>
@@ -88,7 +110,7 @@ const ChildFutureCalculator = () => {
                     </div>
                 </div>
 
-                <div className="bg-gradient-to-br from-rose-500 to-pink-600 p-8 rounded-[1.5rem] text-white flex flex-col justify-center items-center text-center shadow-xl shadow-rose-500/20">
+                <div className="bg-gradient-to-br from-rose-500 to-pink-600 p-6 md:p-8 rounded-[1.5rem] text-white flex flex-col justify-center items-center text-center shadow-xl shadow-rose-500/20">
                     <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6">
                         <Heart className="w-8 h-8 fill-white" />
                     </div>

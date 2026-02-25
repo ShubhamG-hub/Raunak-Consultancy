@@ -16,14 +16,7 @@ const LanguageToggle = () => {
         setLanguage(lang);
     };
 
-    const getLabel = (lang) => {
-        switch (lang) {
-            case 'en': return 'English';
-            case 'hi': return 'हिंदी';
-            case 'mr': return 'मराठी';
-            default: return 'English';
-        }
-    }
+
 
     return (
         <DropdownMenu>

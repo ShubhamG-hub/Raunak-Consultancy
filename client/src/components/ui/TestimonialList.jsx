@@ -2,11 +2,9 @@ import { useEffect, useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Star, Quote, UserCircle2 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { useLanguage } from '@/context/useLanguage';
 import api from '@/lib/api';
 
 const TestimonialList = () => {
-    const { t } = useLanguage();
     const [testimonials, setTestimonials] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -29,7 +27,7 @@ const TestimonialList = () => {
         return (
             <div className="text-center py-10">
                 <div className="inline-flex items-center gap-2 text-slate-500 dark:text-slate-400">
-                    <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+                    <div className="w-5 h-5 border-2 border-primary-theme border-t-transparent rounded-full animate-spin" />
                     Loading stories...
                 </div>
             </div>
@@ -50,9 +48,9 @@ const TestimonialList = () => {
                     viewport={{ once: true }}
                     transition={{ duration: 0.5, delay: index * 0.1 }}
                 >
-                    <Card className="h-full border-none shadow-sm hover:shadow-2xl hover:shadow-blue-500/10 bg-white dark:bg-slate-900 rounded-[2rem] transition-all duration-500 group overflow-hidden">
+                    <Card className="h-full border-none shadow-sm hover:shadow-2xl hover:shadow-primary-theme/10 bg-white dark:bg-slate-900 rounded-[2rem] transition-all duration-500 group overflow-hidden">
                         <CardContent className="p-8 relative h-full flex flex-col">
-                            <Quote className="w-12 h-12 text-blue-500/5 dark:text-blue-400/5 absolute top-0 right-0 -translate-y-2 group-hover:text-blue-500/10 transition-all duration-500 group-hover:scale-125" />
+                            <Quote className="w-12 h-12 text-primary-theme/5 absolute top-0 right-0 -translate-y-2 group-hover:text-primary-theme/10 transition-all duration-500 group-hover:scale-125" />
 
                             <div className="flex gap-1 mb-4">
                                 {[1, 2, 3, 4, 5].map((star) => (
@@ -68,7 +66,7 @@ const TestimonialList = () => {
                             </p>
 
                             <div className="flex items-center gap-3 mt-auto">
-                                <div className="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400">
+                                <div className="w-10 h-10 rounded-full bg-primary-theme/10 flex items-center justify-center text-primary-theme">
                                     <UserCircle2 className="w-6 h-6" />
                                 </div>
                                 <div>

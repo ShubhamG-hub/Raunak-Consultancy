@@ -1,8 +1,10 @@
 import { Phone } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
+import { useLanguage } from '@/context/useLanguage';
 
 const PhoneButton = () => {
+    const { t } = useLanguage();
     const [showLabel, setShowLabel] = useState(false);
 
     return (
@@ -14,9 +16,9 @@ const PhoneButton = () => {
                         animate={{ opacity: 1, x: 0, scale: 1 }}
                         exit={{ opacity: 0, x: 20, scale: 0.9 }}
                         transition={{ duration: 0.2 }}
-                        className="mr-3 bg-white/95 dark:bg-slate-800/95 backdrop-blur-md text-blue-600 dark:text-blue-400 px-3 py-1.5 rounded-lg shadow-sm font-bold text-xs border border-blue-100/50 dark:border-blue-900/50 whitespace-nowrap hidden md:block"
+                        className="mr-3 bg-white/95 dark:bg-slate-900/90 backdrop-blur-xl text-primary-theme px-3 py-1.5 rounded-xl shadow-2xl font-bold text-xs border border-primary-theme/20 whitespace-nowrap hidden md:block"
                     >
-                        Call Us
+                        {t.chatbot.floatingActions?.call || "Call Us"}
                     </motion.div>
                 )}
             </AnimatePresence>
@@ -25,10 +27,10 @@ const PhoneButton = () => {
                 href="tel:7738658033"
                 whileHover={{
                     scale: 1.1,
-                    boxShadow: "0 0 15px 2px rgba(59, 130, 246, 0.3)"
+                    boxShadow: "0 0 20px 2px var(--primary-glow)"
                 }}
                 whileTap={{ scale: 0.95 }}
-                className="bg-gradient-to-br from-blue-500 to-indigo-600 text-white p-3 rounded-full shadow-xl flex items-center justify-center relative overflow-hidden group"
+                className="w-12 h-12 bg-gradient-to-br from-primary-theme to-accent-theme text-white rounded-full shadow-2xl flex items-center justify-center relative overflow-hidden group border border-white/20"
                 aria-label="Call Us"
                 onMouseEnter={() => setShowLabel(true)}
                 onMouseLeave={() => setShowLabel(false)}

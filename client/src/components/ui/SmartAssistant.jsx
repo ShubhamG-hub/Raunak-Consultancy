@@ -4,7 +4,7 @@ import { MessageCircle, X, ChevronLeft, Send, Calculator, HelpCircle, Calendar, 
 import api from '../../lib/api';
 import { useLanguage } from '@/context/useLanguage';
 
-const SmartAssistant = () => {
+const SmartAssistant = ({ isEmbedded = false }) => {
     const { t, language } = useLanguage();
     const [isOpen, setIsOpen] = useState(false);
     const [view, setView] = useState('chat'); // 'chat', 'goalFinder', 'faq'
@@ -31,12 +31,9 @@ const SmartAssistant = () => {
         if (isOpen && messages.length === 0) {
             // Initial welcome message could go here
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isOpen]);
 
-    useEffect(() => {
-        const timer = setTimeout(() => setShowGreeting(true), 3000);
-        return () => clearTimeout(timer);
-    }, []);
 
     const ensureSession = async () => {
         if (sessionId) {
@@ -431,12 +428,12 @@ const SmartAssistant = () => {
                         className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'} gap-2`}
                     >
                         {msg.sender === 'bot' && (
-                            <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 mt-1">
-                                <Bot className="w-3.5 h-3.5 text-primary" />
+                            <div className="w-8 h-8 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center flex-shrink-0 mt-1 shadow-sm overflow-hidden p-1.5 transition-transform hover:scale-110">
+                                <Bot className="w-full h-full text-primary" />
                             </div>
                         )}
                         <div className={`relative max-w-[85%] p-4 rounded-3xl text-sm ${msg.sender === 'user'
-                            ? 'bg-blue-600 text-white rounded-tr-none shadow-lg shadow-blue-500/20'
+                            ? 'bg-primary-theme text-white rounded-tr-none shadow-lg shadow-primary-theme/20'
                             : 'bg-white/80 dark:bg-zinc-800/80 backdrop-blur-md text-slate-900 dark:text-slate-100 rounded-tl-none border border-white/50 dark:border-white/10 shadow-sm'
                             }`}>
                             {msg.text}
@@ -480,8 +477,8 @@ const SmartAssistant = () => {
 
                 {isTyping && (
                     <div className="flex justify-start gap-2">
-                        <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 mt-1">
-                            <Bot className="w-3.5 h-3.5 text-primary" />
+                        <div className="w-8 h-8 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center flex-shrink-0 mt-1 shadow-sm overflow-hidden p-1.5 animate-pulse">
+                            <Bot className="w-full h-full text-primary" />
                         </div>
                         <div className="bg-secondary p-3 rounded-2xl rounded-tl-none flex gap-1 items-center">
                             <span className="w-1.5 h-1.5 bg-muted-foreground/30 rounded-full animate-bounce" />
@@ -607,98 +604,86 @@ const SmartAssistant = () => {
         );
     };
 
+    const content = (
+        <div className="flex items-center group pointer-events-auto">
+            {/* Greeting Tooltip */}
+            <AnimatePresence>
+                {(showGreeting && !isOpen) && (
+                    <motion.div
+                        initial={{ opacity: 0, x: 20, scale: 0.9 }}
+                        animate={{ opacity: 1, x: 0, scale: 1 }}
+                        exit={{ opacity: 0, x: 20, scale: 0.9 }}
+                        transition={{ duration: 0.2 }}
+                        className="mr-3 bg-white/95 dark:bg-slate-900/90 backdrop-blur-xl text-primary-theme px-3 py-1.5 rounded-xl shadow-2xl font-bold text-xs border border-primary-theme/20 whitespace-nowrap hidden md:block"
+                    >
+                        {t.chatbot.ui.greetingTooltip}
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            <motion.button
+                layoutId="chat-bubble"
+                whileHover={{
+                    scale: 1.1,
+                    boxShadow: "0 0 20px 2px var(--primary-glow)"
+                }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => { setIsOpen(!isOpen); setShowGreeting(false); }}
+                onMouseEnter={() => setShowGreeting(true)}
+                onMouseLeave={() => setShowGreeting(false)}
+                className={`w-12 h-12 rounded-full shadow-2xl flex items-center justify-center transition-all duration-300 relative group overflow-hidden z-[60] border border-white/20 ${isOpen
+                    ? 'bg-zinc-800 dark:bg-zinc-100 text-white dark:text-zinc-900'
+                    : 'bg-gradient-to-br from-primary-theme to-accent-theme text-white'
+                    }`}
+            >
+                <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity" />
+                {isOpen ? (
+                    <X className="relative z-10 w-5 h-5 text-red-500" />
+                ) : (
+                    <Bot className="relative z-10 w-6 h-6" />
+                )}
+                {!isOpen && <div className="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-white animate-ping" />}
+            </motion.button>
+        </div>
+    );
+
     return (
-        <div className="pointer-events-none relative">
-            <div className="relative pointer-events-auto flex flex-col items-end gap-3">
-                {/* Greeting Tooltip */}
-                <AnimatePresence>
-                    {showGreeting && !isOpen && (
-                        <motion.div
-                            initial={{ opacity: 0, x: 10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            exit={{ opacity: 0, x: 10 }}
-                            className="absolute right-16 top-1/2 -translate-y-1/2 bg-white/95 dark:bg-slate-800/95 backdrop-blur-md text-primary dark:text-primary px-3 py-1.5 rounded-lg shadow-sm font-bold text-xs border border-primary/10 dark:border-primary/20 whitespace-nowrap z-[70] hidden md:block"
-                        >
-                            <div className="flex items-center gap-2">
-                                <Sparkles className="w-3.5 h-3.5 animate-pulse" />
-                                <span>{t.chatbot.ui.greetingTooltip}</span>
-                            </div>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
-
-                {/* Chat Window */}
-                <AnimatePresence>
-                    {isOpen && (
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.9, y: 20, transformOrigin: 'bottom right' }}
-                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                            className="fixed md:absolute bottom-24 md:bottom-16 right-4 md:right-0 w-[calc(100vw-32px)] md:w-[350px] bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl border border-white/20 dark:border-zinc-800/50 rounded-[2.5rem] shadow-[0_0_50px_-12px_rgba(0,0,0,0.25)] overflow-hidden z-[100]"
-                        >
-                            {/* Header */}
-                            <div className="p-5 bg-gradient-to-br from-primary/90 to-primary/70 backdrop-blur-md text-primary-foreground flex items-center justify-between border-b border-white/10">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center border border-white/10 shadow-inner">
-                                        <Bot className="w-6 h-6" />
-                                    </div>
-                                    <div>
-                                        <h4 className="text-sm font-black tracking-tight uppercase">Raunak AI Chatbot</h4>
-                                        <div className="flex items-center gap-1.5 mt-0.5">
-                                            <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse ring-4 ring-green-400/20" />
-                                            <span className="text-[10px] font-bold opacity-90 uppercase tracking-widest">{t.chatbot.ui.alwaysActive}</span>
-                                        </div>
+        <div className={`z-[100] ${isEmbedded ? '' : 'fixed bottom-6 right-6'} pointer-events-none`}>
+            <AnimatePresence>
+                {isOpen && (
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                        className={`pointer-events-auto bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl overflow-hidden mb-4 ${isEmbedded ? 'fixed bottom-24 right-6 w-[350px] md:w-[400px]' : 'w-[350px] md:w-[400px]'}`}
+                    >
+                        {/* Header */}
+                        <div className="bg-primary-theme p-4 text-white flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center">
+                                    <Bot className="w-6 h-6" />
+                                </div>
+                                <div>
+                                    <h2 className="font-bold text-sm tracking-wide">Raunak AI</h2>
+                                    <div className="flex items-center gap-1.5">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+                                        <span className="text-[10px] opacity-80 uppercase tracking-widest font-bold font-mono">{t.chatbot.ui.alwaysActive}</span>
                                     </div>
                                 </div>
-                                <button onClick={() => setIsOpen(false)} className="w-8 h-8 rounded-full hover:bg-white/10 flex items-center justify-center transition-colors">
-                                    <X className="w-5 h-5" />
-                                </button>
                             </div>
+                            <button onClick={() => setIsOpen(false)} className="bg-white/10 hover:bg-white/20 p-2 rounded-xl transition-colors">
+                                <X className="w-4 h-4" />
+                            </button>
+                        </div>
 
-                            {/* Dynamic Content */}
-                            <div className="relative bg-gradient-to-b from-transparent to-zinc-500/5">
-                                {view === 'chat' && renderChat()}
-                                {view === 'goalFinder' && renderGoalFinder()}
-                                {view === 'faq' && renderFaq()}
-                            </div>
-
-                            {/* Footer */}
-                            <div className="px-5 py-3 border-t border-border/50 bg-secondary/30 flex items-center justify-between">
-                                <div className="flex items-center gap-1.5 opacity-60">
-                                    <ShieldCheck className="w-3.5 h-3.5 text-primary" />
-                                    <span className="text-[10px] font-bold uppercase tracking-tighter">Safe & Encrypted</span>
-                                </div>
-                                <span className="text-[10px] font-medium opacity-40 italic">Raunak AI Assistant v2.0</span>
-                            </div>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
-
-                {/* Floating Bubble */}
-                <motion.button
-                    layoutId="chat-bubble"
-                    whileHover={{
-                        scale: 1.1,
-                        boxShadow: "0 0 15px 2px rgba(var(--primary-rgb), 0.3)"
-                    }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => { setIsOpen(!isOpen); setShowGreeting(false); }}
-                    onMouseEnter={() => setShowGreeting(true)}
-                    onMouseLeave={() => setShowGreeting(false)}
-                    className={`w-12 h-12 rounded-full shadow-2xl flex items-center justify-center transition-all duration-300 relative group overflow-hidden z-[60] ${isOpen
-                        ? 'bg-zinc-800 dark:bg-zinc-100 text-white dark:text-zinc-900 border-zinc-700'
-                        : 'bg-gradient-to-br from-primary to-primary/80 text-white'
-                        }`}
-                >
-                    <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity" />
-                    {isOpen ? (
-                        <X className="relative z-10 w-5 h-5" />
-                    ) : (
-                        <Bot className="relative z-10 w-6 h-6" />
-                    )}
-                    {!isOpen && <div className="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-white animate-ping" />}
-                </motion.button>
-            </div>
+                        {/* View Content */}
+                        {view === 'chat' && renderChat()}
+                        {view === 'goalFinder' && renderGoalFinder()}
+                        {view === 'faq' && renderFaq()}
+                    </motion.div>
+                )}
+            </AnimatePresence>
+            {content}
         </div>
     );
 };

@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useScroll, useSpring, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
@@ -17,15 +17,16 @@ import BookingModal from '@/components/ui/BookingModal';
 
 // Import Sections
 import About from './About';
-import Services from './Services';
 import Claims from './Claims';
 import Contact from './Contact';
 import TestimonialList from '@/components/ui/TestimonialList';
 import TestimonialForm from '@/components/forms/TestimonialForm';
+import Services from './Services';
 import CertificateDisplay from '@/components/ui/CertificateDisplay';
 import GalleryGrid from '@/components/ui/GalleryGrid';
 import AwardsSection from '@/components/ui/AwardsSection';
 import BlogsPreview from '@/components/ui/BlogsPreview';
+import Typewriter from '@/components/ui/Typewriter';
 
 import SectionHeader from '@/components/layout/SectionHeader';
 
@@ -46,18 +47,18 @@ const Home = () => {
         "/images/posters/WhatsApp Image 2026-02-20 at 7.40.43 AM.jpeg"
     ];
 
-    const nextImage = () => {
+    const nextImage = useCallback(() => {
         setCurrentImageIndex((prev) => (prev + 1) % heroImages.length);
-    };
+    }, [heroImages.length]);
 
-    const prevImage = () => {
+    const prevImage = useCallback(() => {
         setCurrentImageIndex((prev) => (prev - 1 + heroImages.length) % heroImages.length);
-    };
+    }, [heroImages.length]);
 
     useEffect(() => {
         const timer = setInterval(nextImage, 6000);
         return () => clearInterval(timer);
-    }, [heroImages.length]);
+    }, [nextImage]);
 
     const { scrollYProgress } = useScroll();
 
@@ -75,8 +76,8 @@ const Home = () => {
     ];
 
     const colorMap = {
-        blue: { bg: 'bg-blue-100 dark:bg-blue-900/50', icon: 'text-blue-600 dark:text-blue-400', shadow: 'hover:shadow-blue-500/10' },
-        indigo: { bg: 'bg-indigo-100 dark:bg-indigo-900/50', icon: 'text-indigo-600 dark:text-indigo-400', shadow: 'hover:shadow-indigo-500/10' },
+        blue: { bg: 'bg-primary-theme/10', icon: 'text-primary-theme', shadow: 'hover:shadow-primary-theme/10' },
+        indigo: { bg: 'bg-accent-theme/10', icon: 'text-accent-theme', shadow: 'hover:shadow-accent-theme/10' },
         sky: { bg: 'bg-sky-100 dark:bg-sky-900/50', icon: 'text-sky-600 dark:text-sky-400', shadow: 'hover:shadow-sky-500/10' },
         violet: { bg: 'bg-violet-100 dark:bg-violet-900/50', icon: 'text-violet-600 dark:text-violet-400', shadow: 'hover:shadow-violet-500/10' },
     };
@@ -85,12 +86,12 @@ const Home = () => {
         <div ref={containerRef} className="relative flex flex-col pb-0">
             {/* Scroll Progress Bar */}
             <motion.div
-                className="fixed top-0 left-0 right-0 h-1 bg-blue-600 origin-left z-[60]"
+                className="fixed top-0 left-0 right-0 h-1 bg-primary-theme origin-left z-[60]"
                 style={{ scaleX }}
             />
 
             {/* Hero Section - Perfectly Balanced Layout */}
-            <section id="home" className="relative min-h-[85vh] flex items-center justify-center overflow-hidden bg-slate-50 dark:bg-slate-950 pt-24 md:pt-32 lg:pt-36 pb-12 md:pb-20 transition-colors duration-500">
+            <section id="home" className="relative min-h-[70vh] md:min-h-[80vh] lg:min-h-[85vh] flex items-center justify-center overflow-hidden bg-slate-50 dark:bg-slate-950 pt-28 md:pt-32 lg:pt-36 pb-12 md:pb-20 transition-colors duration-500">
                 <div className="container mx-auto px-6 relative z-10 h-full flex items-center">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center w-full">
                         {/* Left Side: Content */}
@@ -100,15 +101,16 @@ const Home = () => {
                             transition={{ duration: 0.8, ease: "easeOut" }}
                             className="max-w-lg px-4 lg:px-0"
                         >
-                            <span className="inline-block py-1 px-3 mb-6 font-bold text-[10px] tracking-[0.2em] uppercase text-blue-600 dark:text-blue-400 bg-blue-100/50 dark:bg-blue-900/30 rounded-full border border-blue-200 dark:border-blue-800">
+                            <span className="inline-block py-1 px-3 mb-6 font-bold text-[10px] tracking-[0.2em] uppercase text-primary-theme bg-primary-theme/10 rounded-full border border-primary-theme/20">
                                 {t.nav.aboutOverview}
                             </span>
 
                             <h1 className="text-3xl md:text-3xl lg:text-5xl font-black text-slate-900 dark:text-white mb-6 leading-[1.1] tracking-tight">
                                 {t.hero.title} <br />
-                                <span className="text-blue-600 dark:text-blue-500">
-                                    {t.hero.titleHighlight}
-                                </span>
+                                <Typewriter
+                                    words={t.hero.typingWords}
+                                    className="text-primary-theme min-h-[1.2em] inline-block"
+                                />
                             </h1>
 
                             <p className="text-sm md:text-base text-slate-600 dark:text-slate-400 mb-8 leading-relaxed max-w-lg font-medium">
@@ -118,19 +120,19 @@ const Home = () => {
                             <div className="flex flex-col sm:flex-row gap-4 items-center">
                                 <Button
                                     size="lg"
-                                    className="w-full sm:w-auto h-14 px-10 text-base rounded-2xl bg-blue-600 text-white hover:bg-blue-700 transition-all hover:scale-105 active:scale-95 shadow-xl shadow-blue-600/20"
+                                    className="relative w-full sm:w-auto h-14 px-10 text-base rounded-2xl bg-gradient-to-br from-primary-theme via-primary-theme to-accent-theme text-white font-black uppercase tracking-widest shadow-xl shadow-primary-theme/20 hover:shadow-primary-theme/40 transition-all duration-500 overflow-hidden group/hbook ring-2 ring-white/10"
                                     onClick={() => setIsBookingOpen(true)}
                                 >
-                                    {t.hero.ctaPrimary}
-                                    <ArrowRight className="ml-2 w-4 h-4" />
-                                </Button>
-                                <Button
-                                    variant="outline"
-                                    size="lg"
-                                    className="w-full sm:w-auto h-14 px-10 text-base rounded-2xl border-2 border-slate-200 dark:border-slate-800 bg-transparent text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-900 transition-all hover:scale-105 active:scale-90"
-                                    onClick={() => document.getElementById('services').scrollIntoView({ behavior: 'smooth' })}
-                                >
-                                    {t.hero.ctaSecondary}
+                                    {/* Animated Shine Effect */}
+                                    <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover/hbook:animate-[shimmer_1.5s_infinite]" />
+
+                                    {/* Hover Glow */}
+                                    <div className="absolute inset-0 bg-white opacity-0 group-hover/hbook:opacity-10 transition-opacity duration-500" />
+
+                                    <span className="relative z-10 flex items-center gap-2">
+                                        {t.hero.ctaPrimary}
+                                        <ArrowRight className="w-5 h-5 group-hover/hbook:translate-x-1 transition-transform" strokeWidth={3} />
+                                    </span>
                                 </Button>
                             </div>
                         </motion.div>
@@ -154,7 +156,7 @@ const Home = () => {
                                         transition={{ duration: 0.5, ease: "easeInOut" }}
                                         drag="x"
                                         dragConstraints={{ left: 0, right: 0 }}
-                                        onDragEnd={(e, { offset, velocity }) => {
+                                        onDragEnd={(e, { offset }) => {
                                             const swipe = Math.abs(offset.x) > 50;
                                             if (swipe && offset.x > 0) prevImage();
                                             else if (swipe && offset.x < 0) nextImage();
@@ -189,7 +191,7 @@ const Home = () => {
                                             key={i}
                                             onClick={() => setCurrentImageIndex(i)}
                                             className={`h-1.5 rounded-full transition-all duration-300 ${i === currentImageIndex
-                                                ? "w-8 bg-blue-600"
+                                                ? "w-8 bg-primary-theme"
                                                 : "w-2 bg-slate-300 dark:bg-slate-600 hover:bg-slate-400"
                                                 }`}
                                         />
@@ -203,7 +205,7 @@ const Home = () => {
 
             {/* Trust Counters - Modern Bento Style */}
             <section className="container mx-auto px-6 relative z-20">
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 -mt-8 md:-mt-12 lg:-mt-16">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 -mt-8 md:-mt-12 lg:-mt-16">
                     {trustCounters.map((item, index) => {
                         const colors = colorMap[item.color];
                         return (
@@ -214,7 +216,7 @@ const Home = () => {
                                 viewport={{ once: true }}
                                 transition={{ duration: 0.5, delay: index * 0.1 }}
                                 whileHover={{ y: -8 }}
-                                className={`bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl p-4 md:p-8 rounded-2xl md:rounded-3xl border border-slate-100 dark:border-slate-800 hover:shadow-2xl ${colors.shadow} transition-all duration-300`}
+                                className={`bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl p-4 md:p-6 lg:p-8 rounded-2xl md:rounded-3xl border border-slate-100 dark:border-slate-800 hover:shadow-2xl ${colors.shadow} transition-all duration-300`}
                             >
                                 <div className={`w-10 h-10 md:w-12 md:h-12 ${colors.bg} rounded-xl md:rounded-2xl flex items-center justify-center mb-4 md:mb-6`}>
                                     <item.icon className={`w-5 h-5 md:w-6 md:h-6 ${colors.icon}`} />
@@ -227,18 +229,6 @@ const Home = () => {
                 </div>
             </section>
 
-            {/* About Section */}
-            <motion.section
-                id="about"
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ duration: 0.8 }}
-                className="py-14 md:py-24 bg-white dark:bg-slate-900 transition-colors duration-500"
-            >
-                <About />
-            </motion.section>
-
             {/* Services Section */}
             <motion.section
                 id="services"
@@ -246,7 +236,7 @@ const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.8 }}
-                className="py-14 md:py-24 bg-slate-50 dark:bg-slate-900/50 transition-colors duration-500"
+                className="py-14 md:py-24 bg-white dark:bg-slate-900 transition-colors duration-500"
             >
                 <Services />
             </motion.section>
@@ -265,7 +255,7 @@ const Home = () => {
                 <div className="container mx-auto px-6 relative z-10">
                     <div className="flex flex-col lg:flex-row items-center gap-10 md:gap-12 lg:gap-16">
                         <div className="lg:w-1/2">
-                            <span className="inline-block py-1 px-3 mb-4 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs font-bold uppercase tracking-widest">
+                            <span className="inline-block py-1 px-3 mb-4 rounded-lg bg-primary-theme/10 text-primary-theme text-xs font-bold uppercase tracking-widest">
                                 Interactive Tools
                             </span>
                             <h2 className="text-4xl md:text-5xl font-black text-slate-900 dark:text-white mb-6 leading-tight">
@@ -277,10 +267,10 @@ const Home = () => {
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
                                 {[
-                                    { icon: TrendingUp, label: t.services.goalPlanner, color: "text-blue-600" },
-                                    { icon: Sunset, label: t.calculators.retirement.title, color: "text-indigo-600" },
+                                    { icon: TrendingUp, label: t.calculators.sip.title, color: "text-primary-theme" },
+                                    { icon: Sunset, label: t.calculators.retirement.title, color: "text-accent-theme" },
                                     { icon: Baby, label: t.calculators.child.title, color: "text-rose-600" },
-                                    { icon: Coins, label: t.services.goalPlanner, color: "text-emerald-600" }
+                                    { icon: Coins, label: t.calculators.lumpsum.title, color: "text-emerald-600" }
                                 ].map((item, i) => (
                                     <motion.div
                                         key={i}
@@ -294,8 +284,8 @@ const Home = () => {
                             </div>
 
                             <Link to="/calculators">
-                                <Button size="lg" className="h-14 px-10 rounded-full bg-blue-600 hover:bg-blue-700 font-bold shadow-xl shadow-blue-600/20 group">
-                                    {t.services.startPlanning} <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                                <Button size="lg" className="h-14 px-10 rounded-full bg-primary-theme hover:opacity-90 font-bold shadow-xl transition-all group">
+                                    {t.calculators.startPlanning} <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                                 </Button>
                             </Link>
                         </div>
@@ -334,20 +324,20 @@ const Home = () => {
                                             <motion.div
                                                 initial={{ height: 0 }}
                                                 whileInView={{ height: '100%' }}
-                                                className="flex-1 bg-blue-600 rounded-t-lg shadow-lg shadow-blue-600/20"
+                                                className="flex-1 bg-primary-theme rounded-t-lg shadow-lg"
                                             />
                                             <motion.div
                                                 initial={{ height: 0 }}
                                                 whileInView={{ height: '60%' }}
-                                                className="flex-1 bg-indigo-500 rounded-t-lg"
+                                                className="flex-1 bg-accent-theme rounded-t-lg"
                                             />
                                         </div>
                                         <div className="pt-4 flex justify-between">
                                             <div className="space-y-2">
-                                                <div className="h-2 w-12 bg-blue-600/20 rounded-full" />
-                                                <div className="h-4 w-20 bg-blue-600/40 rounded-full" />
+                                                <div className="h-2 w-12 bg-primary-theme/20 rounded-full" />
+                                                <div className="h-4 w-20 bg-primary-theme/40 rounded-full" />
                                             </div>
-                                            <div className="w-12 h-12 rounded-2xl bg-blue-600 flex items-center justify-center text-white font-black text-xl">
+                                            <div className="w-12 h-12 rounded-2xl bg-primary-theme flex items-center justify-center text-white font-black text-xl">
                                                 %
                                             </div>
                                         </div>
@@ -356,7 +346,7 @@ const Home = () => {
                             </motion.div>
 
                             {/* Decorative background for the card */}
-                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-blue-600/5 blur-[100px] rounded-full -z-10" />
+                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-primary-theme/5 blur-[100px] rounded-full -z-10" />
                         </div>
                     </div>
                 </div>
@@ -372,6 +362,18 @@ const Home = () => {
                 className="py-14 md:py-24 bg-slate-50 dark:bg-slate-900/50 transition-colors duration-500"
             >
                 <Claims />
+            </motion.section>
+
+            {/* About Section */}
+            <motion.section
+                id="about"
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.8 }}
+                className="py-14 md:py-24 bg-white dark:bg-slate-900 transition-colors duration-500"
+            >
+                <About />
             </motion.section>
 
             {/* Certificates Section */}
@@ -408,28 +410,6 @@ const Home = () => {
                 <AwardsSection />
             </motion.section>
 
-            {/* Gallery Section */}
-            <motion.section
-                id="gallery"
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ duration: 0.8 }}
-                className="py-14 md:py-24 bg-white dark:bg-slate-900 transition-colors duration-500"
-            >
-                <div className="container mx-auto px-6">
-                    <SectionHeader title={t.gallery.title} description={t.gallery.subtitle} />
-                    <GalleryGrid />
-                    <div className="mt-12 text-center">
-                        <Link to="/gallery">
-                            <Button variant="outline" size="lg" className="rounded-full px-8 font-bold border-2 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group">
-                                Explore Full Gallery <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                            </Button>
-                        </Link>
-                    </div>
-                </div>
-            </motion.section>
-
             {/* Blogs Section */}
             <motion.section
                 id="blogs"
@@ -464,6 +444,28 @@ const Home = () => {
                     <div className="mt-16 text-center">
                         <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-8">{t.testimonials.leaveReview}</h3>
                         <TestimonialForm />
+                    </div>
+                </div>
+            </motion.section>
+
+            {/* Gallery Section */}
+            <motion.section
+                id="gallery"
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.8 }}
+                className="py-14 md:py-24 bg-white dark:bg-slate-900 transition-colors duration-500"
+            >
+                <div className="container mx-auto px-6">
+                    <SectionHeader title={t.gallery.title} description={t.gallery.subtitle} />
+                    <GalleryGrid />
+                    <div className="mt-12 text-center">
+                        <Link to="/gallery">
+                            <Button variant="outline" size="lg" className="rounded-full px-8 font-bold border-2 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group">
+                                Explore Full Gallery <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                            </Button>
+                        </Link>
                     </div>
                 </div>
             </motion.section>

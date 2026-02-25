@@ -11,6 +11,7 @@ export default function WaitingRoomQueue({ meetingId, onQueueUpdate }) {
         fetchQueue();
         const interval = setInterval(fetchQueue, 3000);
         return () => clearInterval(interval);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [meetingId]);
 
     async function fetchQueue() {

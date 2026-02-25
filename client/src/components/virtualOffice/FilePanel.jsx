@@ -6,7 +6,7 @@ function getFileIcon(fileName) {
     const ext = fileName.split('.').pop()?.toLowerCase();
     if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'].includes(ext)) return <FileImage className="w-4 h-4 text-purple-500" />;
     if (['zip', 'rar', '7z'].includes(ext)) return <FileArchive className="w-4 h-4 text-yellow-500" />;
-    return <FileText className="w-4 h-4 text-blue-500" />;
+    return <FileText className="w-4 h-4 text-primary-theme" />;
 }
 
 export default function FilePanel({ meetingId, uploadedBy, bookingToken }) {
@@ -19,6 +19,7 @@ export default function FilePanel({ meetingId, uploadedBy, bookingToken }) {
         fetchFiles();
         const interval = setInterval(fetchFiles, 5000);
         return () => clearInterval(interval);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [meetingId]);
 
     async function fetchFiles() {
@@ -64,9 +65,9 @@ export default function FilePanel({ meetingId, uploadedBy, bookingToken }) {
         <div className="flex flex-col h-full bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl overflow-hidden">
             {/* Header */}
             <div className="flex items-center gap-3 px-4 py-3 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50">
-                <Paperclip className="w-4 h-4 text-blue-600" />
+                <Paperclip className="w-4 h-4 text-primary-theme" />
                 <span className="text-sm font-bold text-slate-700 dark:text-slate-200">Files</span>
-                <span className="ml-auto text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded-full font-bold">{files.length}</span>
+                <span className="ml-auto text-xs bg-primary-theme/10 text-primary-theme px-2 py-0.5 rounded-full font-bold">{files.length}</span>
             </div>
 
             {/* File List */}
@@ -79,7 +80,7 @@ export default function FilePanel({ meetingId, uploadedBy, bookingToken }) {
                 )}
                 {files.map((file) => (
                     <div key={file.id}
-                        className="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 group hover:border-blue-200 dark:hover:border-blue-800 transition-colors">
+                        className="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 group hover:border-primary-theme/30 transition-colors">
                         <div className="w-8 h-8 rounded-lg bg-white dark:bg-slate-700 flex items-center justify-center shadow-sm flex-shrink-0">
                             {getFileIcon(file.file_name)}
                         </div>
@@ -88,7 +89,7 @@ export default function FilePanel({ meetingId, uploadedBy, bookingToken }) {
                             <p className="text-[10px] text-slate-400 dark:text-slate-500">{file.uploaded_by} · {new Date(file.uploaded_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
                         </div>
                         <a href={file.file_url} target="_blank" rel="noreferrer"
-                            className="w-7 h-7 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-600 flex items-center justify-center hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors opacity-0 group-hover:opacity-100">
+                            className="w-7 h-7 rounded-lg bg-primary-theme/10 text-primary-theme flex items-center justify-center hover:bg-primary-theme/20 transition-colors opacity-0 group-hover:opacity-100">
                             <Download className="w-3.5 h-3.5" />
                         </a>
                     </div>
@@ -101,7 +102,7 @@ export default function FilePanel({ meetingId, uploadedBy, bookingToken }) {
                 <button
                     onClick={() => inputRef.current?.click()}
                     disabled={uploading}
-                    className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border-2 border-dashed border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:border-blue-400 hover:text-blue-600 dark:hover:border-blue-600 dark:hover:text-blue-400 transition-colors text-sm font-medium disabled:opacity-50"
+                    className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border-2 border-dashed border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:border-primary-theme hover:text-primary-theme transition-colors text-sm font-medium disabled:opacity-50"
                 >
                     {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
                     {uploading ? 'Uploading...' : 'Share a File'}

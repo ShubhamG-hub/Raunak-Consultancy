@@ -27,11 +27,6 @@ const Profile = () => {
         confirmPassword: ''
     });
 
-    const [settings, setSettings] = useState({
-        emailNotifications: true,
-        smsNotifications: false,
-        language: 'en'
-    });
 
     // Fetch Profile Data
     useEffect(() => {
@@ -61,7 +56,7 @@ const Profile = () => {
         setMessage({ type: '', text: '' });
 
         try {
-            const res = await api.put('/admin/profile', {
+            const _res = await api.put('/admin/profile', {
                 name: profileData.name,
                 phone: profileData.phone,
                 email: profileData.email
@@ -119,14 +114,6 @@ const Profile = () => {
 
     };
 
-    const handleSettingsUpdate = async () => {
-        setLoading(true);
-        // Simulate for now as there is no settings table yet
-        setTimeout(() => {
-            setMessage({ type: 'success', text: 'Settings updated locally (not persisted).' });
-            setLoading(false);
-        }, 800);
-    };
 
     return (
         <div className="p-3 md:p-6 space-y-4 md:space-y-6 max-w-5xl">

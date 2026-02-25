@@ -1,0 +1,188 @@
+﻿
+C:\Users\shubh\OneDrive\Desktop\Portfolio-Website\client\src\components\layout\AdminLayout.jsx
+   53:9   warning  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  51 |     // Close mobile sidebar on route change
+  52 |     useEffect(() => {
+> 53 |         setMobileOpen(false);
+     |         ^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  54 |     }, [location.pathname]);
+  55 |
+  56 |     // Update browser tab title based on current page                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               react-hooks/set-state-in-effect
+   60:8   warning  React Hook useEffect has a missing dependency: 'menuItems'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  react-hooks/exhaustive-deps
+  205:30  warning  Error: Cannot create components during render
+
+Components created during render will reset their state each time they are created. Declare components outside of render.
+
+  203 |                             className="fixed inset-y-0 left-0 w-[280px] z-50 flex flex-col bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-r border-slate-200 dark:border-white/10 md:hidden"
+  204 |                         >
+> 205 |                             <SidebarContent isMobile={true} />
+      |                              ^^^^^^^^^^^^^^ This component is created during render
+  206 |                         </motion.aside>
+  207 |                     </>
+  208 |                 )}
+
+   84 |
+   85 |     // Shared sidebar content (used for both desktop and mobile)
+>  86 |     const SidebarContent = ({ isMobile = false }) => {
+      |                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  87 |         const isOpen = isMobile ? true : sidebarOpen;
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  88 |
+      ΓÇª
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 174 |         );
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 175 |     };
+      | ^^^^^^ The component is created during render here
+  176 |
+  177 |     return (
+  178 |         <div className="flex h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 overflow-hidden relative selection:bg-blue-500/30 transition-colors duration-300">  react-hooks/static-components
+  218:18  warning  Error: Cannot create components during render
+
+Components created during render will reset their state each time they are created. Declare components outside of render.
+
+  216 |                 className="relative z-20 hidden md:flex flex-col h-full border-r border-slate-200 dark:border-white/10 bg-white/80 dark:bg-slate-900/50 backdrop-blur-xl transition-colors duration-300"
+  217 |             >
+> 218 |                 <SidebarContent isMobile={false} />
+      |                  ^^^^^^^^^^^^^^ This component is created during render
+  219 |             </motion.aside>
+  220 |
+  221 |             {/* Main Content Wrapper */}
+
+   84 |
+   85 |     // Shared sidebar content (used for both desktop and mobile)
+>  86 |     const SidebarContent = ({ isMobile = false }) => {
+      |                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  87 |         const isOpen = isMobile ? true : sidebarOpen;
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  88 |
+      ΓÇª
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 174 |         );
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 175 |     };
+      | ^^^^^^ The component is created during render here
+  176 |
+  177 |     return (
+  178 |         <div className="flex h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 overflow-hidden relative selection:bg-blue-500/30 transition-colors duration-300">                                                 react-hooks/static-components
+
+C:\Users\shubh\OneDrive\Desktop\Portfolio-Website\client\src\components\ui\Typewriter.jsx
+  13:13  warning  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  11 |     useEffect(() => {
+  12 |         if (index >= words.length) {
+> 13 |             setIndex(0);
+     |             ^^^^^^^^ Avoid calling setState() directly within an effect
+  14 |             return;
+  15 |         }
+  16 |  react-hooks/set-state-in-effect
+
+C:\Users\shubh\OneDrive\Desktop\Portfolio-Website\client\src\components\virtualOffice\MeetingRoom.jsx
+  29:9  warning  Error: Cannot access variable before it is declared
+
+`loadAndJoin` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+  27 |         sdkLoadedRef.current = true;
+  28 |
+> 29 |         loadAndJoin();
+     |         ^^^^^^^^^^^ `loadAndJoin` accessed before it is declared
+  30 |
+  31 |         return () => {
+  32 |             // Cleanup: leave meeting if component unmounts
+
+   39 |     }, [meetingNumber, signature, sdkKey]);
+   40 |
+>  41 |     async function loadAndJoin() {
+      |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  42 |         try {
+      | ^^^^^^^^^^^^^
+>  43 |             // Inject Zoom SDK stylesheet
+      ΓÇª
+      | ^^^^^^^^^^^^^
+> 138 |         }
+      | ^^^^^^^^^^^^^
+> 139 |     }
+      | ^^^^^^ `loadAndJoin` is declared here
+  140 |
+  141 |     if (status === 'error') {
+  142 |         return (  react-hooks/immutability
+  39:8  warning  React Hook useEffect has a missing dependency: 'loadAndJoin'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        react-hooks/exhaustive-deps
+
+C:\Users\shubh\OneDrive\Desktop\Portfolio-Website\client\src\pages\admin\TestimonialsManager.jsx
+  28:9  warning  Unused eslint-disable directive (no problems were reported from 'react-hooks/exhaustive-deps')
+
+C:\Users\shubh\OneDrive\Desktop\Portfolio-Website\client\src\pages\admin\ThemeSettings.jsx
+  4:8  error  'api' is defined but never used. Allowed unused vars must match /^[A-Z_]|^motion$/u  no-unused-vars
+
+C:\Users\shubh\OneDrive\Desktop\Portfolio-Website\client\src\pages\admin\VirtualOfficeManager.jsx
+  1:38  error  'useCallback' is defined but never used. Allowed unused vars must match /^[A-Z_]|^motion$/u  no-unused-vars
+
+C:\Users\shubh\OneDrive\Desktop\Portfolio-Website\client\src\pages\public\AboutDetails.jsx
+  27:13  error  't' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]|^motion$/u  no-unused-vars
+
+C:\Users\shubh\OneDrive\Desktop\Portfolio-Website\client\src\pages\public\BlogDetail.jsx
+  11:13  error  't' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]|^motion$/u  no-unused-vars
+
+C:\Users\shubh\OneDrive\Desktop\Portfolio-Website\client\src\pages\public\Calculators.jsx
+  44:13  warning  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  42 |     useEffect(() => {
+  43 |         if (location.state?.activeTab) {
+> 44 |             setActiveTab(location.state.activeTab);
+     |             ^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  45 |             // Scroll to the calculator section if needed
+  46 |             const element = document.getElementById('calc-container');
+  47 |             if (element) {  react-hooks/set-state-in-effect
+
+C:\Users\shubh\OneDrive\Desktop\Portfolio-Website\client\src\pages\public\Home.jsx
+   60:8   warning  React Hook useEffect has a missing dependency: 'nextImage'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  150:66  error    'velocity' is defined but never used. Allowed unused args must match /^_/u                                    no-unused-vars
+
+C:\Users\shubh\OneDrive\Desktop\Portfolio-Website\client\src\pages\public\Login.jsx
+  18:12  error  'loading' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]|^motion$/u  no-unused-vars
+
+C:\Users\shubh\OneDrive\Desktop\Portfolio-Website\client\src\pages\public\Register.jsx
+   4:10  error  'useAuth' is defined but never used. Allowed unused vars must match /^[A-Z_]|^motion$/u           no-unused-vars
+  22:12  error  'loading' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]|^motion$/u  no-unused-vars
+
+C:\Users\shubh\OneDrive\Desktop\Portfolio-Website\client\src\pages\public\VirtualOffice.jsx
+  19:12  error    'waitingEntry' is assigned a value but never used. Allowed unused vars must match /^[A-Z_]|^motion$/u                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         no-unused-vars
+  59:28  warning  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+  57 |
+  58 |     useEffect(() => {
+> 59 |         if (nameSubmitted) validateAndGetMeeting();
+     |                            ^^^^^^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  60 |     }, [nameSubmitted]);
+  61 |
+  62 |     // ΓöÇΓöÇ Step 2: Poll for admission status ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ  react-hooks/set-state-in-effect
+  60:8   warning  React Hook useEffect has a missing dependency: 'validateAndGetMeeting'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      react-hooks/exhaustive-deps
+
+Γ£û 21 problems (9 errors, 12 warnings)
+  0 errors and 1 warning potentially fixable with the `--fix` option.
+

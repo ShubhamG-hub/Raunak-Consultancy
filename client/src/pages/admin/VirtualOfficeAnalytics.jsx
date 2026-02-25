@@ -78,7 +78,7 @@ export default function VirtualOfficeAnalytics() {
     };
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 pt-4">
             {/* Header */}
             <div>
                 <h1 className="text-2xl font-black text-slate-900 dark:text-white">Meeting Analytics</h1>

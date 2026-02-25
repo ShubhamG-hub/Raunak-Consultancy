@@ -59,7 +59,7 @@ const GalleryGrid = () => {
         return (
             <div className="text-center py-10">
                 <div className="inline-flex items-center gap-2 text-slate-500 dark:text-slate-400">
-                    <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+                    <div className="w-5 h-5 border-2 border-primary-theme border-t-transparent rounded-full animate-spin" />
                     {t.gallery.loading}
                 </div>
             </div>

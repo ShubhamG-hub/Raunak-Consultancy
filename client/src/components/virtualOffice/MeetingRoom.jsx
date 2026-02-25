@@ -21,23 +21,6 @@ export default function MeetingRoom({ meetingNumber, signature, sdkKey, password
     const [error, setError] = useState('');
     const sdkLoadedRef = useRef(false);
 
-    useEffect(() => {
-        if (!meetingNumber || !signature || !sdkKey) return;
-        if (sdkLoadedRef.current) return;
-        sdkLoadedRef.current = true;
-
-        loadAndJoin();
-
-        return () => {
-            // Cleanup: leave meeting if component unmounts
-            try {
-                if (window.ZoomMtg) {
-                    window.ZoomMtg.leaveMeeting({});
-                }
-            } catch { /* ignore */ }
-        };
-    }, [meetingNumber, signature, sdkKey]);
-
     async function loadAndJoin() {
         try {
             // Inject Zoom SDK stylesheet
@@ -138,6 +121,25 @@ export default function MeetingRoom({ meetingNumber, signature, sdkKey, password
         }
     }
 
+    useEffect(() => {
+        if (!meetingNumber || !signature || !sdkKey) return;
+        if (sdkLoadedRef.current) return;
+        sdkLoadedRef.current = true;
+
+        loadAndJoin();
+
+        return () => {
+            // Cleanup: leave meeting if component unmounts
+            try {
+                if (window.ZoomMtg) {
+                    window.ZoomMtg.leaveMeeting({});
+                }
+            } catch { /* ignore */ }
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [meetingNumber, signature, sdkKey]);
+
+
     if (status === 'error') {
         return (
             <div className="flex flex-col items-center justify-center h-full text-center p-8">
@@ -157,8 +159,8 @@ export default function MeetingRoom({ meetingNumber, signature, sdkKey, password
         <div className="relative w-full h-full bg-slate-900 rounded-2xl overflow-hidden">
             {(status === 'loading' || status === 'joining') && (
                 <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-900 z-10">
-                    <div className="w-16 h-16 rounded-2xl bg-blue-600/20 flex items-center justify-center mb-4 animate-pulse">
-                        <Video className="w-8 h-8 text-blue-400" />
+                    <div className="w-16 h-16 rounded-2xl bg-primary-theme/20 flex items-center justify-center mb-4 animate-pulse">
+                        <Video className="w-8 h-8 text-primary-theme" />
                     </div>
                     <div className="flex items-center gap-2 text-slate-400">
                         <Loader2 className="w-4 h-4 animate-spin" />

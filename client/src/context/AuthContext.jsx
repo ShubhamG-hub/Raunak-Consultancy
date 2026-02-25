@@ -1,9 +1,9 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import api from '../lib/api';
-import { supabase } from '../lib/supabase';
 
 const AuthContext = createContext();
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
@@ -21,19 +21,12 @@ export const AuthProvider = ({ children }) => {
                     setUser(JSON.parse(storedUser));
                 }
 
-                // 2. Listen for Supabase Auth changes (Auto logout on expiry)
-                let subscription;
-                if (supabase) {
-                    const { data } = supabase.auth.onAuthStateChange((event, session) => {
-                        if (event === 'SIGNED_OUT' || event === 'TOKEN_REFRESH_FAILED') {
-                            logout();
-                        }
-                    });
-                    subscription = data.subscription;
+                if (token && storedUser) {
+                    setUser(JSON.parse(storedUser));
                 }
 
                 return () => {
-                    if (subscription) subscription.unsubscribe();
+                    // Cleanup if needed
                 };
             } catch (error) {
                 console.error("Auth Initialization Error:", error);
@@ -70,7 +63,6 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
         setUser(null);
-        if (supabase) supabase.auth.signOut();
         window.location.href = '/admin/login';
     };
 

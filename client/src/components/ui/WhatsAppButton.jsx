@@ -1,8 +1,10 @@
 import { MessageCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
+import { useLanguage } from '@/context/useLanguage';
 
 const WhatsAppButton = () => {
+    const { t } = useLanguage();
     const [showLabel, setShowLabel] = useState(false);
 
     return (
@@ -14,9 +16,9 @@ const WhatsAppButton = () => {
                         animate={{ opacity: 1, x: 0, scale: 1 }}
                         exit={{ opacity: 0, x: 20, scale: 0.9 }}
                         transition={{ duration: 0.2 }}
-                        className="mr-3 bg-white/95 dark:bg-slate-800/95 backdrop-blur-md text-emerald-600 dark:text-emerald-400 px-3 py-1.5 rounded-lg shadow-sm font-bold text-xs border border-emerald-100/50 dark:border-emerald-900/50 whitespace-nowrap hidden md:block"
+                        className="mr-3 bg-white/95 dark:bg-slate-900/90 backdrop-blur-xl text-primary-theme px-3 py-1.5 rounded-xl shadow-2xl font-bold text-xs border border-primary-theme/20 whitespace-nowrap hidden md:block"
                     >
-                        WhatsApp Us
+                        {t.chatbot.floatingActions?.whatsapp || "WhatsApp Us"}
                     </motion.div>
                 )}
             </AnimatePresence>
@@ -27,10 +29,10 @@ const WhatsAppButton = () => {
                 rel="noopener noreferrer"
                 whileHover={{
                     scale: 1.1,
-                    boxShadow: "0 0 15px 2px rgba(16, 185, 129, 0.3)"
+                    boxShadow: "0 0 20px 2px var(--primary-glow)"
                 }}
                 whileTap={{ scale: 0.95 }}
-                className="bg-gradient-to-br from-emerald-500 to-green-600 text-white p-3 rounded-full shadow-xl flex items-center justify-center relative overflow-hidden group"
+                className="w-12 h-12 bg-gradient-to-br from-primary-theme to-accent-theme text-white rounded-full shadow-2xl flex items-center justify-center relative overflow-hidden group border border-white/20"
                 aria-label="Chat on WhatsApp"
                 onMouseEnter={() => setShowLabel(true)}
                 onMouseLeave={() => setShowLabel(false)}

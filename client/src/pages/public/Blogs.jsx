@@ -51,7 +51,7 @@ const Blogs = () => {
         if (searchQuery) {
             result = result.filter(blog =>
                 blog.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                blog.excerpt.toLowerCase().includes(searchQuery.toLowerCase())
+                (blog.excerpt || '').toLowerCase().includes(searchQuery.toLowerCase())
             );
         }
 
@@ -74,8 +74,8 @@ const Blogs = () => {
                                 key={cat.id}
                                 onClick={() => setActiveCategory(cat.id)}
                                 className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all ${activeCategory === cat.id
-                                    ? 'bg-blue-600 text-white shadow-xl shadow-blue-600/20'
-                                    : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-100 dark:border-slate-700 hover:border-blue-600'
+                                    ? 'bg-primary-theme text-white shadow-xl shadow-primary-theme/20'
+                                    : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-100 dark:border-slate-700 hover:border-primary-theme'
                                     }`}
                             >
                                 {cat.label}
@@ -88,7 +88,7 @@ const Blogs = () => {
                         <input
                             type="text"
                             placeholder="Search articles..."
-                            className="w-full bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-full py-4 pl-12 pr-6 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-600 transition-all font-medium"
+                            className="w-full bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-full py-4 pl-12 pr-6 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-theme transition-all font-medium"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
@@ -120,7 +120,7 @@ const Blogs = () => {
                                             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                                         />
                                         <div className="absolute top-6 left-6">
-                                            <span className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md text-blue-600 dark:text-blue-400 px-4 py-1.5 rounded-full text-xs font-black shadow-lg">
+                                            <span className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md text-primary-theme px-4 py-1.5 rounded-full text-xs font-black shadow-lg">
                                                 {blog.category}
                                             </span>
                                         </div>
@@ -136,7 +136,7 @@ const Blogs = () => {
                                                 {blog.author}
                                             </div>
                                         </div>
-                                        <h3 className="text-xl font-black text-slate-900 dark:text-white mb-4 line-clamp-2 group-hover:text-blue-600 transition-colors">
+                                        <h3 className="text-xl font-black text-slate-900 dark:text-white mb-4 line-clamp-2 group-hover:text-primary-theme transition-colors">
                                             {blog.title}
                                         </h3>
                                         <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed mb-8 line-clamp-3">
@@ -144,7 +144,7 @@ const Blogs = () => {
                                         </p>
                                         <div className="mt-auto">
                                             <Link to={`/blogs/${blog.slug}`}>
-                                                <Button className="w-full rounded-2xl bg-slate-900 dark:bg-slate-700 hover:bg-blue-600 dark:hover:bg-blue-600 h-14 font-bold transition-all shadow-xl group-hover:shadow-blue-600/20">
+                                                <Button className="w-full rounded-2xl bg-slate-900 dark:bg-slate-700 hover:bg-primary-theme dark:hover:bg-primary-theme h-14 font-bold transition-all shadow-xl group-hover:shadow-primary-theme/20">
                                                     {t.blogs.readMore}
                                                 </Button>
                                             </Link>

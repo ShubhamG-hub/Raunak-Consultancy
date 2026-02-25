@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { useState } from 'react';
 import { useLanguage } from '@/context/useLanguage';
 import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 import { Heart, Umbrella } from 'lucide-react';
 
 const HLVCalculator = () => {
@@ -10,28 +10,24 @@ const HLVCalculator = () => {
     const [retirementAge, setRetirementAge] = useState(60);
     const [annualIncome, setAnnualIncome] = useState(1200000);
     const [annualExpenses, setAnnualExpenses] = useState(300000);
-    const [inflation, setInflation] = useState(6);
-    const [rateOfReturn, setRateOfReturn] = useState(8);
+    const [inflation] = useState(6);
+    const [rateOfReturn] = useState(8);
 
-    const [hlv, setHlv] = useState(0);
+    const n = retirementAge - currentAge;
+    const surplus = annualIncome - annualExpenses;
 
-    useEffect(() => {
-        const n = retirementAge - currentAge;
-        const surplus = annualIncome - annualExpenses;
+    // Income Replacement Method
+    // Real rate of return adjusted for inflation
+    const realRate = ((1 + (rateOfReturn / 100)) / (1 + (inflation / 100))) - 1;
 
-        // Income Replacement Method
-        // Real rate of return adjusted for inflation
-        const realRate = ((1 + (rateOfReturn / 100)) / (1 + (inflation / 100))) - 1;
+    let hlvValue = 0;
+    if (realRate === 0) {
+        hlvValue = surplus * n;
+    } else {
+        hlvValue = surplus * (1 - Math.pow(1 + realRate, -n)) / realRate;
+    }
 
-        let hlvValue = 0;
-        if (realRate === 0) {
-            hlvValue = surplus * n;
-        } else {
-            hlvValue = surplus * (1 - Math.pow(1 + realRate, -n)) / realRate;
-        }
-
-        setHlv(Math.round(hlvValue));
-    }, [currentAge, retirementAge, annualIncome, annualExpenses, inflation, rateOfReturn]);
+    const hlv = Math.round(hlvValue);
 
     const formatCurrency = (val) => {
         return new Intl.NumberFormat('en-IN', {
@@ -42,7 +38,7 @@ const HLVCalculator = () => {
     };
 
     return (
-        <div className="bg-white dark:bg-slate-800 p-8 rounded-[2rem] border border-slate-100 dark:border-slate-700 shadow-xl">
+        <div className="bg-white dark:bg-slate-800 p-5 md:p-8 rounded-[2rem] border border-slate-100 dark:border-slate-700 shadow-xl">
             <div className="flex items-center gap-4 mb-8">
                 <div className="w-12 h-12 bg-rose-100 dark:bg-rose-900/30 rounded-2xl flex items-center justify-center">
                     <Umbrella className="text-rose-600 w-6 h-6" />
@@ -53,25 +49,25 @@ const HLVCalculator = () => {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
                 <div className="space-y-8">
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <Label className="text-xs font-bold uppercase tracking-wider text-slate-400">{t.calculators.hlv.currentAge}</Label>
-                            <input
+                            <Input
                                 type="number"
                                 value={currentAge}
                                 onChange={(e) => setCurrentAge(Number(e.target.value))}
-                                className="w-full h-12 px-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-transparent focus:ring-2 focus:ring-rose-500 outline-none"
+                                className="h-12 rounded-xl border-slate-200 focus:ring-rose-500 font-black text-rose-600"
                             />
                         </div>
                         <div className="space-y-2">
                             <Label className="text-xs font-bold uppercase tracking-wider text-slate-400">{t.calculators.hlv.retirementAge}</Label>
-                            <input
+                            <Input
                                 type="number"
                                 value={retirementAge}
                                 onChange={(e) => setRetirementAge(Number(e.target.value))}
-                                className="w-full h-12 px-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-transparent focus:ring-2 focus:ring-rose-500 outline-none"
+                                className="h-12 rounded-xl border-slate-200 focus:ring-rose-500 font-black text-rose-600"
                             />
                         </div>
                     </div>
@@ -79,7 +75,15 @@ const HLVCalculator = () => {
                     <div className="space-y-4">
                         <div className="flex justify-between items-center">
                             <Label className="text-sm font-bold text-slate-700 dark:text-slate-300">{t.calculators.hlv.annualIncome}</Label>
-                            <span className="text-rose-600 font-black">{formatCurrency(annualIncome)}</span>
+                            <div className="relative w-36">
+                                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold">₹</span>
+                                <Input
+                                    type="number"
+                                    value={annualIncome}
+                                    onChange={(e) => setAnnualIncome(Number(e.target.value))}
+                                    className="pl-7 h-9 rounded-lg border-slate-200 focus:ring-rose-600 font-black text-rose-600"
+                                />
+                            </div>
                         </div>
                         <input
                             type="range" min="100000" max="20000000" step="50000"
@@ -92,7 +96,15 @@ const HLVCalculator = () => {
                     <div className="space-y-4">
                         <div className="flex justify-between items-center">
                             <Label className="text-sm font-bold text-slate-700 dark:text-slate-300">{t.calculators.hlv.annualExpenses}</Label>
-                            <span className="text-rose-600 font-black">{formatCurrency(annualExpenses)}</span>
+                            <div className="relative w-36">
+                                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold">₹</span>
+                                <Input
+                                    type="number"
+                                    value={annualExpenses}
+                                    onChange={(e) => setAnnualExpenses(Number(e.target.value))}
+                                    className="pl-7 h-9 rounded-lg border-slate-200 focus:ring-rose-600 font-black text-rose-600"
+                                />
+                            </div>
                         </div>
                         <input
                             type="range" min="50000" max="10000000" step="50000"
@@ -103,7 +115,7 @@ const HLVCalculator = () => {
                     </div>
                 </div>
 
-                <div className="bg-gradient-to-br from-rose-500 to-pink-600 p-8 rounded-[1.5rem] text-white flex flex-col justify-center items-center text-center">
+                <div className="bg-gradient-to-br from-rose-500 to-pink-600 p-6 md:p-8 rounded-[1.5rem] text-white flex flex-col justify-center items-center text-center">
                     <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6">
                         <Heart className="w-8 h-8 fill-current" />
                     </div>

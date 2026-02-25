@@ -1,19 +1,16 @@
 const express = require('express');
 const router = express.Router();
-const supabase = require('../config/supabase');
+const db = require('../config/db');
+const { v4: uuidv4 } = require('uuid');
 const authMiddleware = require('../middleware/authMiddleware');
 
 // GET /api/notifications — Latest 50 notifications
 router.get('/', authMiddleware, async (req, res) => {
     try {
-        const { data, error } = await supabase
-            .from('notifications')
-            .select('*')
-            .order('created_at', { ascending: false })
-            .limit(50);
-
-        if (error) throw error;
-        res.json(data);
+        const [rows] = await db.query(
+            'SELECT * FROM notifications ORDER BY created_at DESC LIMIT 50'
+        );
+        res.json(rows);
     } catch (err) {
         console.error('Failed to fetch notifications:', err);
         res.status(500).json({ error: 'Failed to fetch notifications' });
@@ -23,13 +20,10 @@ router.get('/', authMiddleware, async (req, res) => {
 // GET /api/notifications/unread-count — Count of unread notifications
 router.get('/unread-count', authMiddleware, async (req, res) => {
     try {
-        const { count, error } = await supabase
-            .from('notifications')
-            .select('*', { count: 'exact', head: true })
-            .eq('read', false);
-
-        if (error) throw error;
-        res.json({ count: count || 0 });
+        const [rows] = await db.query(
+            'SELECT COUNT(*) as count FROM notifications WHERE is_read = false'
+        );
+        res.json({ count: rows[0].count || 0 });
     } catch (err) {
         console.error('Failed to fetch unread count:', err);
         res.status(500).json({ error: 'Failed to fetch unread count' });
@@ -39,12 +33,9 @@ router.get('/unread-count', authMiddleware, async (req, res) => {
 // PATCH /api/notifications/read-all — Mark all as read
 router.patch('/read-all', authMiddleware, async (req, res) => {
     try {
-        const { error } = await supabase
-            .from('notifications')
-            .update({ read: true })
-            .eq('read', false);
-
-        if (error) throw error;
+        await db.query(
+            'UPDATE notifications SET is_read = true WHERE is_read = false'
+        );
         res.json({ message: 'All notifications marked as read' });
     } catch (err) {
         console.error('Failed to mark all as read:', err);
@@ -55,12 +46,10 @@ router.patch('/read-all', authMiddleware, async (req, res) => {
 // PATCH /api/notifications/:id/read — Mark one as read
 router.patch('/:id/read', authMiddleware, async (req, res) => {
     try {
-        const { error } = await supabase
-            .from('notifications')
-            .update({ read: true })
-            .eq('id', req.params.id);
-
-        if (error) throw error;
+        await db.query(
+            'UPDATE notifications SET is_read = true WHERE id = ?',
+            [req.params.id]
+        );
         res.json({ message: 'Notification marked as read' });
     } catch (err) {
         console.error('Failed to mark notification as read:', err);
@@ -71,13 +60,11 @@ router.patch('/:id/read', authMiddleware, async (req, res) => {
 // Helper: Create a notification (exported for use in other routes)
 const createNotification = async ({ type, title, message, reference_id }) => {
     try {
-        const { error } = await supabase
-            .from('notifications')
-            .insert([{ type, title, message, reference_id }]);
-
-        if (error) {
-            console.error('Failed to create notification:', error);
-        }
+        const notificationId = uuidv4();
+        await db.query(
+            'INSERT INTO notifications (id, type, title, message, reference_id) VALUES (?, ?, ?, ?, ?)',
+            [notificationId, type, title, message, reference_id]
+        );
     } catch (err) {
         console.error('Error creating notification:', err);
     }

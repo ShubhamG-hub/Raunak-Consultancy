@@ -10,11 +10,7 @@ const authMiddleware = (req, res, next) => {
     const token = authHeader.split(' ')[1];
 
     try {
-        // In a real Supabase setup, we would verify the JWT with Supabase secret
-        // For this custom auth flow (if we sign our own tokens), we verify with JWT_SECRET
-        // If we use Supabase returned session access_token, we can verify it too.
-
-        // For simplicity/demo with custom login endpoint returning a signed token:
+        // Verify token with JWT_SECRET for the custom MySQL auth flow
         const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback_secret');
         req.user = decoded;
         next();

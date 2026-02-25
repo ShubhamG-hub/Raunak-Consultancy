@@ -6,6 +6,7 @@ const StatCard = ({
     title,
     value,
     description,
+    // eslint-disable-next-line no-unused-vars
     icon: Icon,
     trend,
     trendValue,

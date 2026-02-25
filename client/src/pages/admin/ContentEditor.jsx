@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { FileEdit, Save, Check } from 'lucide-react';
+import api from '@/lib/api';
 
 const ContentEditor = () => {
     // Mock State for CMS content representing Home Page text
@@ -22,14 +23,18 @@ const ContentEditor = () => {
         setSaved(false);
     };
 
-    const handleSave = () => {
+    const handleSave = async () => {
         setIsSaving(true);
-        // Simulate API call
-        setTimeout(() => {
-            setIsSaving(false);
+        try {
+            await api.post('/settings/content', content);
             setSaved(true);
             setTimeout(() => setSaved(false), 3000);
-        }, 1000);
+        } catch (err) {
+            console.error('Failed to save content:', err);
+            alert('Failed to save. Changes are not persisted — please connect this to your backend API.');
+        } finally {
+            setIsSaving(false);
+        }
     };
 
     return (

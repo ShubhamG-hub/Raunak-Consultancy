@@ -2,8 +2,8 @@ import { motion } from 'framer-motion';
 
 const SectionHeader = ({ tag, title, description, subtitle, accent = 'blue', centered = true }) => {
     const accentColors = {
-        blue: 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 border-blue-100 dark:border-blue-800',
-        blueLine: 'bg-blue-600 dark:bg-blue-500',
+        blue: 'text-primary-theme bg-primary-theme/10 border-primary-theme/20',
+        blueLine: 'bg-primary-theme',
     };
 
     // Use subtitle if description is not provided (for calculators page)

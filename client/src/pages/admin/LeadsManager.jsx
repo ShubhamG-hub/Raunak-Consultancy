@@ -1,11 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Search, Filter, Download, Eye, Edit, Trash2, Phone, Mail, Calendar, Clock, AlertCircle } from 'lucide-react';
+import { Search, Filter, Download, Eye, Edit, Trash2, Phone, Mail, Calendar, Clock, AlertCircle, Plus, Loader2 } from 'lucide-react';
 import StatusBadge from '@/components/admin/StatusBadge';
 import Modal from '@/components/ui/Modal';
+import ActionMenu from '@/components/admin/ActionMenu';
 
 const LeadsManager = () => {
     const [leads, setLeads] = useState([]);
@@ -19,15 +20,20 @@ const LeadsManager = () => {
     const [isViewModalOpen, setIsViewModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [actionLoading, setActionLoading] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
 
-    useEffect(() => {
-        fetchLeads();
-    }, []);
+    const [newLead, setNewLead] = useState({
+        name: '',
+        mobile: '',
+        email: '',
+        type: 'Insurance',
+        requirement: '',
+        status: 'New'
+    });
 
-    useEffect(() => {
-        filterLeads();
-    }, [searchTerm, statusFilter, leads]);
+    const leadTypes = ['Insurance', 'Taxation', 'Investment', 'Loan', 'Other'];
 
     const fetchLeads = async () => {
         try {
@@ -41,13 +47,13 @@ const LeadsManager = () => {
         }
     };
 
-    const filterLeads = () => {
+    const filterLeads = useCallback(() => {
         let filtered = leads;
 
         if (searchTerm) {
             filtered = filtered.filter(lead =>
-                lead.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                lead.mobile.includes(searchTerm)
+                (lead.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                (lead.mobile || '').includes(searchTerm)
             );
         }
 
@@ -56,7 +62,15 @@ const LeadsManager = () => {
         }
 
         setFilteredLeads(filtered);
-    };
+    }, [leads, searchTerm, statusFilter]);
+
+    useEffect(() => {
+        fetchLeads();
+    }, []);
+
+    useEffect(() => {
+        filterLeads();
+    }, [filterLeads]);
 
     const handleAction = (lead, actionType) => {
         setSelectedLead(lead);
@@ -65,16 +79,19 @@ const LeadsManager = () => {
         if (actionType === 'delete') setIsDeleteModalOpen(true);
     };
 
-    const updateStatus = async (newStatus) => {
-        setActionLoading(true);
+
+    const handleEditLead = async (e) => {
+        e.preventDefault();
+        setSubmitting(true);
         try {
-            const { data } = await api.patch(`/leads/${selectedLead.id}`, { status: newStatus });
-            setLeads(prev => prev.map(l => l.id === data.id ? data : l));
+            const { data } = await api.put(`/leads/${selectedLead.id}`, selectedLead);
+            setLeads(prev => prev.map(l => l.id === data.data.id ? data.data : l));
             setIsEditModalOpen(false);
         } catch (err) {
-            alert('Failed to update status');
+            console.error(err);
+            alert('Failed to update lead');
         } finally {
-            setActionLoading(false);
+            setSubmitting(false);
         }
     };
 
@@ -85,9 +102,33 @@ const LeadsManager = () => {
             setLeads(prev => prev.filter(l => l.id !== selectedLead.id));
             setIsDeleteModalOpen(false);
         } catch (err) {
+            console.error('Failed to delete lead:', err);
             alert('Failed to delete lead');
         } finally {
             setActionLoading(false);
+        }
+    };
+
+    const handleAddLead = async (e) => {
+        e.preventDefault();
+        setSubmitting(true);
+        try {
+            const { data } = await api.post('/leads', newLead);
+            setLeads([data, ...leads]);
+            setIsAddModalOpen(false);
+            setNewLead({
+                name: '',
+                mobile: '',
+                email: '',
+                type: 'Insurance',
+                requirement: '',
+                status: 'New'
+            });
+        } catch (err) {
+            console.error(err);
+            alert('Failed to add lead');
+        } finally {
+            setSubmitting(false);
         }
     };
 
@@ -147,20 +188,29 @@ const LeadsManager = () => {
                     </h1>
                     <p className="text-slate-600 dark:text-slate-400 mt-1">Manage and track all customer inquiries</p>
                 </div>
-                <Button
-                    onClick={exportToCSV}
-                    className="gap-2 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-all"
-                >
-                    <Download className="w-4 h-4" />
-                    Export CSV
-                </Button>
+                <div className="flex items-center gap-3">
+                    <Button
+                        onClick={exportToCSV}
+                        className="gap-2 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-md transition-all"
+                    >
+                        <Download className="w-4 h-4" />
+                        Export CSV
+                    </Button>
+                    <Button
+                        className="flex items-center gap-2 bg-primary hover:opacity-90 text-white shadow-lg shadow-primary/20 rounded-xl px-6 h-12"
+                        onClick={() => setIsAddModalOpen(true)}
+                    >
+                        <Plus className="w-4 h-4" />
+                        Add Lead
+                    </Button>
+                </div>
             </div>
 
             {/* Controls */}
             <motion.div variants={itemVariants} className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md p-3 md:p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-white/10 sticky top-16 md:top-24 z-10 transition-all">
-                <div className="flex flex-col md:flex-row gap-4">
+                <div className="flex flex-col md:flex-row md:items-center gap-4">
                     <div className="flex-1 relative group">
-                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4 group-focus-within:text-blue-500 transition-colors" />
+                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4 group-focus-within:text-primary transition-colors" />
                         <Input
                             placeholder="Search by name or mobile..."
                             value={searchTerm}
@@ -169,13 +219,13 @@ const LeadsManager = () => {
                         />
                     </div>
 
-                    <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0 flex-nowrap">
+                    <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 flex-nowrap scrollbar-hide">
                         {['all', 'New', 'Contacted', 'Closed'].map((filter) => (
                             <button
                                 key={filter}
                                 onClick={() => setStatusFilter(filter)}
                                 className={`px-3 md:px-4 py-1.5 md:py-2 rounded-full text-xs md:text-sm font-medium transition-all whitespace-nowrap ${statusFilter === filter
-                                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/30 scale-105'
+                                    ? 'bg-primary text-white shadow-lg shadow-primary/30 scale-105'
                                     : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700'
                                     }`}
                             >
@@ -197,7 +247,7 @@ const LeadsManager = () => {
                 <div className="overflow-x-auto">
                     {loading ? (
                         <div className="text-center py-12">
-                            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
                             <p className="mt-2 text-slate-500 dark:text-slate-400">Loading leads...</p>
                         </div>
                     ) : filteredLeads.length === 0 ? (
@@ -227,7 +277,7 @@ const LeadsManager = () => {
                                                 animate={{ opacity: 1, y: 0 }}
                                                 exit={{ opacity: 0 }}
                                                 transition={{ delay: index * 0.05 }}
-                                                className="group hover:bg-blue-50/30 dark:hover:bg-blue-900/10 transition-colors"
+                                                className="group hover:bg-primary/5 dark:hover:bg-primary/10 transition-colors"
                                             >
                                                 <td className="py-4 px-6 text-sm text-slate-600 dark:text-slate-300 whitespace-nowrap">
                                                     {new Date(lead.created_at).toLocaleDateString()}
@@ -235,8 +285,8 @@ const LeadsManager = () => {
                                                 </td>
                                                 <td className="py-4 px-6">
                                                     <div className="flex items-center gap-3">
-                                                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900 dark:to-indigo-900 text-blue-600 dark:text-blue-300 flex items-center justify-center font-bold text-xs ring-4 ring-white dark:ring-slate-800">
-                                                            {lead.name.charAt(0)}
+                                                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 dark:from-primary/30 dark:to-accent/30 text-primary flex items-center justify-center font-bold text-xs ring-4 ring-white dark:ring-slate-800">
+                                                            {(lead.name || "?").charAt(0)}
                                                         </div>
                                                         <div>
                                                             <div className="font-medium text-slate-900 dark:text-white">{lead.name}</div>
@@ -260,34 +310,15 @@ const LeadsManager = () => {
                                                     <StatusBadge status={lead.status} pulse={lead.status === 'New'} />
                                                 </td>
                                                 <td className="py-4 px-6 text-right">
-                                                    <div className="flex items-center justify-end gap-1">
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="sm"
-                                                            className="h-8 w-8 p-0 text-slate-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 dark:hover:text-blue-400 transition-colors"
-                                                            onClick={() => handleAction(lead, 'view')}
-                                                            title="View Details"
-                                                        >
-                                                            <Eye className="h-4 w-4" />
-                                                        </Button>
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="sm"
-                                                            className="h-8 w-8 p-0 text-slate-500 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20 dark:hover:text-amber-400 transition-colors"
-                                                            onClick={() => handleAction(lead, 'edit')}
-                                                            title="Edit Status"
-                                                        >
-                                                            <Edit className="h-4 w-4" />
-                                                        </Button>
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="sm"
-                                                            className="h-8 w-8 p-0 text-slate-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 dark:hover:text-red-400 transition-colors"
-                                                            onClick={() => handleAction(lead, 'delete')}
-                                                            title="Delete"
-                                                        >
-                                                            <Trash2 className="h-4 w-4" />
-                                                        </Button>
+                                                    <div className="flex justify-end">
+                                                        <ActionMenu
+                                                            actions={[
+                                                                { type: 'view', label: 'View Details', icon: Eye },
+                                                                { type: 'edit', label: 'Edit Lead', icon: Edit },
+                                                                { type: 'delete', label: 'Delete', icon: Trash2, danger: true }
+                                                            ]}
+                                                            onAction={(actionType) => handleAction(lead, actionType)}
+                                                        />
                                                     </div>
                                                 </td>
                                             </motion.tr>
@@ -306,12 +337,12 @@ const LeadsManager = () => {
                                             animate={{ opacity: 1, y: 0 }}
                                             exit={{ opacity: 0 }}
                                             transition={{ delay: index * 0.03 }}
-                                            className="p-4 hover:bg-blue-50/30 dark:hover:bg-blue-900/10 transition-colors"
+                                            className="p-4 hover:bg-primary/5 dark:hover:bg-primary/10 transition-colors"
                                         >
                                             <div className="flex items-start justify-between gap-3">
                                                 <div className="flex items-center gap-3 min-w-0">
-                                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900 dark:to-indigo-900 text-blue-600 dark:text-blue-300 flex items-center justify-center font-bold text-sm ring-2 ring-white dark:ring-slate-800 flex-shrink-0">
-                                                        {lead.name.charAt(0)}
+                                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 dark:from-primary/30 dark:to-accent/30 text-primary flex items-center justify-center font-bold text-sm ring-2 ring-white dark:ring-slate-800 flex-shrink-0">
+                                                        {(lead.name || "?").charAt(0)}
                                                     </div>
                                                     <div className="min-w-0">
                                                         <div className="font-medium text-slate-900 dark:text-white truncate">{lead.name}</div>
@@ -326,30 +357,22 @@ const LeadsManager = () => {
                                                 <span className="text-xs text-slate-400">
                                                     {new Date(lead.created_at).toLocaleDateString()} • <span className="capitalize">{lead.type}</span>
                                                 </span>
-                                                <div className="flex items-center gap-1">
+                                                <div className="flex items-center gap-2">
+                                                    <ActionMenu
+                                                        actions={[
+                                                            { type: 'view', label: 'View Details', icon: Eye },
+                                                            { type: 'edit', label: 'Edit Lead', icon: Edit },
+                                                            { type: 'delete', label: 'Delete', icon: Trash2, danger: true }
+                                                        ]}
+                                                        onAction={(actionType) => handleAction(lead, actionType)}
+                                                    />
                                                     <Button
                                                         variant="ghost"
                                                         size="sm"
-                                                        className="h-8 w-8 p-0 text-slate-400 hover:text-blue-600"
+                                                        className="flex-1 bg-primary/10 text-primary hover:bg-primary/20"
                                                         onClick={() => handleAction(lead, 'view')}
                                                     >
-                                                        <Eye className="h-4 w-4" />
-                                                    </Button>
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="sm"
-                                                        className="h-8 w-8 p-0 text-slate-400 hover:text-amber-600"
-                                                        onClick={() => handleAction(lead, 'edit')}
-                                                    >
-                                                        <Edit className="h-4 w-4" />
-                                                    </Button>
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="sm"
-                                                        className="h-8 w-8 p-0 text-slate-400 hover:text-red-600"
-                                                        onClick={() => handleAction(lead, 'delete')}
-                                                    >
-                                                        <Trash2 className="h-4 w-4" />
+                                                        Details
                                                     </Button>
                                                 </div>
                                             </div>
@@ -371,7 +394,7 @@ const LeadsManager = () => {
                 {selectedLead && (
                     <div className="space-y-6">
                         <div className="flex items-center gap-4 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-white/5">
-                            <div className="w-16 h-16 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center text-2xl font-bold">
+                            <div className="w-16 h-16 rounded-full bg-primary/10 text-primary flex items-center justify-center text-2xl font-bold">
                                 {selectedLead.name.charAt(0)}
                             </div>
                             <div>
@@ -420,24 +443,102 @@ const LeadsManager = () => {
             <Modal
                 isOpen={isEditModalOpen}
                 onClose={() => setIsEditModalOpen(false)}
-                title="Update Lead Status"
+                title="Edit Lead Details"
             >
-                <div className="space-y-6 text-center">
-                    <p className="text-slate-600 dark:text-slate-400">Update status for <span className="font-bold text-slate-900 dark:text-white uppercase">{selectedLead?.name}</span></p>
-                    <div className="grid grid-cols-2 gap-3">
-                        {['New', 'Contacted', 'Closed'].map((status) => (
+                {selectedLead && (
+                    <form onSubmit={handleEditLead} className="space-y-4">
+                        <div className="space-y-2">
+                            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Customer Name</label>
+                            <Input
+                                required
+                                value={selectedLead.name}
+                                onChange={(e) => setSelectedLead({ ...selectedLead, name: e.target.value })}
+                            />
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Mobile Number</label>
+                                <Input
+                                    required
+                                    value={selectedLead.mobile}
+                                    onChange={(e) => setSelectedLead({ ...selectedLead, mobile: e.target.value })}
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Email (Optional)</label>
+                                <Input
+                                    value={selectedLead.email || ''}
+                                    onChange={(e) => setSelectedLead({ ...selectedLead, email: e.target.value })}
+                                />
+                            </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Inquiry Type</label>
+                                <select
+                                    value={selectedLead.type}
+                                    onChange={(e) => setSelectedLead({ ...selectedLead, type: e.target.value })}
+                                    className="flex h-10 w-full rounded-md border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-slate-800/50 px-3 py-2 text-sm text-slate-900 dark:text-white ring-offset-background focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all"
+                                >
+                                    {leadTypes.map(type => (
+                                        <option key={type} value={type}>{type}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Status</label>
+                                <select
+                                    value={selectedLead.status}
+                                    onChange={(e) => setSelectedLead({ ...selectedLead, status: e.target.value })}
+                                    className="flex h-10 w-full rounded-md border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-slate-800/50 px-3 py-2 text-sm text-slate-900 dark:text-white ring-offset-background focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all"
+                                >
+                                    <option value="New">New</option>
+                                    <option value="Contacted">Contacted</option>
+                                    <option value="Closed">Closed</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Requirement Details</label>
+                            <textarea
+                                value={selectedLead.requirement || ''}
+                                onChange={(e) => setSelectedLead({ ...selectedLead, requirement: e.target.value })}
+                                className="w-full p-4 rounded-xl border border-slate-200 dark:border-white/10 dark:bg-slate-900 outline-none h-24 text-sm text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-800/50"
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Admin Notes</label>
+                            <textarea
+                                value={selectedLead.notes || ''}
+                                onChange={(e) => setSelectedLead({ ...selectedLead, notes: e.target.value })}
+                                className="w-full p-4 rounded-xl border border-slate-200 dark:border-white/10 dark:bg-slate-900 outline-none h-24 text-sm text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-800/50"
+                                placeholder="Add any private notes here..."
+                            />
+                        </div>
+                        <div className="flex gap-3 pt-4">
                             <Button
-                                key={status}
-                                variant={selectedLead?.status === status ? 'default' : 'outline'}
-                                onClick={() => updateStatus(status)}
-                                disabled={actionLoading}
-                                className={`h-12 border-2 ${selectedLead?.status === status ? 'border-blue-600' : 'border-slate-100 dark:border-slate-800'}`}
+                                type="button"
+                                variant="outline"
+                                className="flex-1 rounded-xl"
+                                onClick={() => setIsEditModalOpen(false)}
                             >
-                                {status}
+                                Cancel
                             </Button>
-                        ))}
-                    </div>
-                </div>
+                            <Button
+                                type="submit"
+                                className="flex-1 bg-primary hover:opacity-90 text-white shadow-lg shadow-primary/20 rounded-xl"
+                                disabled={submitting}
+                            >
+                                {submitting ? (
+                                    <>
+                                        <Loader2 className="w-4 h-4 mr-2 animate-spin text-white" />
+                                        Saving...
+                                    </>
+                                ) : 'Update Lead'}
+                            </Button>
+                        </div>
+                    </form>
+                )}
             </Modal>
 
             {/* Delete Modal */}
@@ -474,6 +575,101 @@ const LeadsManager = () => {
                         </Button>
                     </div>
                 </div>
+            </Modal>
+
+            {/* Add Lead Modal */}
+            <Modal
+                isOpen={isAddModalOpen}
+                onClose={() => setIsAddModalOpen(false)}
+                title="Add New Lead Entry"
+            >
+                <form onSubmit={handleAddLead} className="space-y-4">
+                    <div className="space-y-2">
+                        <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Customer Name</label>
+                        <Input
+                            required
+                            value={newLead.name}
+                            onChange={(e) => setNewLead({ ...newLead, name: e.target.value })}
+                            placeholder="e.g. John Smith"
+                        />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Mobile Number</label>
+                            <Input
+                                required
+                                value={newLead.mobile}
+                                onChange={(e) => setNewLead({ ...newLead, mobile: e.target.value })}
+                                placeholder="e.g. 9876543210"
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Email (Optional)</label>
+                            <Input
+                                value={newLead.email}
+                                onChange={(e) => setNewLead({ ...newLead, email: e.target.value })}
+                                placeholder="e.g. john@example.com"
+                            />
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Inquiry Type</label>
+                            <select
+                                value={newLead.type}
+                                onChange={(e) => setNewLead({ ...newLead, type: e.target.value })}
+                                className="flex h-10 w-full rounded-md border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-slate-800/50 px-3 py-2 text-sm text-slate-900 dark:text-white ring-offset-background focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all"
+                            >
+                                {leadTypes.map(type => (
+                                    <option key={type} value={type}>{type}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Initial Status</label>
+                            <select
+                                value={newLead.status}
+                                onChange={(e) => setNewLead({ ...newLead, status: e.target.value })}
+                                className="flex h-10 w-full rounded-md border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-slate-800/50 px-3 py-2 text-sm text-slate-900 dark:text-white ring-offset-background focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all"
+                            >
+                                <option value="New">New</option>
+                                <option value="Contacted">Contacted</option>
+                                <option value="Closed">Closed</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div className="space-y-2">
+                        <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Requirement Details</label>
+                        <textarea
+                            value={newLead.requirement}
+                            onChange={(e) => setNewLead({ ...newLead, requirement: e.target.value })}
+                            className="w-full p-4 rounded-xl border border-slate-200 dark:border-white/10 dark:bg-slate-900 outline-none h-24 text-sm text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-800/50"
+                            placeholder="Details about what the lead is looking for..."
+                        />
+                    </div>
+                    <div className="flex gap-3 pt-4">
+                        <Button
+                            type="button"
+                            variant="outline"
+                            className="flex-1 rounded-xl"
+                            onClick={() => setIsAddModalOpen(false)}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            type="submit"
+                            className="flex-1 bg-primary hover:opacity-90 text-white shadow-lg shadow-primary/20 rounded-xl"
+                            disabled={submitting}
+                        >
+                            {submitting ? (
+                                <>
+                                    <Loader2 className="w-4 h-4 mr-2 animate-spin text-white" />
+                                    Saving...
+                                </>
+                            ) : 'Save Lead Entry'}
+                        </Button>
+                    </div>
+                </form>
             </Modal>
         </motion.div>
     );

@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { useState } from 'react';
 import { useLanguage } from '@/context/useLanguage';
 import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 import { TrendingUp, Wallet } from 'lucide-react';
 
 const LumpsumCalculator = () => {
@@ -10,24 +10,16 @@ const LumpsumCalculator = () => {
     const [period, setPeriod] = useState(10);
     const [expectedReturn, setExpectedReturn] = useState(12);
 
-    const [results, setResults] = useState({
-        investedAmount: 0,
-        estReturns: 0,
-        totalValue: 0
-    });
+    const r = expectedReturn / 100;
+    const totalValue = totalInvestment * Math.pow(1 + r, period);
+    const investedAmount = totalInvestment;
+    const estReturns = totalValue - investedAmount;
 
-    useEffect(() => {
-        const r = expectedReturn / 100;
-        const totalValue = totalInvestment * Math.pow(1 + r, period);
-        const investedAmount = totalInvestment;
-        const estReturns = totalValue - investedAmount;
-
-        setResults({
-            investedAmount: Math.round(investedAmount),
-            estReturns: Math.round(estReturns),
-            totalValue: Math.round(totalValue)
-        });
-    }, [totalInvestment, period, expectedReturn]);
+    const results = {
+        investedAmount: Math.round(investedAmount),
+        estReturns: Math.round(estReturns),
+        totalValue: Math.round(totalValue)
+    };
 
     const formatCurrency = (val) => {
         return new Intl.NumberFormat('en-IN', {
@@ -38,7 +30,7 @@ const LumpsumCalculator = () => {
     };
 
     return (
-        <div className="bg-white dark:bg-slate-800 p-8 rounded-[2rem] border border-slate-100 dark:border-slate-700 shadow-xl">
+        <div className="bg-white dark:bg-slate-800 p-5 md:p-8 rounded-[2rem] border border-slate-100 dark:border-slate-700 shadow-xl">
             <div className="flex items-center gap-4 mb-8">
                 <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-2xl flex items-center justify-center">
                     <TrendingUp className="text-blue-600 w-6 h-6" />
@@ -49,12 +41,20 @@ const LumpsumCalculator = () => {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
                 <div className="space-y-8">
                     <div className="space-y-4">
                         <div className="flex justify-between items-center">
                             <Label className="text-sm font-bold text-slate-700 dark:text-slate-300">{t.calculators.lumpsum.totalInvestment}</Label>
-                            <span className="text-blue-600 font-black">{formatCurrency(totalInvestment)}</span>
+                            <div className="relative w-36">
+                                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold">₹</span>
+                                <Input
+                                    type="number"
+                                    value={totalInvestment}
+                                    onChange={(e) => setTotalInvestment(Number(e.target.value))}
+                                    className="pl-7 h-9 rounded-lg border-slate-200 focus:ring-blue-600 font-black text-blue-600"
+                                />
+                            </div>
                         </div>
                         <input
                             type="range" min="5000" max="10000000" step="5000"
@@ -67,7 +67,15 @@ const LumpsumCalculator = () => {
                     <div className="space-y-4">
                         <div className="flex justify-between items-center">
                             <Label className="text-sm font-bold text-slate-700 dark:text-slate-300">{t.calculators.lumpsum.period}</Label>
-                            <span className="text-blue-600 font-black">{period} yr</span>
+                            <div className="relative w-24">
+                                <Input
+                                    type="number"
+                                    value={period}
+                                    onChange={(e) => setPeriod(Number(e.target.value))}
+                                    className="pr-8 h-9 rounded-lg border-slate-200 focus:ring-blue-600 font-black text-blue-600"
+                                />
+                                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs font-bold">yr</span>
+                            </div>
                         </div>
                         <input
                             type="range" min="1" max="40" step="1"
@@ -80,7 +88,15 @@ const LumpsumCalculator = () => {
                     <div className="space-y-4">
                         <div className="flex justify-between items-center">
                             <Label className="text-sm font-bold text-slate-700 dark:text-slate-300">{t.calculators.lumpsum.expectedReturn}</Label>
-                            <span className="text-blue-600 font-black">{expectedReturn}%</span>
+                            <div className="relative w-24">
+                                <Input
+                                    type="number"
+                                    value={expectedReturn}
+                                    onChange={(e) => setExpectedReturn(Number(e.target.value))}
+                                    className="pr-8 h-9 rounded-lg border-slate-200 focus:ring-blue-600 font-black text-blue-600"
+                                />
+                                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold">%</span>
+                            </div>
                         </div>
                         <input
                             type="range" min="1" max="30" step="0.5"
@@ -91,7 +107,7 @@ const LumpsumCalculator = () => {
                     </div>
                 </div>
 
-                <div className="bg-slate-50 dark:bg-slate-900/50 p-8 rounded-[1.5rem] border border-slate-100 dark:border-slate-800 flex flex-col justify-center">
+                <div className="bg-slate-50 dark:bg-slate-900/50 p-6 md:p-8 rounded-[1.5rem] border border-slate-100 dark:border-slate-800 flex flex-col justify-center">
                     <div className="space-y-6">
                         <div className="flex justify-between items-center p-3 rounded-xl hover:bg-white dark:hover:bg-slate-800 transition-colors">
                             <div className="flex items-center gap-3">
@@ -114,12 +130,12 @@ const LumpsumCalculator = () => {
                     </div>
 
                     <div className="mt-8 flex gap-1 h-20 items-end">
-                        <motion.div
-                            animate={{ height: `${(results.investedAmount / results.totalValue) * 100}%` }}
+                        <div
+                            style={{ height: `${(results.investedAmount / results.totalValue) * 100}%` }}
                             className="flex-1 bg-slate-200 dark:bg-slate-700 rounded-t-lg"
                         />
-                        <motion.div
-                            animate={{ height: '100%' }}
+                        <div
+                            style={{ height: '100%' }}
                             className="flex-1 bg-blue-600 rounded-t-lg"
                         />
                     </div>

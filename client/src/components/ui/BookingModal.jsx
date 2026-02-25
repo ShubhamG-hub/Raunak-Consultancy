@@ -43,6 +43,12 @@ const SERVICES = [
     { value: 'Health Insurance', labelKey: 'health' },
     { value: 'Retirement Planning', labelKey: 'retirement' },
     { value: 'Wealth Management', labelKey: 'wealth' },
+    { value: 'Business Planning', labelKey: 'businessPlanning' },
+    { value: 'Complete Financial Planning', labelKey: 'completeFinancialPlanning' },
+    { value: 'Scientific Financial Planning', labelKey: 'scientificFinancialPlanning' },
+    { value: 'Adequate Planning', labelKey: 'adequatePlanning' },
+    { value: 'Child Education Planning', labelKey: 'childEducation' },
+    { value: 'Business Insurance', labelKey: 'businessInsurance' },
     { value: 'Other', labelKey: 'other' },
 ];
 
@@ -184,7 +190,7 @@ const BookingModal = ({ isOpen, onClose }) => {
                             </p>
                             <Button
                                 onClick={handleClose}
-                                className="mt-4 rounded-full px-8 bg-blue-600 hover:bg-blue-700"
+                                className="mt-4 rounded-full px-8 bg-primary-theme hover:opacity-90"
                             >
                                 Close
                             </Button>
@@ -192,14 +198,14 @@ const BookingModal = ({ isOpen, onClose }) => {
                     ) : (
                         <>
                             {/* Header — fixed */}
-                            <div className="p-6 md:p-8 bg-gradient-to-br from-blue-600 to-indigo-700 text-white relative flex-shrink-0">
+                            <div className="p-5 md:p-8 bg-gradient-to-br from-primary-theme to-primary-theme/80 text-white relative flex-shrink-0">
                                 <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-3xl pointer-events-none" />
                                 <h2 className="text-2xl font-bold mb-1">{t.booking.title}</h2>
-                                <p className="text-blue-100 text-sm">{t.booking.subtitle}</p>
+                                <p className="text-white/80 text-sm">{t.booking.subtitle}</p>
                             </div>
 
                             {/* Form — scrollable */}
-                            <div className="overflow-y-auto flex-1 p-6 md:p-8">
+                            <div className="overflow-y-auto flex-1 p-5 md:p-8">
                                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
 
                                     {/* Meeting Mode Toggle */}
@@ -211,12 +217,13 @@ const BookingModal = ({ isOpen, onClose }) => {
                                             {[
                                                 { value: 'In-Person', icon: MapPin, label: 'In-Person', desc: 'Visit our office' },
                                                 { value: 'Online', icon: Video, label: 'Online (Zoom)', desc: 'Zoom link sent by WhatsApp' },
+                                                // eslint-disable-next-line no-unused-vars
                                             ].map(({ value, icon: Icon, label, desc }) => (
                                                 <label
                                                     key={value}
                                                     className={`flex flex-col items-center gap-1 cursor-pointer rounded-xl border-2 p-3 text-center transition-all select-none ${meetingMode === value
-                                                            ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300'
-                                                            : 'border-slate-200 dark:border-slate-700 hover:border-blue-300 text-slate-600 dark:text-slate-400'
+                                                        ? 'border-primary-theme bg-primary-theme/5 text-primary-theme'
+                                                        : 'border-slate-200 dark:border-slate-700 hover:border-primary-theme/50 text-slate-600 dark:text-slate-400'
                                                         }`}
                                                 >
                                                     <input type="radio" value={value} {...register('meeting_mode')} className="sr-only" />
@@ -227,7 +234,7 @@ const BookingModal = ({ isOpen, onClose }) => {
                                             ))}
                                         </div>
                                         {meetingMode === 'Online' && (
-                                            <p className="text-[10px] text-blue-600 dark:text-blue-400 font-medium flex items-center gap-1 mt-1">
+                                            <p className="text-[10px] text-primary-theme font-medium flex items-center gap-1 mt-1">
                                                 <Video className="w-3 h-3" /> A Zoom meeting link will be sent to your WhatsApp after confirmation.
                                             </p>
                                         )}
@@ -302,7 +309,7 @@ const BookingModal = ({ isOpen, onClose }) => {
                                             <select
                                                 {...register('time')}
                                                 disabled={fetchingSlots || !selectedDate}
-                                                className={`w-full h-11 px-3 rounded-xl border bg-white dark:bg-slate-900 text-sm outline-none focus:ring-2 focus:ring-blue-500 transition-all disabled:opacity-50 cursor-pointer ${errors.time ? 'border-rose-500' : 'border-slate-200 dark:border-slate-800'}`}
+                                                className={`w-full h-11 px-3 rounded-xl border bg-white dark:bg-slate-900 text-sm outline-none focus:ring-2 focus:ring-primary-theme transition-all disabled:opacity-50 cursor-pointer ${errors.time ? 'border-rose-500' : 'border-slate-200 dark:border-slate-800'}`}
                                             >
                                                 <option value="">
                                                     {!selectedDate ? 'Select date first' : fetchingSlots ? 'Loading slots...' : t.booking.form.timeSelect}
@@ -324,7 +331,7 @@ const BookingModal = ({ isOpen, onClose }) => {
                                         </label>
                                         <select
                                             {...register('service_type')}
-                                            className="w-full h-11 px-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-sm outline-none focus:ring-2 focus:ring-blue-500 transition-all cursor-pointer"
+                                            className="w-full h-11 px-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-sm outline-none focus:ring-2 focus:ring-primary-theme transition-all cursor-pointer"
                                         >
                                             {SERVICES.map(s => (
                                                 <option key={s.value} value={s.value}>{t.booking.services[s.labelKey]}</option>
@@ -342,14 +349,14 @@ const BookingModal = ({ isOpen, onClose }) => {
                                             {...register('message')}
                                             placeholder={t.booking.form.messagePlaceholder}
                                             rows={3}
-                                            className="w-full p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-sm outline-none focus:ring-2 focus:ring-blue-500 transition-all resize-none"
+                                            className="w-full p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-sm outline-none focus:ring-2 focus:ring-primary-theme transition-all resize-none"
                                         />
                                     </div>
 
                                     <Button
                                         type="submit"
                                         disabled={isSubmitting}
-                                        className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg shadow-blue-500/20 active:scale-[0.98] transition-all disabled:opacity-70 flex items-center justify-center gap-2"
+                                        className="w-full h-12 bg-primary-theme hover:opacity-90 text-white font-bold rounded-xl shadow-lg shadow-primary-theme/20 active:scale-[0.98] transition-all disabled:opacity-70 flex items-center justify-center gap-2"
                                     >
                                         {isSubmitting ? (
                                             <>
@@ -365,7 +372,7 @@ const BookingModal = ({ isOpen, onClose }) => {
                     )}
                 </motion.div>
             </div>
-        </AnimatePresence>
+        </AnimatePresence >
     );
 };
 

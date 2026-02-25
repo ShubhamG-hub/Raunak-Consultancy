@@ -43,7 +43,7 @@ const Claims = () => {
     const [error, setError] = useState('');
     const { t } = useLanguage();
 
-    const { register, handleSubmit, formState: { errors } } = useForm({
+    const { register, handleSubmit, formState: { errors }, reset } = useForm({
         resolver: zodResolver(claimSchema),
     });
 
@@ -53,6 +53,7 @@ const Claims = () => {
         try {
             await api.post('/claims', data);
             setSuccess(true);
+            reset();
         } catch (err) {
             setError(err.response?.data?.error || 'Failed to submit claim request.');
         } finally {
@@ -101,7 +102,7 @@ const Claims = () => {
 
                     <div className="space-y-8">
                         <h3 className="text-xl font-black text-slate-900 dark:text-white tracking-tight flex items-center gap-3">
-                            <Clock className="w-6 h-6 text-blue-600" /> {t.claims.processTitle}
+                            <Clock className="w-6 h-6 text-primary-theme" /> {t.claims.processTitle}
                         </h3>
                         {[
                             { step: 1, title: t.claims.step1, desc: t.claims.step1Desc, icon: ClipboardList },
@@ -152,7 +153,13 @@ const Claims = () => {
                                     </svg>
                                 </div>
                                 <h3 className="font-black text-xl text-green-900 dark:text-green-400 mb-2">{t.claims.successTitle}</h3>
-                                <p className="text-green-700 dark:text-green-500 text-sm font-medium">{t.claims.successDesc}</p>
+                                <p className="text-green-700 dark:text-green-500 text-sm font-medium mb-6">{t.claims.successDesc}</p>
+                                <button
+                                    onClick={() => setSuccess(false)}
+                                    className="h-12 px-8 rounded-2xl border-2 border-green-200 dark:border-green-800 hover:bg-green-50 dark:hover:bg-green-900/50 font-bold transition-all text-green-800 dark:text-green-400 text-sm"
+                                >
+                                    Submit Another Claim
+                                </button>
                             </motion.div>
                         ) : (
                             <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">

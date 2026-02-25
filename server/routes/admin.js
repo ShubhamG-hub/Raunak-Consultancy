@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const supabase = require('../config/supabase');
+const db = require('../config/db');
 const jwt = require('jsonwebtoken');
+const { v4: uuidv4 } = require('uuid');
+const bcrypt = require('bcryptjs');
 
 // Middleware to verify token and get user
 const verifyToken = (req, res, next) => {
@@ -21,13 +23,13 @@ router.get('/profile', verifyToken, async (req, res) => {
         const { email } = req.user;
 
         // Fetch from 'admins' table
-        const { data: admin, error } = await supabase
-            .from('admins')
-            .select('name, phone, role, email')
-            .eq('email', email)
-            .single();
+        const [rows] = await db.query(
+            'SELECT name, phone, role, email FROM admins WHERE email = ?',
+            [email]
+        );
+        const admin = rows[0];
 
-        if (error || !admin) {
+        if (!admin) {
             // If not found in DB (e.g. using .env login only), return basic info from token/env
             return res.json({
                 name: 'Admin User',
@@ -50,48 +52,26 @@ router.put('/profile', verifyToken, async (req, res) => {
     const currentEmail = req.user.email;
 
     try {
-        // Upsert into 'admins' table
-        // We use 'upsert' to handle cases where the admin might not exist in the table yet (only in .env)
-        // But we need a unique constraints. Assuming 'email' is unique.
-
         // First check if admin exists
-        const { data: existingAdmin } = await supabase
-            .from('admins')
-            .select('id')
-            .eq('email', currentEmail)
-            .single();
+        const [rows] = await db.query('SELECT id FROM admins WHERE email = ?', [currentEmail]);
+        const existingAdmin = rows[0];
 
-        let result;
         if (existingAdmin) {
             // Update
-            result = await supabase
-                .from('admins')
-                .update({ name, phone, email }) // Allowing email update might require token re-issue or re-login
-                .eq('email', currentEmail)
-                .select()
-                .single();
+            await db.query(
+                'UPDATE admins SET name = ?, phone = ?, email = ? WHERE email = ?',
+                [name, phone, email, currentEmail]
+            );
         } else {
-            // Insert (if they managed to login via .env but aren't in DB, we create a record now)
-            // Note: Password hash would be missing if we just insert. 
-            // This is a hybrid limitation. For now, we assume we just store profile meta.
-            result = await supabase
-                .from('admins')
-                .insert([{
-                    email: currentEmail, // Keep original email for ID until we handle full auth migration
-                    name,
-                    phone,
-                    role: 'Administrator',
-                    password_hash: 'managed_in_env_or_separate_auth' // Placeholder if required not null
-                }])
-                .select()
-                .single();
+            // Insert
+            const adminId = uuidv4();
+            await db.query(
+                'INSERT INTO admins (id, email, name, phone, role, password_hash) VALUES (?, ?, ?, ?, ?, ?)',
+                [adminId, currentEmail, name, phone, 'Administrator', 'managed_in_env_or_separate_auth']
+            );
         }
 
-        if (result.error) {
-            throw result.error;
-        }
-
-        res.json({ success: true, user: result.data });
+        res.json({ success: true, user: { name, phone, email } });
 
     } catch (err) {
         console.error("Profile Update Error:", err);
@@ -105,22 +85,15 @@ router.put('/password', verifyToken, async (req, res) => {
     const { email } = req.user;
 
     try {
-        // 1. Fetch current admin to verify existence (and potentially current password if we were strict)
-        // Since we are transitioning from .env to DB, currentPassword might check against .env or DB.
-        // For simplicity in this hybrid state, we allow update if authenticated (token valid).
-
-        // 2. Hash new password
-        const bcrypt = require('bcryptjs');
+        // 1. Hash new password
         const salt = await bcrypt.genSalt(10);
         const passwordHash = await bcrypt.hash(newPassword, salt);
 
-        // 3. Update DB
-        const { error } = await supabase
-            .from('admins')
-            .update({ password_hash: passwordHash })
-            .eq('email', email);
-
-        if (error) throw error;
+        // 2. Update DB
+        await db.query(
+            'UPDATE admins SET password_hash = ? WHERE email = ?',
+            [passwordHash, email]
+        );
 
         // 4. Send Email Notification with New Password
         const nodemailer = require('nodemailer');

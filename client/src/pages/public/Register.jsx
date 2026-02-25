@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { useAuth } from '@/context/AuthContext';
+
 import { useLanguage } from '@/context/useLanguage';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -19,7 +19,7 @@ const Register = () => {
         mobile: ''
     });
     const [error, setError] = useState('');
-    const [loading, setLoading] = useState(false);
+    const [, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
 
     const handleChange = (e) => {
@@ -76,13 +76,19 @@ const Register = () => {
                 <div className="bg-white dark:bg-slate-800 p-8 md:p-10 rounded-[2.5rem] shadow-2xl border border-slate-100 dark:border-slate-700">
                     <div className="mb-10 flex flex-col items-center text-center">
                         <div className="w-16 h-16 bg-blue-50 dark:bg-blue-900/40 rounded-2xl flex items-center justify-center mb-6">
-                            <UserPlus className="text-blue-600 dark:text-blue-400 w-8 h-8" />
+                            <UserPlus className="text-primary-theme w-8 h-8" />
                         </div>
                         <h1 className="text-3xl font-black text-slate-900 dark:text-white mb-2 tracking-tight">{t.auth.registerTitle}</h1>
                         <p className="text-slate-500 dark:text-slate-400 text-sm">{t.auth.registerSubtitle}</p>
                     </div>
 
-                    <form onSubmit={handleSubmit} className="space-y-5">
+                    <div className="bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 p-4 rounded-2xl text-[10px] font-bold border border-amber-100 dark:border-amber-900/50 flex flex-col items-center gap-2 mb-8">
+                        <CheckCircle className="w-5 h-5 mb-1" />
+                        <p className="text-center">REGISTRATION IS TEMPORARILY DISABLED</p>
+                        <p className="text-center font-normal opacity-80 uppercase tracking-tighter">New user accounts are not being accepted at this time.</p>
+                    </div>
+
+                    <form onSubmit={handleSubmit} className="space-y-5 opacity-50 pointer-events-none">
                         {error && (
                             <div className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-4 rounded-2xl text-xs font-bold border border-red-100 dark:border-red-900/50">
                                 {error}
@@ -93,7 +99,7 @@ const Register = () => {
                             <div className="space-y-2">
                                 <Label htmlFor="fullName">{t.auth.fullName}</Label>
                                 <div className="relative group">
-                                    <User className="absolute left-4 top-3.5 w-4 h-4 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
+                                    <User className="absolute left-4 top-3.5 w-4 h-4 text-slate-400 group-focus-within:text-primary-theme transition-colors" />
                                     <Input
                                         id="fullName"
                                         placeholder="John Doe"
@@ -101,13 +107,14 @@ const Register = () => {
                                         value={formData.fullName}
                                         onChange={handleChange}
                                         required
+                                        disabled
                                     />
                                 </div>
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="mobile">{t.auth.mobile}</Label>
                                 <div className="relative group">
-                                    <Phone className="absolute left-4 top-3.5 w-4 h-4 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
+                                    <Phone className="absolute left-4 top-3.5 w-4 h-4 text-slate-400 group-focus-within:text-primary-theme transition-colors" />
                                     <Input
                                         id="mobile"
                                         placeholder="98765 43210"
@@ -115,6 +122,7 @@ const Register = () => {
                                         value={formData.mobile}
                                         onChange={handleChange}
                                         required
+                                        disabled
                                     />
                                 </div>
                             </div>
@@ -123,7 +131,7 @@ const Register = () => {
                         <div className="space-y-2">
                             <Label htmlFor="email">{t.auth.email}</Label>
                             <div className="relative group">
-                                <Mail className="absolute left-4 top-3.5 w-4 h-4 text-slate-400 group-focus-within:text-blue-600 transition-colors" />
+                                <Mail className="absolute left-4 top-3.5 w-4 h-4 text-slate-400 group-focus-within:text-primary-theme transition-colors" />
                                 <Input
                                     id="email"
                                     type="email"
@@ -132,6 +140,7 @@ const Register = () => {
                                     value={formData.email}
                                     onChange={handleChange}
                                     required
+                                    disabled
                                 />
                             </div>
                         </div>
@@ -147,17 +156,19 @@ const Register = () => {
                                     className="pl-10 h-11 rounded-2xl border-slate-200 dark:border-slate-700 transition-all text-sm"
                                     value={formData.password}
                                     onChange={handleChange}
+                                    autoComplete="new-password"
                                     required
+                                    disabled
                                 />
                             </div>
                         </div>
 
                         <Button
                             type="submit"
-                            disabled={loading}
+                            disabled={true}
                             className="w-full h-12 rounded-2xl bg-blue-600 hover:bg-blue-700 font-bold mt-4 shadow-lg shadow-blue-600/10 transition-all"
                         >
-                            {loading ? t.auth.registerBtn + '...' : t.auth.registerBtn}
+                            {t.auth.registerBtn}
                         </Button>
                     </form>
 
@@ -166,11 +177,7 @@ const Register = () => {
                         <Link to="/login" className="text-sm font-bold text-blue-600 dark:text-blue-400 hover:underline inline-flex items-center gap-1">
                             {t.auth.loginBtn}
                         </Link>
-                        <div className="mt-6">
-                            <Link to="/" className="text-xs font-bold text-slate-400 hover:text-blue-600 transition-colors inline-flex items-center gap-2">
-                                <ArrowLeft className="w-3 h-3" /> Back to Home
-                            </Link>
-                        </div>
+
                     </div>
                 </div>
             </motion.div>

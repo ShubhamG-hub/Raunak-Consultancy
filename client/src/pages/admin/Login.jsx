@@ -119,7 +119,7 @@ const Login = () => {
                         {/* Footer */}
                         <div className="mt-6 text-center">
                             <p className="text-xs text-slate-500">
-                                © 2024 Raunak Consultancy. All rights reserved.
+                                © {new Date().getFullYear()} Raunak Consultancy. All rights reserved.
                             </p>
                         </div>
                     </CardContent>

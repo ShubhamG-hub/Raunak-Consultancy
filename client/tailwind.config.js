@@ -24,17 +24,19 @@ export default {
             colors: {
                 border: "hsl(var(--border))",
                 input: "hsl(var(--input))",
-                ring: "hsl(var(--ring))",
+                ring: "rgb(var(--primary) / <alpha-value>)",
                 background: "hsl(var(--background))",
                 foreground: "hsl(var(--foreground))",
                 primary: {
-                    DEFAULT: "hsl(var(--primary))",
+                    DEFAULT: "rgb(var(--primary) / <alpha-value>)",
                     foreground: "hsl(var(--primary-foreground))",
                 },
                 secondary: {
-                    DEFAULT: "hsl(var(--secondary))",
+                    DEFAULT: "rgb(var(--secondary) / <alpha-value>)",
                     foreground: "hsl(var(--secondary-foreground))",
                 },
+                "primary-theme": "rgb(var(--primary) / <alpha-value>)",
+                "accent-theme": "rgb(var(--accent) / <alpha-value>)",
                 destructive: {
                     DEFAULT: "hsl(var(--destructive))",
                     foreground: "hsl(var(--destructive-foreground))",
@@ -44,7 +46,7 @@ export default {
                     foreground: "hsl(var(--muted-foreground))",
                 },
                 accent: {
-                    DEFAULT: "hsl(var(--accent))",
+                    DEFAULT: "rgb(var(--accent) / <alpha-value>)",
                     foreground: "hsl(var(--accent-foreground))",
                 },
                 popover: {

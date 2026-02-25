@@ -16,7 +16,7 @@ export default function VirtualOffice() {
     const [state, setState] = useState('validating'); // validating | waiting | admitted | rejected | error
     const [error, setError] = useState('');
     const [meetingData, setMeetingData] = useState(null);    // { meetingId, zoomMeetingId, zoomPassword, signature, sdkKey }
-    const [waitingEntry, setWaitingEntry] = useState(null);
+    const [, setWaitingEntry] = useState(null);
     const [rightTab, setRightTab] = useState('chat');
 
     // User info — collected from URL or defaults
@@ -26,7 +26,7 @@ export default function VirtualOffice() {
 
     // ── Step 1: Validate booking → get meeting ─────────────────────────────────
     const validateAndGetMeeting = useCallback(async () => {
-        if (!bookingId || !token || !nameSubmitted) return;
+        if (!bookingId || !token) return;
         try {
             const { data } = await api.get(`/virtual-office/join/${bookingId}`, {
                 headers: { 'x-booking-token': token },
@@ -53,11 +53,12 @@ export default function VirtualOffice() {
             }
             setState('error');
         }
-    }, [bookingId, token, nameSubmitted, userName, userEmail]);
+    }, [bookingId, token, userName, userEmail]);
 
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         if (nameSubmitted) validateAndGetMeeting();
-    }, [nameSubmitted]);
+    }, [nameSubmitted, validateAndGetMeeting]);
 
     // ── Step 2: Poll for admission status ─────────────────────────────────────
     useEffect(() => {
@@ -82,11 +83,11 @@ export default function VirtualOffice() {
     // SCREEN: Name / Email form (before joining)
     if (!nameSubmitted) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 flex items-center justify-center p-6">
+            <div className="min-h-screen bg-gradient-to-br from-slate-900 via-primary-theme/20 to-slate-900 flex items-center justify-center p-6 pt-32">
                 <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }}
                     className="w-full max-w-md bg-white/5 backdrop-blur-2xl border border-white/10 rounded-3xl p-8 shadow-2xl">
                     <div className="flex justify-center mb-6">
-                        <div className="w-16 h-16 rounded-2xl bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-600/30">
+                        <div className="w-16 h-16 rounded-2xl bg-primary-theme flex items-center justify-center shadow-lg shadow-primary-theme/30">
                             <Video className="w-8 h-8 text-white" />
                         </div>
                     </div>
@@ -97,7 +98,7 @@ export default function VirtualOffice() {
                             <label className="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-2">Your Name</label>
                             <input type="text" value={userName} onChange={e => setUserName(e.target.value)}
                                 placeholder="e.g. Rahul Sharma"
-                                className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-sm" />
+                                className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-theme/50 text-sm" />
                         </div>
                         <div>
                             <label className="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-2">Your Email</label>
@@ -108,7 +109,7 @@ export default function VirtualOffice() {
                         <button
                             onClick={() => { if (userName.trim() && userEmail.trim()) setNameSubmitted(true); }}
                             disabled={!userName.trim() || !userEmail.trim()}
-                            className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold transition-colors disabled:opacity-40 mt-2">
+                            className="w-full py-3 rounded-xl bg-primary-theme hover:opacity-90 text-white font-bold transition-colors disabled:opacity-40 mt-2">
                             Join Meeting →
                         </button>
                     </div>
@@ -123,7 +124,7 @@ export default function VirtualOffice() {
 
     // SCREEN: Validating
     if (state === 'validating') {
-        return <FullScreenStatus icon={<Loader2 className="w-8 h-8 text-blue-400 animate-spin" />} title="Validating your access..." subtitle="Please wait while we verify your booking." />;
+        return <FullScreenStatus icon={<Loader2 className="w-8 h-8 text-primary-theme animate-spin" />} title="Validating your access..." subtitle="Please wait while we verify your booking." />;
     }
 
     // SCREEN: Error
@@ -139,7 +140,7 @@ export default function VirtualOffice() {
     // SCREEN: Waiting Room
     if (state === 'waiting') {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 flex items-center justify-center p-6">
+            <div className="min-h-screen bg-gradient-to-br from-slate-900 via-primary-theme/20 to-slate-900 flex items-center justify-center p-6 pt-32">
                 <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
                     className="w-full max-w-md text-center bg-white/5 backdrop-blur-2xl border border-white/10 rounded-3xl p-10 shadow-2xl">
                     <div className="relative inline-flex mb-6">
@@ -202,7 +203,7 @@ export default function VirtualOffice() {
                             { id: 'files', icon: Paperclip, label: 'Files' },
                         ].map(tab => (
                             <button key={tab.id} onClick={() => setRightTab(tab.id)}
-                                className={`flex-1 flex items-center justify-center gap-1.5 py-3 text-xs font-bold transition-colors ${rightTab === tab.id ? 'text-blue-400 border-b-2 border-blue-500' : 'text-slate-400 hover:text-slate-200'}`}>
+                                className={`flex-1 flex items-center justify-center gap-1.5 py-3 text-xs font-bold transition-colors ${rightTab === tab.id ? 'text-primary-theme border-b-2 border-primary-theme' : 'text-slate-400 hover:text-slate-200'}`}>
                                 <tab.icon className="w-3.5 h-3.5" />{tab.label}
                             </button>
                         ))}
@@ -225,9 +226,9 @@ export default function VirtualOffice() {
 
 // ─ Helper: Full-screen status card ───────────────────────────────────────────
 function FullScreenStatus({ icon, title, subtitle, color = 'blue' }) {
-    const colorMap = { blue: 'bg-blue-600/20 border-blue-500/30', red: 'bg-red-600/20 border-red-500/30' };
+    const colorMap = { blue: 'bg-primary-theme/20 border-primary-theme/30', red: 'bg-red-600/20 border-red-500/30' };
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 flex items-center justify-center p-6">
+        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-primary-theme/20 to-slate-900 flex items-center justify-center p-6 pt-32">
             <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }}
                 className="text-center bg-white/5 backdrop-blur-2xl border border-white/10 rounded-3xl p-10 shadow-2xl max-w-sm w-full">
                 <div className={`mx-auto w-20 h-20 rounded-2xl border ${colorMap[color]} flex items-center justify-center mb-6`}>{icon}</div>

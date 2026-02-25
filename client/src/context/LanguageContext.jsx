@@ -1,6 +1,7 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useState, useEffect } from 'react';
 import { translations } from '../lib/translations';
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const LanguageContext = createContext();
 
 export const LanguageProvider = ({ children }) => {

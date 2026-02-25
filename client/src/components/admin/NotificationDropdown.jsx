@@ -51,7 +51,7 @@ const NotificationDropdown = () => {
         try {
             const { data } = await api.get('/notifications/unread-count');
             setUnreadCount(data.count || 0);
-        } catch (err) {
+        } catch {
             // silently fail - notifications are non-critical
         }
     };

@@ -11,6 +11,7 @@ import {
     Loader2,
     X
 } from 'lucide-react';
+import Modal from '@/components/ui/Modal';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -24,6 +25,9 @@ const GalleryManager = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [categoryFilter, setCategoryFilter] = useState('All');
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [selectedImage, setSelectedImage] = useState(null);
     const [newImage, setNewImage] = useState({
         title: '',
         image_url: '',
@@ -58,6 +62,13 @@ const GalleryManager = () => {
 
     const handleAddImage = async (e) => {
         e.preventDefault();
+
+        // Validation: Must have either file or URL, but not both (though UI prevents both)
+        if (!selectedFile && !newImage.image_url) {
+            alert('Please provide an image: either upload a file or enter a URL.');
+            return;
+        }
+
         setSubmitting(true);
         try {
             let finalImageUrl = newImage.image_url;
@@ -71,12 +82,6 @@ const GalleryManager = () => {
                     headers: { 'Content-Type': 'multipart/form-data' }
                 });
                 finalImageUrl = uploadRes.data.url;
-            }
-
-            if (!finalImageUrl) {
-                alert('Please provide an image URL or select a file');
-                setSubmitting(false);
-                return;
             }
 
             // 2. Save image details to database
@@ -97,13 +102,45 @@ const GalleryManager = () => {
         }
     };
 
-    const handleDeleteImage = async (id) => {
-        if (!window.confirm('Are you sure you want to delete this image?')) return;
+    const handleAction = (image, actionType) => {
+        setSelectedImage(image);
+        if (actionType === 'edit') {
+            setIsEditModalOpen(true);
+        } else if (actionType === 'delete') {
+            setIsDeleteModalOpen(true);
+        } else if (actionType === 'view_large') {
+            window.open(image.image_url, '_blank');
+        }
+    };
+
+    const handleEditImage = async (e) => {
+        e.preventDefault();
+        setSubmitting(true);
         try {
-            await api.delete(`/gallery/${id}`);
+            await api.put(`/gallery/${selectedImage.id}`, selectedImage);
+            setIsEditModalOpen(false);
             fetchImages();
+            alert('Image details updated');
+        } catch (error) {
+            console.error('Failed to update image:', error);
+            alert('Failed to update image');
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
+    const handleDeleteImage = async () => {
+        setSubmitting(true);
+        try {
+            await api.delete(`/gallery/${selectedImage.id}`);
+            setIsDeleteModalOpen(false);
+            fetchImages();
+            alert('Image deleted successfully');
         } catch (error) {
             console.error('Failed to delete image:', error);
+            alert('Failed to delete image');
+        } finally {
+            setSubmitting(false);
         }
     };
 
@@ -117,7 +154,7 @@ const GalleryManager = () => {
     };
 
     const filteredImages = images.filter(img => {
-        const matchesSearch = img.title.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesSearch = (img.title || '').toLowerCase().includes(searchTerm.toLowerCase());
         const matchesCategory = categoryFilter === 'All' || img.category === categoryFilter;
         return matchesSearch && matchesCategory;
     });
@@ -126,11 +163,14 @@ const GalleryManager = () => {
         <div className="p-3 md:p-6 space-y-4 md:space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-xl md:text-2xl font-bold text-slate-900">Gallery Manager</h1>
-                    <p className="text-slate-500">Manage images displayed in the website gallery</p>
+                    <h1 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-white">Gallery Manager</h1>
+                    <p className="text-slate-500 dark:text-slate-400">Manage images displayed in the website gallery</p>
                 </div>
 
-                <Button className="flex items-center gap-2" onClick={() => setIsAddModalOpen(true)}>
+                <Button
+                    className="flex items-center gap-2 bg-primary hover:opacity-90 text-white shadow-lg shadow-primary/20 rounded-xl px-6 h-12"
+                    onClick={() => setIsAddModalOpen(true)}
+                >
                     <Plus className="w-4 h-4" />
                     Add New Image
                 </Button>
@@ -166,8 +206,8 @@ const GalleryManager = () => {
                 <CardContent className="pt-6">
                     {loading ? (
                         <div className="flex flex-col items-center justify-center py-20 gap-3">
-                            <Loader2 className="w-10 h-10 animate-spin text-blue-600" />
-                            <p className="text-slate-500">Fetching images...</p>
+                            <Loader2 className="w-10 h-10 animate-spin text-primary" />
+                            <p className="text-slate-500 dark:text-slate-400">Fetching images...</p>
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -194,6 +234,13 @@ const GalleryManager = () => {
                                                 >
                                                     {image.active ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
                                                 </button>
+                                                <button
+                                                    onClick={() => handleAction(image, 'delete')}
+                                                    className="p-2 rounded-lg bg-red-500/80 text-white backdrop-blur-md hover:bg-red-600/90 transition-colors"
+                                                    title="Delete image"
+                                                >
+                                                    <Trash2 className="w-4 h-4" />
+                                                </button>
                                             </div>
                                             <div className="absolute bottom-2 left-2">
                                                 <StatusBadge status={image.active ? 'Approved' : 'Rejected'} />
@@ -203,17 +250,19 @@ const GalleryManager = () => {
                                         <div className="p-4">
                                             <div className="flex items-start justify-between gap-2">
                                                 <div>
-                                                    <h3 className="font-semibold text-slate-900 line-clamp-1">{image.title}</h3>
-                                                    <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">{image.category}</span>
+                                                    <h3 className="font-semibold text-slate-900 dark:text-white line-clamp-1">{image.title}</h3>
+                                                    <span className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">{image.category}</span>
                                                 </div>
                                                 <ActionMenu
                                                     actions={[
-                                                        { label: 'View Large', icon: ExternalLink, onClick: () => window.open(image.image_url, '_blank') },
-                                                        { label: 'Delete', icon: Trash2, variant: 'danger', onClick: () => handleDeleteImage(image.id) }
+                                                        { type: 'view_large', label: 'View Large', icon: ExternalLink },
+                                                        { type: 'edit', label: 'Edit', icon: ImageIcon },
+                                                        { type: 'delete', label: 'Delete', danger: true }
                                                     ]}
+                                                    onAction={(action) => handleAction(image, action)}
                                                 />
                                             </div>
-                                            <p className="text-[10px] text-slate-400 mt-3 pt-3 border-t border-slate-100">
+                                            <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-3 pt-3 border-t border-slate-100 dark:border-white/10">
                                                 Added on {new Date(image.created_at).toLocaleDateString()}
                                             </p>
                                         </div>
@@ -224,8 +273,8 @@ const GalleryManager = () => {
                                     <div className="bg-slate-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                                         <ImageIcon className="w-8 h-8 text-slate-300" />
                                     </div>
-                                    <h3 className="text-lg font-medium text-slate-900">No images found</h3>
-                                    <p className="text-slate-500">Try adjusting your search or filters</p>
+                                    <h3 className="text-lg font-medium text-slate-900 dark:text-white">No images found</h3>
+                                    <p className="text-slate-500 dark:text-slate-400">Try adjusting your search or filters</p>
                                 </div>
                             )}
                         </div>
@@ -233,85 +282,184 @@ const GalleryManager = () => {
                 </CardContent>
             </Card>
 
-            {/* Custom Modal for Adding Image */}
-            {isAddModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-                    <div className="bg-white rounded-xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto overflow-hidden animate-in fade-in zoom-in duration-200">
-                        <div className="flex items-center justify-between p-6 border-b border-slate-100">
-                            <h2 className="text-xl font-bold text-slate-900">Add Gallery Image</h2>
-                            <button
-                                onClick={() => setIsAddModalOpen(false)}
-                                className="text-slate-400 hover:text-slate-600 transition-colors"
-                            >
-                                <X className="w-6 h-6" />
-                            </button>
+            {/* Add Image Modal */}
+            <Modal
+                isOpen={isAddModalOpen}
+                onClose={() => setIsAddModalOpen(false)}
+                title="Add Gallery Image"
+            >
+                <form onSubmit={handleAddImage} className="space-y-4">
+                    <div className="space-y-2">
+                        <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Image Title</label>
+                        <Input
+                            required
+                            value={newImage.title}
+                            onChange={(e) => setNewImage({ ...newImage, title: e.target.value })}
+                            placeholder="e.g. Annual Event 2024"
+                        />
+                    </div>
+                    <div className="space-y-2">
+                        <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Upload Image</label>
+                        <div className="flex flex-col gap-2">
+                            <div className="flex gap-2">
+                                <input
+                                    type="file"
+                                    id="gallery-file-input"
+                                    accept="image/*"
+                                    onChange={handleFileChange}
+                                    disabled={!!newImage.image_url}
+                                    className="flex h-10 w-full rounded-md border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-slate-800/50 px-3 py-1.5 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 text-slate-900 dark:text-white"
+                                />
+                                {selectedFile && (
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => {
+                                            setSelectedFile(null);
+                                            const input = document.getElementById('gallery-file-input');
+                                            if (input) input.value = '';
+                                        }}
+                                        className="h-10 px-3 text-red-500 hover:text-red-600 border-red-100 hover:border-red-200"
+                                    >
+                                        <X className="w-4 h-4" />
+                                    </Button>
+                                )}
+                            </div>
+                            <p className="text-[11px] text-slate-400 dark:text-slate-500 text-center italic">OR provide a URL below</p>
                         </div>
-                        <form onSubmit={handleAddImage} className="p-6 space-y-4">
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium text-slate-700">Image Title</label>
-                                <Input
-                                    required
-                                    value={newImage.title}
-                                    onChange={(e) => setNewImage({ ...newImage, title: e.target.value })}
-                                    placeholder="e.g. Annual Event 2024"
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium text-slate-700">Upload Image</label>
-                                <div className="flex flex-col gap-2">
-                                    <input
-                                        type="file"
-                                        accept="image/*"
-                                        onChange={handleFileChange}
-                                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-1.5 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                                    />
-                                    <p className="text-[11px] text-slate-400 text-center italic">OR provide a URL below</p>
-                                </div>
-                            </div>
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium text-slate-700">Image URL</label>
-                                <Input
-                                    value={newImage.image_url}
-                                    onChange={(e) => setNewImage({ ...newImage, image_url: e.target.value })}
-                                    placeholder="https://images.unsplash.com/..."
-                                    disabled={!!selectedFile}
-                                />
-                                {selectedFile && <p className="text-[10px] text-blue-500">Selected file: {selectedFile.name}</p>}
-                            </div>
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium text-slate-700">Category</label>
-                                <select
-                                    value={newImage.category}
-                                    onChange={(e) => setNewImage({ ...newImage, category: e.target.value })}
-                                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                                >
-                                    {categories.map(cat => (
-                                        <option key={cat} value={cat}>{cat}</option>
-                                    ))}
-                                </select>
-                            </div>
-                            <div className="flex gap-3 pt-4">
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    className="flex-1"
-                                    onClick={() => setIsAddModalOpen(false)}
-                                >
-                                    Cancel
-                                </Button>
-                                <Button type="submit" className="flex-1" disabled={submitting}>
-                                    {submitting ? (
-                                        <>
-                                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                            Adding...
-                                        </>
-                                    ) : 'Add Image'}
-                                </Button>
-                            </div>
-                        </form>
+                    </div>
+                    <div className="space-y-2">
+                        <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Image URL</label>
+                        <Input
+                            value={newImage.image_url}
+                            onChange={(e) => setNewImage({ ...newImage, image_url: e.target.value })}
+                            placeholder="https://images.unsplash.com/..."
+                            disabled={!!selectedFile}
+                        />
+                        {selectedFile && <p className="text-[10px] text-primary">Selected file: <span className="font-bold">{selectedFile.name}</span></p>}
+                        {newImage.image_url && <p className="text-[10px] text-green-500 font-medium">Using image URL</p>}
+                    </div>
+                    <div className="space-y-2">
+                        <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Category</label>
+                        <select
+                            value={newImage.category}
+                            onChange={(e) => setNewImage({ ...newImage, category: e.target.value })}
+                            className="flex h-10 w-full rounded-md border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-slate-800/50 px-3 py-2 text-sm text-slate-900 dark:text-white ring-offset-background focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all"
+                        >
+                            {categories.map(cat => (
+                                <option key={cat} value={cat}>{cat}</option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className="flex gap-3 pt-4">
+                        <Button
+                            type="button"
+                            variant="outline"
+                            className="flex-1"
+                            onClick={() => setIsAddModalOpen(false)}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            type="submit"
+                            className="flex-1 bg-primary hover:opacity-90 text-white shadow-lg shadow-primary/20 rounded-xl"
+                            disabled={submitting}
+                        >
+                            {submitting ? 'Adding...' : 'Add Image'}
+                        </Button>
+                    </div>
+                </form>
+            </Modal>
+
+            {/* Edit Image Modal */}
+            <Modal
+                isOpen={isEditModalOpen}
+                onClose={() => setIsEditModalOpen(false)}
+                title="Edit Gallery Image"
+            >
+                {selectedImage && (
+                    <form onSubmit={handleEditImage} className="space-y-4">
+                        <div className="space-y-2">
+                            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Image Title</label>
+                            <Input
+                                required
+                                value={selectedImage.title}
+                                onChange={(e) => setSelectedImage({ ...selectedImage, title: e.target.value })}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Image URL</label>
+                            <Input
+                                required
+                                value={selectedImage.image_url}
+                                onChange={(e) => setSelectedImage({ ...selectedImage, image_url: e.target.value })}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Category</label>
+                            <select
+                                value={selectedImage.category}
+                                onChange={(e) => setSelectedImage({ ...selectedImage, category: e.target.value })}
+                                className="flex h-10 w-full rounded-md border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-slate-800/50 px-3 py-2 text-sm text-slate-900 dark:text-white ring-offset-background focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all"
+                            >
+                                {categories.map(cat => (
+                                    <option key={cat} value={cat}>{cat}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Visibility</label>
+                            <select
+                                value={selectedImage.active ? 'true' : 'false'}
+                                onChange={(e) => setSelectedImage({ ...selectedImage, active: e.target.value === 'true' })}
+                                className="flex h-10 w-full rounded-md border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-slate-800/50 px-3 py-2 text-sm text-slate-900 dark:text-white ring-offset-background focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all"
+                            >
+                                <option value="true">Visible</option>
+                                <option value="false">Hidden</option>
+                            </select>
+                        </div>
+                        <div className="flex gap-3 pt-4">
+                            <Button
+                                type="button"
+                                variant="outline"
+                                className="flex-1"
+                                onClick={() => setIsEditModalOpen(false)}
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                type="submit"
+                                className="flex-1 bg-primary hover:opacity-90 text-white shadow-lg shadow-primary/20 rounded-xl"
+                                disabled={submitting}
+                            >
+                                {submitting ? 'Saving...' : 'Save Changes'}
+                            </Button>
+                        </div>
+                    </form>
+                )}
+            </Modal>
+
+            {/* Delete Image Modal */}
+            <Modal
+                isOpen={isDeleteModalOpen}
+                onClose={() => setIsDeleteModalOpen(false)}
+                title="Confirm Deletion"
+            >
+                <div className="space-y-4">
+                    <p className="text-slate-600 dark:text-slate-400">
+                        Are you sure you want to delete <span className="font-bold text-slate-900 dark:text-white">{selectedImage?.title}</span>? This action cannot be undone.
+                    </p>
+                    <div className="flex justify-end gap-3 pt-4">
+                        <Button variant="outline" onClick={() => setIsDeleteModalOpen(false)}>
+                            Cancel
+                        </Button>
+                        <Button variant="destructive" onClick={handleDeleteImage} disabled={submitting}>
+                            {submitting ? 'Deleting...' : 'Delete Image'}
+                        </Button>
                     </div>
                 </div>
-            )}
+            </Modal>
         </div>
     );
 };

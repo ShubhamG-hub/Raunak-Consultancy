@@ -1,5 +1,5 @@
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import LoadingScreen from '@/components/ui/LoadingScreen';
 import Navbar from '@/components/layout/Navbar';
@@ -14,14 +14,18 @@ import Calculators from '@/pages/public/Calculators';
 import Gallery from '@/pages/public/Gallery';
 import CertificatesPage from '@/pages/public/CertificatesPage';
 import TestimonialsPage from '@/pages/public/TestimonialsPage';
-import ServicesDetails from '@/pages/public/ServicesDetails';
 import AboutDetails from '@/pages/public/AboutDetails';
+import CategoryPage from '@/pages/public/CategoryPage';
+import AllServices from '@/pages/public/AllServices';
+import ServiceDetail from '@/pages/public/ServiceDetail';
 import Blogs from '@/pages/public/Blogs';
 import BlogDetail from '@/pages/public/BlogDetail';
+import NotFound from '@/pages/public/NotFound';
 import AdminLogin from '@/pages/admin/Login';
 import AdminDashboard from '@/pages/admin/Dashboard';
 import BookingsManager from '@/pages/admin/BookingsManager';
 import LeadsManager from '@/pages/admin/LeadsManager';
+import ServicesManager from '@/pages/admin/ServicesManager';
 import Certificates from '@/pages/admin/Certificates';
 import ContentEditor from '@/pages/admin/ContentEditor';
 import TestimonialsManager from '@/pages/admin/TestimonialsManager';
@@ -31,10 +35,11 @@ import AwardsManager from '@/pages/admin/AwardsManager';
 import ClaimsManager from '@/pages/admin/ClaimsManager';
 import ChatManager from '@/pages/admin/ChatManager';
 import Profile from '@/pages/admin/Profile';
-import VirtualOfficeManager from '@/pages/admin/VirtualOfficeManager';
-import VirtualOfficeAnalytics from '@/pages/admin/VirtualOfficeAnalytics';
-import VirtualOffice from '@/pages/public/VirtualOffice';
+import ThemeSettings from '@/pages/admin/ThemeSettings';
+import AboutManager from '@/pages/admin/AboutManager';
+import CategoryManager from '@/pages/admin/CategoryManager';
 import AdminLayout from '@/components/layout/AdminLayout';
+
 import ProtectedRoute from '@/components/layout/ProtectedRoute';
 
 import { useLanguage } from '@/context/useLanguage';
@@ -42,11 +47,13 @@ import { useLanguage } from '@/context/useLanguage';
 const SITE_NAME = 'Raunak Consultancy';
 
 const ScrollToTop = () => {
-  const { pathname } = useLocation();
+  const { pathname, hash } = useLocation();
 
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
+    if (!hash) {
+      window.scrollTo(0, 0);
+    }
+  }, [pathname, hash]);
 
   return null;
 };
@@ -56,16 +63,20 @@ const AppLayout = ({ children }) => {
   const isAdmin = location.pathname.startsWith('/admin');
   const { t } = useLanguage();
 
-  const SECTION_TITLES = {
+  const SECTION_TITLES = useMemo(() => ({
     'home': 'Home',
-    'about': t.nav.about,
     'services': t.nav.services,
+    'calculators': t.nav.calculators,
     'claims': t.nav.claims,
-    'contact': t.nav.contact,
+    'about': t.nav.about,
     'certificates': t.certificates.title,
-    'gallery': t.gallery.title,
+    'awards': t.awards.title,
+    'blogs': t.nav.blogs,
     'testimonials': t.testimonials.title,
-  };
+    'gallery': t.gallery.title,
+    'contact': t.nav.contact,
+    'theme-settings': 'Theme Appearance',
+  }), [t]);
 
   // Update browser tab title
   useEffect(() => {
@@ -74,6 +85,7 @@ const AppLayout = ({ children }) => {
     if (location.pathname !== '/') {
       const PAGE_TITLES = {
         '/admin/login': 'Admin Login',
+        '/admin/settings/theme': 'Theme Settings',
       };
       const pageTitle = PAGE_TITLES[location.pathname];
       document.title = pageTitle ? `${pageTitle} | ${SITE_NAME}` : SITE_NAME;
@@ -109,7 +121,7 @@ const AppLayout = ({ children }) => {
     return () => {
       sections.forEach(section => observer.unobserve(section));
     };
-  }, [location.pathname, isAdmin, t]);
+  }, [location.pathname, isAdmin, t, SECTION_TITLES]);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -139,17 +151,12 @@ function App() {
     // Also clear hash to ensure we start at the top (Hero section)
     const isAdmin = location.pathname.startsWith('/admin');
     if (!isAdmin) {
-      if (location.pathname !== '/' || location.hash !== '') {
-        navigate('/', { replace: true });
-        window.scrollTo(0, 0);
-      } else {
-        // Even if on / with no hash, force scroll to top on fresh load/reload
-        window.scrollTo(0, 0);
-      }
+      // Only scroll to top on initial load if we're not on a specific route that might have its own scroll logic
+      window.scrollTo(0, 0);
     }
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [location.hash, location.pathname, navigate]);
 
   return (
     <ThemeProvider>
@@ -162,17 +169,20 @@ function App() {
           <Routes>
             {/* Public Routes */}
             <Route path="/" element={<Home />} />
+            <Route path="/services" element={<AllServices />} />
+            <Route path="/services/:categorySlug" element={<CategoryPage />} />
+            <Route path="/services/:categorySlug/:serviceSlug" element={<ServiceDetail />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/calculators" element={<Calculators />} />
             <Route path="/gallery" element={<Gallery />} />
             <Route path="/certificates" element={<CertificatesPage />} />
             <Route path="/testimonials" element={<TestimonialsPage />} />
-            <Route path="/services" element={<ServicesDetails />} />
+            <Route path="/testimonials" element={<TestimonialsPage />} />
             <Route path="/about-details" element={<AboutDetails />} />
             <Route path="/blogs" element={<Blogs />} />
             <Route path="/blogs/:slug" element={<BlogDetail />} />
-            <Route path="/virtual-office" element={<VirtualOffice />} />
+
 
             {/* Admin Routes */}
             <Route path="/admin/login" element={<AdminLogin />} />
@@ -182,6 +192,16 @@ function App() {
                 <ProtectedRoute>
                   <AdminLayout>
                     <AdminDashboard />
+                  </AdminLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/settings/theme"
+              element={
+                <ProtectedRoute>
+                  <AdminLayout>
+                    <ThemeSettings />
                   </AdminLayout>
                 </ProtectedRoute>
               }
@@ -207,7 +227,28 @@ function App() {
               }
             />
             <Route
+              path="/admin/services"
+              element={
+                <ProtectedRoute>
+                  <AdminLayout>
+                    <ServicesManager />
+                  </AdminLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/categories"
+              element={
+                <ProtectedRoute>
+                  <AdminLayout>
+                    <CategoryManager />
+                  </AdminLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/admin/certificates"
+
               element={
                 <ProtectedRoute>
                   <AdminLayout>
@@ -297,25 +338,17 @@ function App() {
               }
             />
             <Route
-              path="/admin/virtual-office"
+              path="/admin/about"
               element={
                 <ProtectedRoute>
                   <AdminLayout>
-                    <VirtualOfficeManager />
+                    <AboutManager />
                   </AdminLayout>
                 </ProtectedRoute>
               }
             />
-            <Route
-              path="/admin/virtual-office/analytics"
-              element={
-                <ProtectedRoute>
-                  <AdminLayout>
-                    <VirtualOfficeAnalytics />
-                  </AdminLayout>
-                </ProtectedRoute>
-              }
-            />
+
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </AppLayout>
       </AuthProvider>

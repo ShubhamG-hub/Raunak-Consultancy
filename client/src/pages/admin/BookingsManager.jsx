@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
     Search,
     Filter,
@@ -10,6 +10,10 @@ import {
     CheckCircle2,
     Clock,
     XCircle,
+    X,
+    Plus,
+    Edit,
+    Loader2,
     User,
     Phone,
     Mail,
@@ -21,16 +25,16 @@ import {
     MapPin
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { supabase } from '@/lib/supabase';
 import api from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import Modal from '@/components/ui/Modal';
+import ActionMenu from '@/components/admin/ActionMenu';
 
 const STATUS_COLORS = {
     'Pending': 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400',
-    'Confirmed': 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+    'Confirmed': 'bg-primary/10 text-primary',
     'Completed': 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400',
     'Cancelled': 'bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400'
 };
@@ -47,9 +51,33 @@ const BookingsManager = () => {
     const [totalPages, setTotalPages] = useState(1);
     const [selectedBooking, setSelectedBooking] = useState(null);
     const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [exporting, setExporting] = useState(false);
-    const debounceRef = useRef(null);
+    const [submitting, setSubmitting] = useState(false);
 
+    const [newBooking, setNewBooking] = useState({
+        name: '',
+        phone: '',
+        email: '',
+        date: '',
+        time: '',
+        service_type: 'Investment Advisory',
+        meeting_mode: 'In-Person',
+        message: '',
+        status: 'Confirmed'
+    });
+
+    const serviceTypes = [
+        'Investment Advisory',
+        'Tax Planning',
+        'Insurance Planning',
+        'Retirement Planning',
+        'Estate Planning',
+        'GST Compliance',
+        'NRI Advisory',
+        'Other'
+    ];
     const itemsPerPage = 10;
 
     useEffect(() => {
@@ -82,21 +110,18 @@ const BookingsManager = () => {
 
     useEffect(() => {
         fetchBookings();
-
-        // Real-time subscription - only if supabase is available
-        if (!supabase) return;
-
-        const channel = supabase
-            .channel('bookings-changes')
-            .on('postgres_changes', { event: '*', table: 'bookings', schema: 'public' }, () => {
-                fetchBookings();
-            })
-            .subscribe();
-
-        return () => {
-            supabase.removeChannel(channel);
-        };
     }, [fetchBookings]);
+
+    const handleAction = (booking, actionType) => {
+        setSelectedBooking(booking);
+        if (actionType === 'view') {
+            setIsViewModalOpen(true);
+        } else if (actionType === 'edit') {
+            setIsEditModalOpen(true);
+        } else if (actionType === 'delete') {
+            handleDeleteBooking(booking.id);
+        }
+    };
 
     const handleUpdateStatus = async (id, newStatus) => {
         try {
@@ -120,11 +145,52 @@ const BookingsManager = () => {
         if (!window.confirm('Are you sure you want to delete this booking?')) return;
         try {
             await api.delete(`/bookings/${id}`);
-            alert('Booking deleted successfully');
             fetchBookings();
         } catch (error) {
             console.error('Error deleting booking:', error);
             alert('Failed to delete booking. Please try again.');
+        }
+    };
+
+    const handleAddBooking = async (e) => {
+        e.preventDefault();
+        setSubmitting(true);
+        try {
+            const { data } = await api.post('/bookings', newBooking);
+            setBookings([data, ...bookings]);
+            setIsAddModalOpen(false);
+            setNewBooking({
+                name: '',
+                phone: '',
+                email: '',
+                date: '',
+                time: '',
+                service_type: 'Investment Advisory',
+                meeting_mode: 'In-Person',
+                message: '',
+                status: 'Confirmed'
+            });
+            fetchBookings();
+        } catch (error) {
+            console.error('Error adding booking:', error);
+            alert('Failed to add manual booking entry');
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
+    const handleEditBooking = async (e) => {
+        e.preventDefault();
+        setSubmitting(true);
+        try {
+            await api.put(`/bookings/${selectedBooking.id}`, selectedBooking);
+            setIsEditModalOpen(false);
+            fetchBookings();
+        } catch (error) {
+            console.error('Error editing booking:', error);
+            alert('Failed to update booking');
+        } finally {
+            setSubmitting(false);
         }
     };
 
@@ -166,8 +232,6 @@ const BookingsManager = () => {
         }
     };
 
-    const totalPages_ = totalPages;
-
     return (
         <div className="p-3 md:p-6 space-y-4 md:space-y-6">
             {/* Header Section */}
@@ -185,6 +249,13 @@ const BookingsManager = () => {
                     >
                         <Download className="w-4 h-4" />
                         <span className="hidden sm:inline">Export CSV</span>
+                    </Button>
+                    <Button
+                        className="flex items-center gap-2 bg-primary hover:opacity-90 text-white shadow-lg shadow-primary/20 rounded-xl px-6 h-12"
+                        onClick={() => setIsAddModalOpen(true)}
+                    >
+                        <Plus className="w-4 h-4" />
+                        Add Booking
                     </Button>
                     <Button
                         onClick={fetchBookings}
@@ -206,7 +277,7 @@ const BookingsManager = () => {
                 <div className="flex flex-col lg:flex-row gap-4">
                     <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="relative group">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-primary transition-colors" />
                             <Input
                                 placeholder="Search Name or Phone..."
                                 className="pl-10 h-11 bg-slate-50/50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 focus:bg-white dark:focus:bg-slate-800 transition-all"
@@ -215,7 +286,7 @@ const BookingsManager = () => {
                             />
                         </div>
                         <div className="relative group">
-                            <CalendarIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
+                            <CalendarIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-primary transition-colors" />
                             <Input
                                 type="date"
                                 className="pl-10 h-11 bg-slate-50/50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 focus:bg-white dark:focus:bg-slate-800 transition-all"
@@ -232,7 +303,7 @@ const BookingsManager = () => {
                                 variant={statusFilter === status ? 'default' : 'outline'}
                                 onClick={() => setStatusFilter(status)}
                                 className={`px-4 sm:px-5 rounded-full text-[10px] sm:text-xs font-bold whitespace-nowrap transition-all h-9 sm:h-10 ${statusFilter === status
-                                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/30 ring-2 ring-blue-500/20'
+                                    ? 'bg-primary text-white shadow-lg shadow-primary/30 ring-2 ring-primary/20'
                                     : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 border-slate-200 dark:border-slate-700'
                                     }`}
                             >
@@ -281,7 +352,7 @@ const BookingsManager = () => {
                                     >
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold border border-blue-100 dark:border-blue-800">
+                                                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold border border-primary/20">
                                                     {booking.name.charAt(0)}
                                                 </div>
                                                 <div>
@@ -301,11 +372,11 @@ const BookingsManager = () => {
                                             </div>
                                         </td>
                                         <td className="px-6 py-4">
-                                            <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold uppercase tracking-tight ${booking.meeting_mode === 'Online'
-                                                ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400'
+                                            <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold uppercase tracking-tight ${(booking.meeting_mode === 'Online' || booking.meeting_mode === 'Virtual')
+                                                ? 'bg-primary/10 text-primary'
                                                 : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
                                                 }`}>
-                                                {booking.meeting_mode === 'Online' ? <Video className="w-3 h-3" /> : <MapPin className="w-3 h-3" />}
+                                                {(booking.meeting_mode === 'Online' || booking.meeting_mode === 'Virtual') ? <Video className="w-3 h-3" /> : <MapPin className="w-3 h-3" />}
                                                 {booking.meeting_mode || 'In-Person'}
                                             </span>
                                         </td>
@@ -320,23 +391,15 @@ const BookingsManager = () => {
                                             </span>
                                         </td>
                                         <td className="px-6 py-4 text-right">
-                                            <div className="flex items-center justify-end gap-2">
-                                                <Button
-                                                    variant="ghost"
-                                                    size="icon"
-                                                    onClick={() => { setSelectedBooking(booking); setIsViewModalOpen(true); }}
-                                                    className="w-8 h-8 text-blue-600 hover:bg-blue-50"
-                                                >
-                                                    <MoreHorizontal className="w-4 h-4" />
-                                                </Button>
-                                                <Button
-                                                    variant="ghost"
-                                                    size="icon"
-                                                    onClick={() => handleDeleteBooking(booking.id)}
-                                                    className="w-8 h-8 text-rose-600 hover:bg-rose-50"
-                                                >
-                                                    <Trash2 className="w-4 h-4" />
-                                                </Button>
+                                            <div className="flex justify-end">
+                                                <ActionMenu
+                                                    actions={[
+                                                        { type: 'view', label: 'View Details' },
+                                                        { type: 'edit', label: 'Edit Booking' },
+                                                        { type: 'delete', label: 'Delete', danger: true }
+                                                    ]}
+                                                    onAction={(actionType) => handleAction(booking, actionType)}
+                                                />
                                             </div>
                                         </td>
                                     </tr>
@@ -367,7 +430,7 @@ const BookingsManager = () => {
                             >
                                 <div className="flex items-start justify-between mb-4">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-9 h-9 rounded-full bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold">
+                                        <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
                                             {booking.name.charAt(0)}
                                         </div>
                                         <div>
@@ -397,19 +460,19 @@ const BookingsManager = () => {
                                 </div>
 
                                 <div className="flex items-center gap-2">
+                                    <ActionMenu
+                                        actions={[
+                                            { type: 'view', label: 'View Details' },
+                                            { type: 'edit', label: 'Edit Booking' },
+                                            { type: 'delete', label: 'Delete', danger: true }
+                                        ]}
+                                        onAction={(actionType) => handleAction(booking, actionType)}
+                                    />
                                     <Button
-                                        className="flex-1 bg-blue-600 hover:bg-blue-700 h-9 rounded-xl text-[11px] font-bold"
-                                        onClick={() => { setSelectedBooking(booking); setIsViewModalOpen(true); }}
+                                        className="flex-1 bg-primary hover:opacity-90 h-9 rounded-xl text-[11px] font-bold"
+                                        onClick={() => handleAction(booking, 'view')}
                                     >
-                                        Details / Actions
-                                    </Button>
-                                    <Button
-                                        variant="outline"
-                                        size="icon"
-                                        className="h-9 w-9 border-rose-100 text-rose-600 hover:bg-rose-50"
-                                        onClick={() => handleDeleteBooking(booking.id)}
-                                    >
-                                        <Trash2 className="w-3.5 h-3.5" />
+                                        View Details
                                     </Button>
                                 </div>
                             </motion.div>
@@ -433,12 +496,12 @@ const BookingsManager = () => {
                             <ChevronLeft className="w-3 h-3" />
                         </Button>
                         <span className="text-[10px] font-bold text-slate-600 dark:text-slate-400 px-1">
-                            {currentPage} / {totalPages_ || 1}
+                            {currentPage} / {totalPages || 1}
                         </span>
                         <Button
                             variant="outline"
                             size="sm"
-                            disabled={currentPage === totalPages_ || loading || totalPages_ === 0}
+                            disabled={currentPage === totalPages || loading || totalPages === 0}
                             onClick={() => setCurrentPage(p => p + 1)}
                             className="h-7 w-7 p-0"
                         >
@@ -495,11 +558,11 @@ const BookingsManager = () => {
                                 </div>
                                 <div>
                                     <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1">
-                                        {selectedBooking.meeting_mode === 'Online' ? <Video className="w-3 h-3" /> : <MapPin className="w-3 h-3" />} Meeting Mode
+                                        {(selectedBooking.meeting_mode === 'Online' || selectedBooking.meeting_mode === 'Virtual') ? <Video className="w-3 h-3" /> : <MapPin className="w-3 h-3" />} Meeting Mode
                                     </label>
-                                    <p className={`text-sm font-semibold mt-1 flex items-center gap-1.5 ${selectedBooking.meeting_mode === 'Online' ? 'text-blue-600 dark:text-blue-400' : 'text-slate-900 dark:text-white'
+                                    <p className={`text-sm font-semibold mt-1 flex items-center gap-1.5 ${(selectedBooking.meeting_mode === 'Online' || selectedBooking.meeting_mode === 'Virtual') ? 'text-primary' : 'text-slate-900 dark:text-white'
                                         }`}>
-                                        {selectedBooking.meeting_mode === 'Online' ? <Video className="w-3.5 h-3.5" /> : <MapPin className="w-3.5 h-3.5" />}
+                                        {(selectedBooking.meeting_mode === 'Online' || selectedBooking.meeting_mode === 'Virtual') ? <Video className="w-3.5 h-3.5" /> : <MapPin className="w-3.5 h-3.5" />}
                                         {selectedBooking.meeting_mode || 'In-Person'}
                                     </p>
                                 </div>
@@ -516,12 +579,12 @@ const BookingsManager = () => {
 
                         <div className="pt-6 border-t border-slate-100 dark:border-white/10">
                             <h4 className="text-sm font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
-                                <Filter className="w-4 h-4 text-blue-500" />
+                                <Filter className="w-4 h-4 text-primary" />
                                 Update Booking Status
                             </h4>
                             <div className="grid grid-cols-2 gap-3">
                                 <Button
-                                    className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-500/20 h-12 rounded-xl flex items-center justify-center gap-2 group transition-all active:scale-95 disabled:opacity-50"
+                                    className="bg-primary hover:opacity-90 text-white shadow-lg shadow-primary/20 h-12 rounded-xl flex items-center justify-center gap-2 group transition-all active:scale-95 disabled:opacity-50"
                                     onClick={() => handleUpdateStatus(selectedBooking.id, 'Confirmed')}
                                     disabled={selectedBooking.status === 'Confirmed'}
                                 >
@@ -560,8 +623,241 @@ const BookingsManager = () => {
                     </div>
                 )}
             </Modal>
-        </div>
 
+            {/* Add Booking Modal */}
+            {isAddModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+                    <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200 border border-slate-200 dark:border-white/10">
+                        <div className="flex items-center justify-between p-6 border-b border-slate-100 dark:border-white/10">
+                            <h2 className="text-xl font-bold text-slate-900 dark:text-white">Add New Booking</h2>
+                            <button
+                                onClick={() => setIsAddModalOpen(false)}
+                                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
+                            >
+                                <X className="w-6 h-6" />
+                            </button>
+                        </div>
+
+                        <form onSubmit={handleAddBooking} className="p-6 space-y-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Client Name</label>
+                                    <Input
+                                        required
+                                        value={newBooking.name}
+                                        onChange={(e) => setNewBooking({ ...newBooking, name: e.target.value })}
+                                        placeholder="Full Name"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Phone Number</label>
+                                    <Input
+                                        required
+                                        value={newBooking.phone}
+                                        onChange={(e) => setNewBooking({ ...newBooking, phone: e.target.value })}
+                                        placeholder="Mobile Number"
+                                    />
+                                </div>
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Email Address</label>
+                                <Input
+                                    value={newBooking.email}
+                                    onChange={(e) => setNewBooking({ ...newBooking, email: e.target.value })}
+                                    placeholder="john@example.com (Optional)"
+                                />
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Date</label>
+                                    <Input
+                                        type="date"
+                                        required
+                                        value={newBooking.date}
+                                        onChange={(e) => setNewBooking({ ...newBooking, date: e.target.value })}
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Time</label>
+                                    <Input
+                                        type="time"
+                                        required
+                                        value={newBooking.time}
+                                        onChange={(e) => setNewBooking({ ...newBooking, time: e.target.value })}
+                                    />
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Service Type</label>
+                                    <select
+                                        value={newBooking.service_type}
+                                        onChange={(e) => setNewBooking({ ...newBooking, service_type: e.target.value })}
+                                        className="flex h-10 w-full rounded-md border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-slate-800/50 px-3 py-2 text-sm text-slate-900 dark:text-white ring-offset-background focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all"
+                                    >
+                                        {serviceTypes.map(type => (
+                                            <option key={type} value={type}>{type}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Meeting Mode</label>
+                                    <select
+                                        value={newBooking.meeting_mode}
+                                        onChange={(e) => setNewBooking({ ...newBooking, meeting_mode: e.target.value })}
+                                        className="flex h-10 w-full rounded-md border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-slate-800/50 px-3 py-2 text-sm text-slate-900 dark:text-white ring-offset-background focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all"
+                                    >
+                                        <option value="In-Person">In-Person</option>
+                                        <option value="Virtual">Online (Virtual)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Message / Notes</label>
+                                <textarea
+                                    value={newBooking.message}
+                                    onChange={(e) => setNewBooking({ ...newBooking, message: e.target.value })}
+                                    className="w-full p-4 rounded-xl border border-slate-200 dark:border-white/10 dark:bg-slate-900 outline-none h-24 text-sm text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-800/50"
+                                    placeholder="Any specific notes for this session..."
+                                />
+                            </div>
+                            <div className="flex gap-3 pt-4">
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    className="flex-1 rounded-xl"
+                                    onClick={() => setIsAddModalOpen(false)}
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    type="submit"
+                                    className="flex-1 bg-primary hover:opacity-90 text-white shadow-lg shadow-primary/20 rounded-xl"
+                                    disabled={submitting}
+                                >
+                                    {submitting ? (
+                                        <>
+                                            <Loader2 className="w-4 h-4 mr-2 animate-spin text-white" />
+                                            Booking...
+                                        </>
+                                    ) : 'Create Booking'}
+                                </Button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+
+            {/* Edit Booking Modal */}
+            <Modal
+                isOpen={isEditModalOpen}
+                onClose={() => setIsEditModalOpen(false)}
+                title="Edit Booking"
+            >
+                {selectedBooking && (
+                    <form onSubmit={handleEditBooking} className="space-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Client Name</label>
+                                <Input
+                                    required
+                                    value={selectedBooking.name}
+                                    onChange={(e) => setSelectedBooking({ ...selectedBooking, name: e.target.value })}
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Phone Number</label>
+                                <Input
+                                    required
+                                    value={selectedBooking.phone}
+                                    onChange={(e) => setSelectedBooking({ ...selectedBooking, phone: e.target.value })}
+                                />
+                            </div>
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Email Address</label>
+                            <Input
+                                value={selectedBooking.email || ''}
+                                onChange={(e) => setSelectedBooking({ ...selectedBooking, email: e.target.value })}
+                            />
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Date</label>
+                                <Input
+                                    type="date"
+                                    required
+                                    value={selectedBooking.date}
+                                    onChange={(e) => setSelectedBooking({ ...selectedBooking, date: e.target.value })}
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Time</label>
+                                <Input
+                                    type="time"
+                                    required
+                                    value={selectedBooking.time}
+                                    onChange={(e) => setSelectedBooking({ ...selectedBooking, time: e.target.value })}
+                                />
+                            </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Service Type</label>
+                                <select
+                                    value={selectedBooking.service_type}
+                                    onChange={(e) => setSelectedBooking({ ...selectedBooking, service_type: e.target.value })}
+                                    className="flex h-10 w-full rounded-md border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-slate-800/50 px-3 py-2 text-sm"
+                                >
+                                    {serviceTypes.map(type => (
+                                        <option key={type} value={type}>{type}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Meeting Mode</label>
+                                <select
+                                    value={selectedBooking.meeting_mode}
+                                    onChange={(e) => setSelectedBooking({ ...selectedBooking, meeting_mode: e.target.value })}
+                                    className="flex h-10 w-full rounded-md border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-slate-800/50 px-3 py-2 text-sm"
+                                >
+                                    <option value="In-Person">In-Person</option>
+                                    <option value="Virtual">Online (Virtual)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Status</label>
+                            <select
+                                value={selectedBooking.status}
+                                onChange={(e) => setSelectedBooking({ ...selectedBooking, status: e.target.value })}
+                                className="flex h-10 w-full rounded-md border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-slate-800/50 px-3 py-2 text-sm"
+                            >
+                                {Object.keys(STATUS_COLORS).map(status => (
+                                    <option key={status} value={status}>{status}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Message / Notes</label>
+                            <textarea
+                                value={selectedBooking.message || ''}
+                                onChange={(e) => setSelectedBooking({ ...selectedBooking, message: e.target.value })}
+                                className="w-full p-4 rounded-xl border border-slate-200 dark:border-white/10 dark:bg-slate-900 outline-none h-24 text-sm"
+                            />
+                        </div>
+                        <div className="flex gap-3 pt-4">
+                            <Button type="button" variant="outline" className="flex-1" onClick={() => setIsEditModalOpen(false)}>
+                                Cancel
+                            </Button>
+                            <Button type="submit" className="flex-1 bg-primary text-white" disabled={submitting}>
+                                {submitting ? 'Saving...' : 'Save Changes'}
+                            </Button>
+                        </div>
+                    </form>
+                )}
+            </Modal>
+        </div>
     );
 };
 

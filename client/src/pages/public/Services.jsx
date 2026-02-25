@@ -1,139 +1,153 @@
-import { Link } from 'react-router-dom';
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { TrendingUp, ShieldCheck, Clock, Award, Briefcase, Calculator, ArrowRight } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
+import {
+    ArrowRight, Layout, Shield, TrendingUp,
+    Calculator, FileText, Briefcase, Heart, Users
+} from 'lucide-react';
+import api from '@/lib/api';
 import { useLanguage } from '@/context/useLanguage';
+import SectionHeader from '@/components/layout/SectionHeader';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+
+const iconMap = {
+    Layout,
+    Shield,
+    TrendingUp,
+    Calculator,
+    FileText,
+    Briefcase,
+    Heart,
+    Users
+};
 
 const Services = () => {
     const { t } = useLanguage();
+    const [categories, setCategories] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    const servicesData = [
-        {
-            title: t.services.mutualFunds,
-            icon: TrendingUp,
-            description: t.services.mutualFundsDesc,
-            forWhom: t.services.mutualFunds,
-            risk: t.services.riskProfile,
-        },
-        {
-            title: t.services.taxPlanning,
-            icon: Calculator,
-            description: t.services.taxPlanningDesc,
-            forWhom: t.services.taxPlanning,
-            risk: t.services.riskProfile,
-        },
-        {
-            title: t.services.insurance,
-            icon: ShieldCheck,
-            description: t.services.insuranceDesc,
-            forWhom: t.services.insurance,
-            risk: t.services.riskProfile,
-        },
-        {
-            title: t.services.retirement,
-            icon: Clock,
-            description: t.services.retirementDesc,
-            forWhom: t.services.retirement,
-            risk: t.services.riskProfile,
-        },
-        {
-            title: t.services.healthInsurance,
-            icon: Award,
-            description: t.services.healthInsuranceDesc,
-            forWhom: t.services.healthInsurance,
-            risk: t.services.riskProfile,
-        },
-        {
-            title: t.services.wealthManagement,
-            icon: Briefcase,
-            description: t.services.wealthManagementDesc,
-            forWhom: t.services.wealthManagement,
-            risk: t.services.riskProfile,
-        },
-    ];
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const { data } = await api.get('/categories');
+                // Filter categories that are active
+                setCategories(data.filter(c => c.is_active === 1 || c.is_active === true));
+            } catch (err) {
+                console.error('Failed to fetch categories:', err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchCategories();
+    }, []);
+
+    if (loading) {
+        return (
+            <div className="container mx-auto px-6 py-20 flex justify-center">
+                <div className="w-10 h-10 border-4 border-primary-theme border-t-transparent rounded-full animate-spin" />
+            </div>
+        );
+    }
+
+    if (categories.length === 0) return null;
 
     return (
-        <div className="container mx-auto px-6">
-            <div className="text-center mb-20">
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.6 }}
-                >
-                    <span className="text-blue-600 dark:text-blue-400 font-bold tracking-widest uppercase text-[10px] mb-4 inline-block">{t.services.title}</span>
-                    <h2 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white mb-6">{t.services.subtitle}</h2>
-                    <div className="w-16 h-1.5 bg-blue-600 dark:bg-blue-500 mx-auto rounded-full mb-8"></div>
-                    <p className="text-base text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
-                        Explore our comprehensive range of financial solutions tailored to your unique life goals.
-                    </p>
-                </motion.div>
-            </div>
+        <section id="services" className="py-14 md:py-24 bg-white dark:bg-slate-900 transition-colors duration-500 overflow-hidden relative">
+            <div className="container mx-auto px-6 relative z-10">
+                <SectionHeader
+                    title={t.services.title}
+                    description={t.services.subtitle}
+                />
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {servicesData.map((service, index) => (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {categories.slice(0, 5).map((category, index) => {
+                        const Icon = iconMap[category.icon] || Layout;
+                        return (
+                            <motion.div
+                                key={category.id}
+                                initial={{ opacity: 0, y: 30 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 0.5, delay: index * 0.1 }}
+                            >
+                                <Link to={`/services/${category.slug}`}>
+                                    <Card className="group h-full rounded-[2rem] border-slate-100 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm hover:shadow-2xl hover:shadow-primary-theme/5 transition-all duration-500 overflow-hidden cursor-pointer">
+                                        <CardContent className="p-5 md:p-8 flex flex-col h-full relative">
+                                            {/* Decorative Background Blob */}
+                                            <div
+                                                className="absolute -top-10 -right-10 w-32 h-32 blur-3xl opacity-0 group-hover:opacity-10 transition-opacity duration-700 bg-primary-theme/20"
+                                            />
+
+                                            <div className="flex justify-between items-start mb-6">
+                                                <div className="w-14 h-14 rounded-2xl bg-primary-theme/10 text-primary-theme flex items-center justify-center transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3">
+                                                    <Icon className="w-7 h-7" />
+                                                </div>
+                                                <div className="w-8 h-8 rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-400 group-hover:bg-primary-theme group-hover:text-white transition-colors duration-300">
+                                                    <ArrowRight className="w-4 h-4" />
+                                                </div>
+                                            </div>
+
+                                            <h3 className="text-xl font-black text-slate-900 dark:text-white mb-3 group-hover:text-primary-theme transition-colors font-heading">
+                                                {category.name}
+                                            </h3>
+
+                                            <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-6 flex-grow">
+                                                {category.description || `Explore our comprehensive range of ${category.name} tailored for you.`}
+                                            </p>
+
+                                            <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                                                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary-theme">
+                                                    View Services
+                                                </span>
+                                            </div>
+                                        </CardContent>
+                                    </Card>
+                                </Link>
+                            </motion.div>
+                        );
+                    })}
+
+                    {/* 6th Card: All Services */}
                     <motion.div
-                        key={index}
                         initial={{ opacity: 0, y: 30 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        transition={{ duration: 0.5, delay: index * 0.1 }}
-                        whileHover={{ y: -10 }}
-                        className="group relative bg-white dark:bg-slate-900 rounded-[2rem] md:rounded-[2.5rem] border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-2xl hover:shadow-blue-500/10 p-5 md:p-8 transition-all duration-300 overflow-hidden"
+                        transition={{ duration: 0.5, delay: 0.6 }}
                     >
-                        {/* Decorative background pulse */}
-                        <div className="absolute -top-24 -right-24 w-48 h-48 bg-blue-600/5 dark:bg-blue-400/5 rounded-full group-hover:scale-150 transition-transform duration-700" />
-
-                        <div className="relative z-10 text-left">
-                            <div className="w-16 h-16 mb-8 relative group-hover:scale-110 transition-transform duration-500">
-                                <div className="absolute inset-0 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl rotate-6 group-hover:rotate-12 transition-transform duration-500 opacity-20" />
-                                <div className="absolute inset-0 bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-2xl flex items-center justify-center shadow-sm">
-                                    <service.icon className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+                        <Link to="/services">
+                            <Card className="group h-full rounded-[2rem] border-dashed border-2 border-primary-theme/30 bg-primary-theme/5 hover:bg-primary-theme/10 transition-all duration-500 overflow-hidden cursor-pointer flex flex-col items-center justify-center p-6 md:p-8 text-center ring-1 ring-primary-theme/10 hover:ring-primary-theme/20 shadow-xl shadow-primary-theme/5">
+                                <div className="w-16 h-16 rounded-full bg-primary-theme text-white flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500 shadow-lg shadow-primary-theme/30">
+                                    <ArrowRight className="w-8 h-8" />
                                 </div>
-                            </div>
-
-                            <h3 className="text-xl font-black text-slate-900 dark:text-white mb-4 tracking-tight leading-tight">{service.title}</h3>
-                            <p className="text-slate-600 dark:text-slate-400 mb-8 leading-relaxed text-sm h-12 line-clamp-2">
-                                {service.description}
-                            </p>
-
-                            <div className="space-y-3 mb-8">
-                                <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-slate-400">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
-                                    {t.services.bestFor}: <span className="text-slate-900 dark:text-slate-200">{service.title}</span>
-                                </div>
-                            </div>
-
-                            <button
-                                onClick={() => document.getElementById('contact').scrollIntoView({ behavior: 'smooth' })}
-                                className="flex items-center gap-2 text-blue-600 dark:text-blue-400 font-black group-hover:gap-3 transition-all tracking-widest text-[10px] uppercase"
-                            >
-                                {t.services.learnMore} <ArrowRight className="w-4 h-4" />
-                            </button>
-                        </div>
+                                <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-3 font-heading uppercase tracking-tight">
+                                    {t.services.exploreAll}
+                                </h3>
+                                <p className="text-slate-600 dark:text-slate-400 text-sm font-bold uppercase tracking-widest opacity-80 group-hover:opacity-100 transition-opacity">
+                                    Browse all categories & plans
+                                </p>
+                            </Card>
+                        </Link>
                     </motion.div>
-                ))}
-            </div>
+                </div>
 
-            <div className="mt-16 text-center">
-                <Link to="/services">
-                    <Button
-                        size="lg"
-                        className="h-14 px-10 rounded-full bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700 text-blue-600 dark:text-blue-400 font-bold shadow-xl border border-slate-200 dark:border-slate-700 group transition-all duration-300"
-                    >
-                        {t.services.exploreAll}
-                        <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                    </Button>
-                </Link>
+                <div className="mt-16 text-center">
+                    <Link to="/services">
+                        <Button size="lg" className="relative h-14 px-10 rounded-full bg-gradient-to-br from-primary-theme via-primary-theme to-accent-theme text-white font-black shadow-xl shadow-primary-theme/20 hover:shadow-primary-theme/40 transition-all duration-500 overflow-hidden group/svc ring-2 ring-white/10">
+                            <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover/svc:animate-[shimmer_1.5s_infinite]" />
+                            <div className="absolute inset-0 bg-white opacity-0 group-hover/svc:opacity-10 transition-opacity duration-500" />
+                            <span className="relative z-10 flex items-center gap-2">
+                                {t.services.exploreAll}
+                                <ArrowRight className="w-5 h-5 group-hover/svc:translate-x-1 transition-transform" strokeWidth={3} />
+                            </span>
+                        </Button>
+                    </Link>
+                </div>
             </div>
-
-            {/* Disclaimer Strip */}
-            <div className="mt-12 md:mt-16 bg-slate-100 dark:bg-slate-900/50 p-4 md:p-6 rounded-lg text-center text-xs text-slate-500 dark:text-slate-400 transition-colors">
-                <p><strong>Disclaimer:</strong> {t.services.disclaimer}</p>
-            </div>
-        </div>
+        </section>
     );
 };
 
 export default Services;
+

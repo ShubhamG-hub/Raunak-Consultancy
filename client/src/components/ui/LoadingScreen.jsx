@@ -34,7 +34,7 @@ const LoadingScreen = () => {
                                 repeat: Infinity,
                                 ease: "easeInOut"
                             }}
-                            className="absolute inset-0 bg-blue-500/20 rounded-full blur-xl"
+                            className="absolute inset-0 bg-primary-theme/20 rounded-full blur-xl"
                         />
                         <img
                             src="/Logo.png"
@@ -51,7 +51,7 @@ const LoadingScreen = () => {
                     transition={{ delay: 0.2, duration: 0.6 }}
                     className="text-center"
                 >
-                    <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent mb-2">
+                    <h1 className="text-3xl font-bold bg-primary-theme bg-clip-text text-transparent mb-2">
                         Raunak Consultancy
                     </h1>
                 </motion.div>

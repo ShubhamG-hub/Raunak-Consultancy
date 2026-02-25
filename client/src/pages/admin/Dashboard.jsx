@@ -5,15 +5,12 @@ import {
     Users,
     MessageSquare,
     FileText,
-    TrendingUp,
-    ArrowUpRight,
-    ArrowDownRight,
     Activity,
     Calendar,
-    Search,
     X,
     Filter,
-    Clock
+    Clock,
+    TrendingUp
 } from 'lucide-react';
 import {
     AreaChart,
@@ -56,7 +53,7 @@ const useContainerSize = () => {
 };
 
 // Animated Counter Component
-const AnimatedCounter = ({ value, duration = 2 }) => {
+const AnimatedCounter = ({ value }) => {
     return (
         <motion.span
             initial={{ opacity: 0 }}
@@ -90,12 +87,24 @@ const Dashboard = () => {
     const [isCalendarOpen, setIsCalendarOpen] = useState(false);
     const navigate = useNavigate();
 
+    const filterByDate = useCallback((dateVal, sourceData = allLeads) => {
+        if (!dateVal) {
+            setRecentLeads(sourceData.slice(0, 5));
+            return;
+        }
+        const filtered = sourceData.filter(lead => {
+            const leadDate = new Date(lead.created_at).toISOString().split('T')[0];
+            return leadDate === dateVal;
+        });
+        setRecentLeads(filtered);
+    }, [allLeads]);
+
     const fetchDashboardData = useCallback(async () => {
         try {
             const [leadsRes, claimsRes, testRes, bookingsRes] = await Promise.all([
                 api.get('/leads').catch(() => ({ data: [] })),
                 api.get('/claims').catch(() => ({ data: [] })),
-                api.get('/testimonials/admin').catch(() => ({ data: [] })),
+                api.get('/testimonials').catch(() => ({ data: [] })),
                 api.get('/bookings').catch(() => ({ data: { data: [] } }))
             ]);
 
@@ -155,7 +164,7 @@ const Dashboard = () => {
             };
             leads.forEach(lead => {
                 const status = lead.status || 'New';
-                if (statusCounts.hasOwnProperty(status)) {
+                if (Object.prototype.hasOwnProperty.call(statusCounts, status)) {
                     statusCounts[status]++;
                 } else {
                     statusCounts['New']++;
@@ -176,24 +185,12 @@ const Dashboard = () => {
         } finally {
             setLoading(false);
         }
-    }, [selectedDate]);
-
-    const filterByDate = (dateVal, sourceData = allLeads) => {
-        if (!dateVal) {
-            setRecentLeads(sourceData.slice(0, 5));
-            return;
-        }
-        const filtered = sourceData.filter(lead => {
-            const leadDate = new Date(lead.created_at).toISOString().split('T')[0];
-            return leadDate === dateVal;
-        });
-        setRecentLeads(filtered);
-    };
+    }, [selectedDate, filterByDate]);
 
     const handleDateChange = (e) => {
         const val = e.target.value;
         setSelectedDate(val);
-        filterByDate(val);
+        filterByDate(val, allLeads);
         setIsCalendarOpen(false);
     };
 
@@ -264,10 +261,10 @@ const Dashboard = () => {
             {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
                 <motion.div variants={itemVariants} className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm p-4 md:p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-white/10 hover:shadow-md transition-shadow relative overflow-hidden group">
-                    <div className="absolute right-0 top-0 w-32 h-32 bg-blue-500/10 dark:bg-blue-500/20 rounded-full blur-3xl -mr-16 -mt-16 transition-all group-hover:bg-blue-500/20" />
+                    <div className="absolute right-0 top-0 w-32 h-32 bg-primary/10 dark:bg-primary/20 rounded-full blur-3xl -mr-16 -mt-16 transition-all group-hover:bg-primary/20" />
                     <div className="flex justify-between items-start mb-4">
-                        <div className="p-3 bg-blue-50 dark:bg-blue-500/10 rounded-xl">
-                            <Users className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                        <div className="p-3 bg-primary/10 rounded-xl">
+                            <Users className="w-6 h-6 text-primary" />
                         </div>
                     </div>
                     <div>
@@ -343,10 +340,10 @@ const Dashboard = () => {
                 </motion.div>
 
                 <motion.div variants={itemVariants} className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm p-4 md:p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-white/10 hover:shadow-md transition-shadow relative overflow-hidden group">
-                    <div className="absolute right-0 top-0 w-32 h-32 bg-indigo-500/10 dark:bg-indigo-500/20 rounded-full blur-3xl -mr-16 -mt-16 transition-all group-hover:bg-indigo-500/20" />
+                    <div className="absolute right-0 top-0 w-32 h-32 bg-accent/10 dark:bg-accent/20 rounded-full blur-3xl -mr-16 -mt-16 transition-all group-hover:bg-accent/20" />
                     <div className="flex justify-between items-start mb-4">
-                        <div className="p-3 bg-indigo-50 dark:bg-indigo-500/10 rounded-xl">
-                            <TrendingUp className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
+                        <div className="p-3 bg-accent/10 rounded-xl">
+                            <TrendingUp className="w-6 h-6 text-accent" />
                         </div>
                     </div>
                     <div>
@@ -376,8 +373,8 @@ const Dashboard = () => {
                             <AreaChart width={areaSize.width} height={areaSize.height} data={chartData}>
                                 <defs>
                                     <linearGradient id="colorLeads" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
-                                        <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+                                        <stop offset="5%" stopColor="rgb(var(--primary))" stopOpacity={0.3} />
+                                        <stop offset="95%" stopColor="rgb(var(--primary))" stopOpacity={0} />
                                     </linearGradient>
                                 </defs>
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="currentColor" className="text-slate-200 dark:text-slate-800" />
@@ -391,12 +388,12 @@ const Dashboard = () => {
                                         backgroundColor: document.documentElement.classList.contains('dark') ? '#1e293b' : '#fff',
                                         color: document.documentElement.classList.contains('dark') ? '#f8fafc' : '#0f172a'
                                     }}
-                                    cursor={{ stroke: '#3b82f6', strokeWidth: 2 }}
+                                    cursor={{ stroke: 'rgb(var(--primary))', strokeWidth: 2 }}
                                 />
                                 <Area
                                     type="monotone"
                                     dataKey="leads"
-                                    stroke="#3b82f6"
+                                    stroke="rgb(var(--primary))"
                                     strokeWidth={3}
                                     fillOpacity={1}
                                     fill="url(#colorLeads)"
@@ -459,9 +456,9 @@ const Dashboard = () => {
                 <div className="flex items-center justify-between mb-6">
                     <div>
                         <div className="flex items-center gap-2">
-                            <h3 className="text-lg font-bold text-slate-900 dark:text-white text-uppercase">Recent Activity</h3>
+                            <h3 className="text-lg font-bold text-slate-900 dark:text-white uppercase">Recent Activity</h3>
                             {selectedDate && (
-                                <span className="px-2 py-0.5 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 rounded-lg text-xs font-bold flex items-center gap-1">
+                                <span className="px-2 py-0.5 bg-primary/10 text-primary rounded-lg text-xs font-bold flex items-center gap-1">
                                     <Filter className="w-3 h-3" /> {new Date(selectedDate).toLocaleDateString()}
                                     <button onClick={resetDateFilter} className="hover:text-red-500"><X className="w-3 h-3" /></button>
                                 </span>
@@ -473,11 +470,11 @@ const Dashboard = () => {
                         variant="ghost"
                         size="icon"
                         onClick={() => setIsCalendarOpen(true)}
-                        className={`bg-slate-50 dark:bg-slate-800/50 hover:bg-blue-50 dark:hover:bg-blue-900/20 text-slate-400 hover:text-blue-600 transition-all cursor-pointer border-2 ${selectedDate ? 'border-blue-500' : 'border-transparent'} group relative`}
+                        className={`bg-slate-100 dark:bg-slate-800/50 hover:bg-primary/10 text-slate-400 hover:text-primary transition-all cursor-pointer border-2 ${selectedDate ? 'border-primary' : 'border-transparent'} group relative`}
                         title="Filter by Date"
                     >
-                        <Calendar className={`w-5 h-5 ${selectedDate ? 'text-blue-500' : 'group-hover:text-blue-500'} transition-colors`} />
-                        {selectedDate && <span className="absolute -top-1 -right-1 w-2 h-2 bg-blue-600 rounded-full" />}
+                        <Calendar className={`w-5 h-5 ${selectedDate ? 'text-primary' : 'group-hover:text-primary'} transition-colors`} />
+                        {selectedDate && <span className="absolute -top-1 -right-1 w-2 h-2 bg-primary rounded-full" />}
                     </Button>
                 </div>
 
@@ -488,9 +485,7 @@ const Dashboard = () => {
                         <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl py-12 text-center border-2 border-dashed border-slate-200 dark:border-white/5">
                             <Activity className="w-12 h-12 text-slate-300 dark:text-slate-700 mx-auto mb-3" />
                             <p className="text-slate-500 dark:text-slate-400 font-medium">No activity found{selectedDate ? ` for ${new Date(selectedDate).toLocaleDateString()}` : ''}</p>
-                            {selectedDate && (
-                                <Button variant="link" onClick={resetDateFilter} className="text-blue-600 mt-2">View all activity</Button>
-                            )}
+                            <Button variant="link" onClick={resetDateFilter} className="text-primary mt-2">View all activity</Button>
                         </div>
                     ) : (
                         recentLeads.map((lead, index) => (
@@ -500,20 +495,20 @@ const Dashboard = () => {
                                 animate={{ opacity: 1, x: 0 }}
                                 transition={{ delay: index * 0.1 }}
                                 onClick={() => navigate('/admin/leads')}
-                                className="flex items-center justify-between p-3 md:p-4 bg-slate-50 dark:bg-slate-800/50 hover:bg-blue-50/50 dark:hover:bg-blue-900/20 rounded-xl transition-colors group cursor-pointer border border-transparent hover:border-blue-200 dark:hover:border-blue-500/30"
+                                className="flex items-center justify-between p-3 md:p-4 bg-slate-50 dark:bg-slate-800/50 hover:bg-primary/10 rounded-xl transition-colors group cursor-pointer border border-transparent hover:border-primary/20"
                             >
                                 <div className="flex items-center gap-4">
-                                    <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full flex items-center justify-center font-bold">
+                                    <div className="w-10 h-10 bg-primary/10 text-primary rounded-full flex items-center justify-center font-bold">
                                         {lead.name.charAt(0)}
                                     </div>
                                     <div>
-                                        <h4 className="font-semibold text-slate-900 dark:text-white group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors uppercase">{lead.name}</h4>
+                                        <h4 className="font-semibold text-slate-900 dark:text-white group-hover:text-primary transition-colors uppercase">{lead.name}</h4>
                                         <p className="text-xs text-slate-500 dark:text-slate-400 capitalize">{lead.type || 'General Inquiry'} • {new Date(lead.created_at || Date.now()).toLocaleDateString()}</p>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-3">
-                                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${lead.status === 'New' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' :
-                                        lead.status === 'Contacted' ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400' : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300'
+                                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${lead.status === 'New' ? 'bg-primary/10 text-primary' :
+                                        lead.status === 'Contacted' ? 'bg-accent/10 text-accent' : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300'
                                         }`}>
                                         {lead.status || 'New'}
                                     </span>
@@ -537,7 +532,7 @@ const Dashboard = () => {
                             type="date"
                             value={selectedDate || ''}
                             onChange={handleDateChange}
-                            className="w-full p-4 bg-slate-50 dark:bg-slate-800/50 border-2 border-slate-100 dark:border-white/10 rounded-2xl focus:border-blue-500 focus:ring-0 transition-all outline-none text-slate-900 dark:text-white font-medium"
+                            className="w-full p-4 bg-slate-50 dark:bg-slate-800/50 border-2 border-slate-100 dark:border-white/10 rounded-2xl focus:border-primary focus:ring-0 transition-all outline-none text-slate-900 dark:text-white font-medium"
                         />
                     </div>
                     {selectedDate && (

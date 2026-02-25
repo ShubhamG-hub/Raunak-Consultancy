@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { useState } from 'react';
 import { useLanguage } from '@/context/useLanguage';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -12,25 +11,19 @@ const RetirementCalculator = () => {
     const [monthlyExpense, setMonthlyExpense] = useState(50000);
     const [inflation, setInflation] = useState(6);
 
-    const [corpusNeeded, setCorpusNeeded] = useState(0);
+    const yearsToRetirement = retirementAge - currentAge;
+    const lifeExpectancy = 85;
+    const yearsInRetirement = lifeExpectancy - retirementAge;
 
-    useEffect(() => {
-        const yearsToRetirement = retirementAge - currentAge;
-        const lifeExpectancy = 85;
-        const yearsInRetirement = lifeExpectancy - retirementAge;
+    // Future value of monthly expense at retirement
+    const futureMonthlyExpense = monthlyExpense * Math.pow(1 + (inflation / 100), yearsToRetirement);
 
-        // Future value of monthly expense at retirement
-        const futureMonthlyExpense = monthlyExpense * Math.pow(1 + (inflation / 100), yearsToRetirement);
+    // Simplified retirement corpus calculation (assuming 8% return post-retirement, 6% inflation, i.e., 2% real return)
+    const realReturn = 0.02;
+    const r = realReturn / 12;
+    const n = yearsInRetirement * 12;
 
-        // Simplified retirement corpus calculation (assuming 8% return post-retirement, 6% inflation, i.e., 2% real return)
-        const realReturn = 0.02;
-        const r = realReturn / 12;
-        const n = yearsInRetirement * 12;
-
-        const corpus = futureMonthlyExpense * ((1 - Math.pow(1 + r, -n)) / r);
-
-        setCorpusNeeded(Math.round(corpus));
-    }, [currentAge, retirementAge, monthlyExpense, inflation]);
+    const corpusNeeded = Math.round(futureMonthlyExpense * ((1 - Math.pow(1 + r, -n)) / r));
 
     const formatCurrency = (val) => {
         return new Intl.NumberFormat('en-IN', {
@@ -41,7 +34,7 @@ const RetirementCalculator = () => {
     };
 
     return (
-        <div className="bg-white dark:bg-slate-800 p-8 rounded-[2rem] border border-slate-100 dark:border-slate-700 shadow-xl">
+        <div className="bg-white dark:bg-slate-800 p-5 md:p-8 rounded-[2rem] border border-slate-100 dark:border-slate-700 shadow-xl">
             <div className="flex items-center gap-4 mb-8">
                 <div className="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/30 rounded-2xl flex items-center justify-center">
                     <Sunset className="text-indigo-600 w-6 h-6" />
@@ -52,7 +45,7 @@ const RetirementCalculator = () => {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
                 <div className="space-y-8">
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
@@ -78,7 +71,15 @@ const RetirementCalculator = () => {
                     <div className="space-y-4">
                         <div className="flex justify-between items-center">
                             <Label className="text-sm font-bold text-slate-700 dark:text-slate-300">{t.calculators.retirement.monthlyExpense}</Label>
-                            <span className="text-indigo-600 font-black">{formatCurrency(monthlyExpense)}</span>
+                            <div className="relative w-36">
+                                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold">₹</span>
+                                <Input
+                                    type="number"
+                                    value={monthlyExpense}
+                                    onChange={(e) => setMonthlyExpense(Number(e.target.value))}
+                                    className="pl-7 h-9 rounded-lg border-slate-200 focus:ring-indigo-600 font-black text-indigo-600"
+                                />
+                            </div>
                         </div>
                         <input
                             type="range" min="10000" max="500000" step="5000"
@@ -91,7 +92,15 @@ const RetirementCalculator = () => {
                     <div className="space-y-4">
                         <div className="flex justify-between items-center">
                             <Label className="text-sm font-bold text-slate-700 dark:text-slate-300">{t.calculators.retirement.inflation}</Label>
-                            <span className="text-indigo-600 font-black">{inflation}%</span>
+                            <div className="relative w-24">
+                                <Input
+                                    type="number"
+                                    value={inflation}
+                                    onChange={(e) => setInflation(Number(e.target.value))}
+                                    className="pr-8 h-9 rounded-lg border-slate-200 focus:ring-indigo-600 font-black text-indigo-600"
+                                />
+                                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold">%</span>
+                            </div>
                         </div>
                         <input
                             type="range" min="1" max="15" step="0.5"
@@ -102,7 +111,7 @@ const RetirementCalculator = () => {
                     </div>
                 </div>
 
-                <div className="bg-gradient-to-br from-indigo-600 to-blue-700 p-8 rounded-[1.5rem] text-white flex flex-col justify-center items-center text-center">
+                <div className="bg-gradient-to-br from-indigo-600 to-blue-700 p-6 md:p-8 rounded-[1.5rem] text-white flex flex-col justify-center items-center text-center">
                     <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6">
                         <Wallet className="w-8 h-8" />
                     </div>

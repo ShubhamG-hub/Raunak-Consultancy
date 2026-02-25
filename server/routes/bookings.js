@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const jwt = require('jsonwebtoken');
-const supabase = require('../config/supabase');
+
+const db = require('../config/db');
+const { v4: uuidv4 } = require('uuid');
 const authMiddleware = require('../middleware/authMiddleware');
 const Joi = require('joi');
 
@@ -17,7 +18,7 @@ const bookingSchema = Joi.object({
     message: Joi.string().optional().allow('')
 });
 
-const { sendWhatsApp } = require('../config/sms');
+const notificationService = require('../services/notificationService');
 
 // GET /api/bookings/booked-slots (Public) - Get booked slots for a date
 router.get('/booked-slots', async (req, res) => {
@@ -25,14 +26,12 @@ router.get('/booked-slots', async (req, res) => {
     if (!date) return res.status(400).json({ error: 'Date is required' });
 
     try {
-        const { data, error } = await supabase
-            .from('bookings')
-            .select('time')
-            .eq('date', date)
-            .neq('status', 'Cancelled');
+        const [rows] = await db.query(
+            'SELECT time FROM bookings WHERE date = ? AND status != "Cancelled"',
+            [date]
+        );
 
-        if (error) throw error;
-        const bookedSlots = data.map(b => b.time);
+        const bookedSlots = rows.map(b => b.time);
         res.json(bookedSlots);
     } catch (err) {
         console.error('Fetch Booked Slots Error:', err);
@@ -49,32 +48,35 @@ router.post('/', async (req, res) => {
 
     try {
         // Check if slot already booked
-        const { data: existing, error: checkError } = await supabase
-            .from('bookings')
-            .select('id')
-            .eq('date', value.date)
-            .eq('time', value.time)
-            .neq('status', 'Cancelled');
+        const [existing] = await db.query(
+            'SELECT id FROM bookings WHERE date = ? AND time = ? AND status != "Cancelled"',
+            [value.date, value.time]
+        );
 
-        if (checkError) throw checkError;
 
         if (existing && existing.length > 0) {
             return res.status(409).json({ error: 'This time slot is already booked. Please choose another one.' });
         }
 
-        const { data, error: dbError } = await supabase
-            .from('bookings')
-            .insert([{ ...value, status: 'Pending' }])
-            .select();
+        const bookingId = uuidv4();
+        await db.query(
+            'INSERT INTO bookings (id, name, phone, email, date, time, service_type, meeting_mode, message, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            [bookingId, value.name, value.phone, value.email || null, value.date, value.time, value.service_type, value.meeting_mode, value.message || null, req.body.status || 'Pending']
+        );
 
-        if (dbError) throw dbError;
+        const booking = {
+            id: bookingId,
+            ...value,
+            status: req.body.status || 'Pending',
+            created_at: new Date()
+        };
 
-        const booking = data[0];
-
-        // Send WhatsApp notification (non-blocking)
-        const modeText = booking.meeting_mode === 'Online' ? '🖥️ Online (Zoom)' : '🏢 In-Person';
-        const msg = `📩 *Booking Received*\n\nHello ${booking.name},\nWe've received your request for a *${booking.service_type}* consultation.\n\n📅 *Date:* ${booking.date}\n🕒 *Time:* ${booking.time}\n📍 *Mode:* ${modeText}\n\nOur team will review it and notify you once it's confirmed. Thank you!`;
-        sendWhatsApp(booking.phone, msg).catch(e => console.warn('WhatsApp error:', e.message));
+        // Send Email notifications (Admin & User)
+        try {
+            await notificationService.sendFormSubmissionEmails(booking, 'Meeting Booking Form');
+        } catch (mailErr) {
+            console.error('[MAILER ERROR] Booking notification failed:', mailErr.message);
+        }
 
         res.status(201).json({ message: 'Booking created successfully', booking });
     } catch (err) {
@@ -89,32 +91,38 @@ router.get('/', authMiddleware, async (req, res) => {
         const { status, search, date, page = 1, limit = 10 } = req.query;
         const pageNum = Math.max(1, parseInt(page));
         const limitNum = Math.min(100, Math.max(1, parseInt(limit)));
-        const from = (pageNum - 1) * limitNum;
-        const to = from + limitNum - 1;
+        const offset = (pageNum - 1) * limitNum;
 
-        let query = supabase
-            .from('bookings')
-            .select('*', { count: 'exact' });
+        let sql = 'SELECT * FROM bookings WHERE 1=1';
+        let countSql = 'SELECT COUNT(*) as count FROM bookings WHERE 1=1';
+        const params = [];
 
         if (status && status !== 'All') {
-            query = query.eq('status', status);
+            sql += ' AND status = ?';
+            countSql += ' AND status = ?';
+            params.push(status);
         }
 
         if (date) {
-            query = query.eq('date', date);
+            sql += ' AND date = ?';
+            countSql += ' AND date = ?';
+            params.push(date);
         }
 
         if (search) {
-            query = query.or(`name.ilike.%${search}%,phone.ilike.%${search}%,email.ilike.%${search}%`);
+            sql += ' AND (name LIKE ? OR phone LIKE ? OR email LIKE ?)';
+            countSql += ' AND (name LIKE ? OR phone LIKE ? OR email LIKE ?)';
+            const searchPattern = `%${search}%`;
+            params.push(searchPattern, searchPattern, searchPattern);
         }
 
-        const { data, error, count } = await query
-            .order('created_at', { ascending: false })
-            .range(from, to);
+        const [countResult] = await db.query(countSql, params);
+        const totalCount = countResult[0].count;
 
-        if (error) throw error;
+        sql += ' ORDER BY created_at DESC LIMIT ? OFFSET ?';
+        const [rows] = await db.query(sql, [...params, limitNum, offset]);
 
-        res.json({ data, count, page: pageNum, limit: limitNum, totalPages: Math.ceil(count / limitNum) });
+        res.json({ data: rows, count: totalCount, page: pageNum, limit: limitNum, totalPages: Math.ceil(totalCount / limitNum) });
     } catch (err) {
         console.error('Fetch Bookings Error:', err);
         res.status(500).json({ error: 'Failed to fetch bookings' });
@@ -131,40 +139,43 @@ router.patch('/:id', authMiddleware, async (req, res) => {
     }
 
     try {
-        const { data, error } = await supabase
-            .from('bookings')
-            .update({ status })
-            .eq('id', req.params.id)
-            .select();
+        await db.query(
+            'UPDATE bookings SET status = ? WHERE id = ?',
+            [status, req.params.id]
+        );
 
-        if (error) throw error;
-        if (!data || data.length === 0) return res.status(404).json({ error: 'Booking not found' });
+        const [rows] = await db.query('SELECT * FROM bookings WHERE id = ?', [req.params.id]);
+        if (rows.length === 0) return res.status(404).json({ error: 'Booking not found' });
 
-        const booking = data[0];
+        const booking = rows[0];
 
-        // Trigger WhatsApp notification
-        let msg = '';
-        const modeText = (booking.meeting_mode && booking.meeting_mode === 'Online') ? '🖥️ Online (Zoom)' : '🏢 In-Person';
-        if (status === 'Pending') {
-            msg = `⏳ *Booking on Hold*\n\nHello ${booking.name},\nYour *${booking.service_type}* consultation is currently under review.\n\n📅 *Date:* ${booking.date}\n🕒 *Time:* ${booking.time}\n📍 *Mode:* ${modeText}\n\nWe will notify you once it's confirmed.`;
-        } else if (status === 'Confirmed') {
-            let zoomNote = '';
-            if (booking.meeting_mode === 'Online') {
-                const token = jwt.sign({ bookingId: booking.id }, process.env.JWT_SECRET || 'fallback_secret', { expiresIn: '7d' });
-                const baseUrl = process.env.CLIENT_URL || 'http://localhost:5173';
-                const meetingUrl = `${baseUrl}/virtual-office?booking=${booking.id}&token=${token}`;
-                zoomNote = `\n\n🎥 *Join Link:* ${meetingUrl}\n_(Please save this link to join at the scheduled time)_`;
-            }
-            msg = `✅ *Booking Confirmed*\n\nHello ${booking.name},\nWe are pleased to confirm your *${booking.service_type}* consultation.\n\n📅 *Date:* ${booking.date}\n🕒 *Time:* ${booking.time}\n📍 *Mode:* ${modeText}${zoomNote}\n\nThank you for choosing Raunak Consultancy!`;
-        } else if (status === 'Cancelled') {
-            msg = `❌ *Booking Cancelled*\n\nHello ${booking.name},\nYour consultation on ${booking.date} at ${booking.time} has been cancelled.\n\nPlease contact us if you wish to reschedule.`;
-        } else if (status === 'Completed') {
-            msg = `🏁 *Consultation Completed*\n\nHello ${booking.name},\nThank you for attending your *${booking.service_type}* session today. We hope it was helpful!\n\nFeel free to reach out for further assistance.`;
+        // Trigger Email notification
+        if (status !== 'Pending') {
+            notificationService.sendBookingStatusUpdateEmail(booking, status, null).catch(e => console.warn('Email notification error:', e.message));
         }
 
-        if (msg) sendWhatsApp(booking.phone, msg).catch(e => console.warn('WhatsApp error:', e.message));
-
         res.json(booking);
+    } catch (err) {
+        console.error('Update Booking Error:', err);
+        res.status(500).json({ error: 'Failed to update booking' });
+    }
+});
+
+// PUT /api/bookings/:id (Admin Only) - Full update
+router.put('/:id', authMiddleware, async (req, res) => {
+    const { error, value } = bookingSchema.validate(req.body);
+    if (error) return res.status(400).json({ error: error.details[0].message });
+
+    try {
+        const [result] = await db.query(
+            'UPDATE bookings SET name = ?, phone = ?, email = ?, date = ?, time = ?, service_type = ?, meeting_mode = ?, message = ?, status = ? WHERE id = ?',
+            [value.name, value.phone, value.email || null, value.date, value.time, value.service_type, value.meeting_mode, value.message || null, req.body.status || 'Pending', req.params.id]
+        );
+
+        if (result.affectedRows === 0) return res.status(404).json({ error: 'Booking not found' });
+
+        const [rows] = await db.query('SELECT * FROM bookings WHERE id = ?', [req.params.id]);
+        res.json(rows[0]);
     } catch (err) {
         console.error('Update Booking Error:', err);
         res.status(500).json({ error: 'Failed to update booking' });
@@ -174,12 +185,8 @@ router.patch('/:id', authMiddleware, async (req, res) => {
 // DELETE /api/bookings/:id (Admin Only) - Delete booking
 router.delete('/:id', authMiddleware, async (req, res) => {
     try {
-        const { error } = await supabase
-            .from('bookings')
-            .delete()
-            .eq('id', req.params.id);
-
-        if (error) throw error;
+        const [result] = await db.query('DELETE FROM bookings WHERE id = ?', [req.params.id]);
+        if (result.affectedRows === 0) return res.status(404).json({ error: 'Booking not found' });
 
         res.json({ message: 'Booking deleted successfully' });
     } catch (err) {

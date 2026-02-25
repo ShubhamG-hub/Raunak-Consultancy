@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Search, Send, User, Bot, MessageCircle, Clock, ChevronRight, ArrowLeft } from 'lucide-react';
+import { Search, Send, User, Bot, MessageCircle, Clock, ArrowLeft } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -51,9 +51,8 @@ const ChatManager = () => {
     const fetchMessages = async (sessionId) => {
         try {
             const response = await api.get(`/chat/messages/${sessionId}`);
-            if (response.data.length !== messages.length) {
-                setMessages(response.data);
-            }
+            // Always update — comparing lengths misses edits/deletions with same count
+            setMessages(response.data);
         } catch (error) {
             console.error('Failed to fetch messages:', error);
         }

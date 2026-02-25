@@ -20,6 +20,9 @@ const testimonialSchema = z.object({
     name: z.string()
         .min(2, "Name is required")
         .regex(/^[a-zA-Z\s]+$/, "Name must contain only letters"),
+    email: z.string()
+        .email("Enter a valid email address")
+        .min(5, "Email is required"),
     content: z.string()
         .min(10, "Review must be at least 10 characters"),
 });
@@ -52,12 +55,12 @@ const TestimonialForm = ({ onSuccess }) => {
     };
 
     return (
-        <Card className="w-full max-w-lg mx-auto border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-[2rem] shadow-xl shadow-blue-500/5 overflow-hidden transition-colors">
-            <CardHeader className="p-8 pb-0">
+        <Card className="w-full max-w-lg mx-auto border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 rounded-[2rem] shadow-xl shadow-primary-theme/5 overflow-hidden transition-colors">
+            <CardHeader className="p-5 md:p-8 pb-0">
                 <CardTitle className="text-xl text-center font-black text-slate-900 dark:text-white">{t.testimonials.formTitle}</CardTitle>
                 <p className="text-sm text-slate-500 dark:text-slate-400 text-center mt-1 font-medium">Your feedback helps us serve you better</p>
             </CardHeader>
-            <CardContent className="p-8">
+            <CardContent className="p-5 md:p-8">
                 <AnimatePresence mode="wait">
                     {submitStatus === 'success' ? (
                         <motion.div
@@ -77,20 +80,33 @@ const TestimonialForm = ({ onSuccess }) => {
                             onSubmit={handleSubmit(onSubmit)}
                             className="space-y-5"
                         >
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 ml-1">Your Name</label>
-                                <Input
-                                    placeholder={t.testimonials.name}
-                                    {...register('name', { required: true })}
-                                    onInput={allowOnlyLetters}
-                                    className={`h-12 rounded-2xl bg-slate-50 dark:bg-slate-900 border-transparent dark:border-slate-800 focus:bg-white dark:focus:bg-slate-900 focus:ring-4 focus:ring-blue-500/10 transition-all px-6 text-base dark:text-white ${errors.name ? 'ring-2 ring-red-500/30 border-red-200' : ''}`}
-                                />
-                                {errors.name && <p className="text-red-500 text-[10px] font-bold mt-1 ml-1">{errors.name.message}</p>}
+                            <div className="space-y-4">
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 ml-1">Your Name</label>
+                                    <Input
+                                        placeholder={t.testimonials.name}
+                                        {...register('name', { required: true })}
+                                        onInput={allowOnlyLetters}
+                                        className={`h-12 rounded-2xl bg-slate-50 dark:bg-slate-900 border-transparent dark:border-slate-800 focus:bg-white dark:focus:bg-slate-900 focus:ring-4 focus:ring-primary-theme/10 transition-all px-6 text-base dark:text-white ${errors.name ? 'ring-2 ring-red-500/30 border-red-200' : ''}`}
+                                    />
+                                    {errors.name && <p className="text-red-500 text-[10px] font-bold mt-1 ml-1">{errors.name.message}</p>}
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 ml-1">Your Email</label>
+                                    <Input
+                                        type="email"
+                                        placeholder="yourname@gmail.com"
+                                        {...register('email', { required: true })}
+                                        className={`h-12 rounded-2xl bg-slate-50 dark:bg-slate-900 border-transparent dark:border-slate-800 focus:bg-white dark:focus:bg-slate-900 focus:ring-4 focus:ring-primary-theme/10 transition-all px-6 text-base dark:text-white ${errors.email ? 'ring-2 ring-red-500/30 border-red-200' : ''}`}
+                                    />
+                                    {errors.email && <p className="text-red-500 text-[10px] font-bold mt-1 ml-1">{errors.email.message}</p>}
+                                </div>
                             </div>
 
                             <div className="space-y-2">
                                 <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 ml-1">{t.testimonials.rating}</label>
-                                <div className="flex gap-1 justify-center py-2">
+                                <div className="flex gap-2 justify-center py-2">
                                     {[1, 2, 3, 4, 5].map((star) => (
                                         <button
                                             key={star}
@@ -99,7 +115,7 @@ const TestimonialForm = ({ onSuccess }) => {
                                             className="focus:outline-none transition-transform hover:scale-125 active:scale-95"
                                         >
                                             <Star
-                                                className={`w-8 h-8 transition-colors ${star <= rating ? 'fill-yellow-400 text-yellow-400' : 'text-slate-200 dark:text-slate-700'}`}
+                                                className={`w-10 h-10 transition-colors ${star <= rating ? 'fill-yellow-400 text-yellow-400' : 'text-slate-200 dark:text-slate-700'}`}
                                             />
                                         </button>
                                     ))}
@@ -111,7 +127,7 @@ const TestimonialForm = ({ onSuccess }) => {
                                 <Textarea
                                     placeholder={t.testimonials.review}
                                     {...register('content', { required: true })}
-                                    className={`rounded-2xl bg-slate-50 dark:bg-slate-900 border-transparent dark:border-slate-800 focus:bg-white dark:focus:bg-slate-900 focus:ring-4 focus:ring-blue-500/10 transition-all px-6 py-4 text-base min-h-[120px] resize-none dark:text-white ${errors.content ? 'ring-2 ring-red-500/30 border-red-200' : ''}`}
+                                    className={`rounded-2xl bg-slate-50 dark:bg-slate-900 border-transparent dark:border-slate-800 focus:bg-white dark:focus:bg-slate-900 focus:ring-4 focus:ring-primary-theme/10 transition-all px-6 py-4 text-base min-h-[120px] resize-none dark:text-white ${errors.content ? 'ring-2 ring-red-500/30 border-red-200' : ''}`}
                                 />
                                 {errors.content && <p className="text-red-500 text-[10px] font-bold mt-1 ml-1">{errors.content.message}</p>}
                             </div>
@@ -128,7 +144,7 @@ const TestimonialForm = ({ onSuccess }) => {
 
                             <Button
                                 type="submit"
-                                className="w-full h-12 rounded-2xl bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 font-bold shadow-lg shadow-blue-500/20 transition-all active:scale-[0.98]"
+                                className="w-full h-12 rounded-2xl bg-primary-theme hover:opacity-90 font-bold shadow-lg shadow-primary-theme/20 transition-all active:scale-[0.98]"
                                 disabled={isSubmitting}
                             >
                                 {isSubmitting ? t.testimonials.submitting : t.testimonials.submit}
@@ -137,7 +153,7 @@ const TestimonialForm = ({ onSuccess }) => {
                     )}
                 </AnimatePresence>
             </CardContent>
-        </Card>
+        </Card >
     );
 };
 

@@ -3,7 +3,6 @@ export const translations = {
         nav: {
             home: "Home",
             about: "About",
-            services: "Services",
             claims: "Claims",
             contact: "Contact",
             bookConsultation: "Book Consultation",
@@ -15,14 +14,21 @@ export const translations = {
             testimonials: "Testimonials",
             blogs: "Blogs",
             awards: "Awards",
+            services: "Services",
             aboutOverview: "Overview"
         },
         hero: {
             title: "Secure Your Future with ",
             titleHighlight: "Expert Financial Planning",
-            subtitle: "Trusted by 30,000+ families. We help you grow wealth, save tax, and protect your loved ones with personalized advisory.",
-            ctaPrimary: "Book Free Consultation",
-            ctaSecondary: "Explore Services"
+            typingWords: [
+                "Expert Financial Planning",
+                "Smart Investment Strategies",
+                "Complete Wealth Management",
+                "Scientific Financial Planning",
+                "Long-Term Wealth Creation"
+            ],
+            subtitle: "Trusted by 30,000+ families. We help you grow wealth, save taxes, and protect your loved ones.",
+            ctaPrimary: "Book Free Consultation"
         },
         stats: {
             families: "Families Served",
@@ -30,7 +36,7 @@ export const translations = {
             assets: "Assets Managed",
             assetsVal: "₹2500 Cr+",
             experience: "Experience",
-            experienceVal: "25+ Years",
+            experienceVal: "18+ Years",
             team: "Jeevan Gaurav Team",
             teamVal: "Top Rated"
         },
@@ -39,9 +45,9 @@ export const translations = {
             name: "Sudhir Mewalal Gupta",
             role: "Financial Growth & Claims Expert",
             intro: "Helping families achieve financial freedom since 2008.",
-            description: "With over 25 years of experience in the financial sector, I have helped thousands of families secure their future through strategic investment planning and comprehensive insurance coverage. My mission is to simplify finance for the common man.",
+            description: "With over 18 years of experience in the financial sector, I have helped thousands of families secure their future through strategic investment planning and comprehensive insurance coverage. My mission is to simplify finance for the common man.",
             missionTitle: "My Mission",
-            mission: "To empower 100,000 families with financial security and wealth creation strategies by 2030.",
+            mission: "To empower 50,000 families with financial security and wealth creation strategies by 2035.",
             valuesTitle: "Core Values",
             values: ["Integrity", "Transparency", "Client First", "Long-term Vision"],
             certified: "Certified & Compliant",
@@ -53,32 +59,11 @@ export const translations = {
             associatedWith: "I am proud to be associated with the",
             readMore: "Read More About My Journey"
         },
-        services: {
-            title: "Our Expertise",
-            subtitle: "Comprehensive financial solutions tailored to your life goals.",
-            mutualFunds: "Mutual Funds & SIP",
-            mutualFundsDesc: "Wealth creation through disciplined investing in top-rated funds.",
-            taxPlanning: "Tax Planning",
-            taxPlanningDesc: "Save tax legally under Section 80C and other provisions while growing wealth.",
-            insurance: "Insurance Planning",
-            insuranceDesc: "Life & Health coverage for total protection of your family.",
-            retirement: "Retirement Planning",
-            retirementDesc: "Secure reliable income for your golden years with pension plans.",
-            healthInsurance: "Health Insurance",
-            healthInsuranceDesc: "Comprehensive coverage for medical emergencies and hospitalization.",
-            wealthManagement: "Wealth Management",
-            wealthManagementDesc: "Holistic portfolio management for High Net Worth Individuals.",
-            bestFor: "Best For",
-            riskProfile: "Risk Profile",
-            learnMore: "Learn more",
-            startPlanning: "Start Planning",
-            goalPlanner: "Goal Planner",
-            exploreAll: "Explore All Services",
-            disclaimer: "Mutual Fund investments are subject to market risks, read all scheme related documents carefully. Past performance is not an indicator of future returns."
-        },
         calculators: {
             title: "Financial Planning Tools",
             subtitle: "Calculate your goals and plan your future with our interactive tools.",
+            startPlanning: "Start Planning",
+            disclaimer: "Mutual Fund investments are subject to market risks, read all scheme related documents carefully. Past performance is not indicative of future returns.",
             sip: {
                 title: "SIP Calculator",
                 description: "Calculate how much wealth you can create through Systematic Investment Plans.",
@@ -287,6 +272,12 @@ export const translations = {
                 health: "Health Insurance",
                 retirement: "Retirement Planning",
                 wealth: "Wealth Management",
+                businessPlanning: "Business Planning",
+                completeFinancialPlanning: "Complete Financial Planning",
+                scientificFinancialPlanning: "Scientific Financial Planning",
+                adequatePlanning: "Adequate Planning",
+                childEducation: "Child Education Planning",
+                businessInsurance: "Business Insurance",
                 other: "Other Query"
             }
         },
@@ -331,6 +322,15 @@ export const translations = {
             title: "Honors & Achievements",
             subtitle: "Recognized for excellence in financial advisory and client service.",
             year: "Year"
+        },
+        services: {
+            title: "Expert Financial Services",
+            subtitle: "Comprehensive solutions tailored to your unique financial goals and life stages.",
+            exploreAll: "Explore All Services",
+            viewDetails: "View Details",
+            searchServices: "Search services...",
+            allCategories: "All Categories",
+            noServicesFound: "No services found matching your search."
         },
         chatbot: {
             welcome: "Hello! I am Raunak AI Chatbot. How can I help you today?",
@@ -402,8 +402,13 @@ export const translations = {
                 nextProvisions: "Next: Provisions",
                 seeResults: "See Results",
                 restart: "Restart Analysis",
-                greetingTooltip: "AI Chatbot is here to help!",
+                greetingTooltip: "Raunak AI",
                 alwaysActive: "Always Active"
+            },
+            floatingActions: {
+                whatsapp: "WhatsApp Us",
+                call: "Call Us",
+                email: "Email Us"
             }
         }
     },
@@ -411,7 +416,6 @@ export const translations = {
         nav: {
             home: "होम",
             about: "परिचय",
-            services: "सेवाएं",
             claims: "क्लेम मदद",
             contact: "संपर्क",
             bookConsultation: "परामर्श बुक करें",
@@ -423,14 +427,21 @@ export const translations = {
             testimonials: "प्रशंसापत्र",
             blogs: "ब्लॉग",
             awards: "पुरस्कार",
+            services: "सेवाएं",
             aboutOverview: "अवलोकन"
         },
         hero: {
             title: "विशेषज्ञ वित्तीय योजना के साथ ",
             titleHighlight: "अपना भविष्य सुरक्षित करें",
+            typingWords: [
+                "विशेषज्ञ वित्तीय योजना",
+                "स्मार्ट निवेश रणनीतियाँ",
+                "पूर्ण धन प्रबंधन",
+                "वैज्ञानिक वित्तीय योजना",
+                "दीर्घकालिक धन सृजन"
+            ],
             subtitle: "३०,०००+ परिवारों का भरोसा। हम आपको धन बढ़ाने, टैक्स बचाने और अपने प्रियजनों की सुरक्षा करने में मदद करते हैं।",
-            ctaPrimary: "मुफ्त परामर्श बुक करें",
-            ctaSecondary: "सेवाएं देखें"
+            ctaPrimary: "मुफ्त परामर्श बुक करें"
         },
         stats: {
             families: "परिवारों की सेवा",
@@ -449,7 +460,7 @@ export const translations = {
             intro: "२००८ से परिवारों को आर्थिक स्वतंत्रता प्राप्त करने में मदद कर रहे हैं।",
             description: "वित्तीय क्षेत्र में २५ से अधिक वर्षों के अनुभव के साथ, मैंने हजारों परिवारों को रणनीतिक निवेश योजना और व्यापक बीमा कवरेज के माध्यम से अपना भविष्य सुरक्षित करने में मदद की है। मेरा मिशन आम आदमी के लिए वित्त को सरल बनाना है।",
             missionTitle: "मेेरा मिशन",
-            mission: "२०३० तक १,००,००० परिवारों को वित्तीय सुरक्षा और धन निर्माण रणनीतियों के साथ सशक्त बनाना।",
+            mission: "२०३५ तक ५०,००० परिवारों को वित्तीय सुरक्षा और धन निर्माण रणनीतियों के साथ सशक्त बनाना।",
             valuesTitle: "मूल्य",
             values: ["ईमानदारी", "पारदर्शिता", "ग्राहक पहले", "दीर्घकालिक दृष्टि"],
             certified: "प्रमाणित और अनुपालन",
@@ -461,32 +472,11 @@ export const translations = {
             associatedWith: "मुझे गर्व है कि मैं इस टीम के साथ जुड़ा हूँ: ",
             readMore: "मेरी यात्रा के बारे में और पढ़ें"
         },
-        services: {
-            title: "हमारी विशेषज्ञता",
-            subtitle: "आपके जीवन के लक्ष्यों के अनुकूल व्यापक वित्तीय समाधान।",
-            mutualFunds: "म्यूचुअल फंड और एसआईपी",
-            mutualFundsDesc: "म्यूचुअल फंड में अनुशासित निवेश के माध्यम से धन सृजन।",
-            taxPlanning: "टैक्स प्लानिंग",
-            taxPlanningDesc: "धन बढ़ाते समय धारा ८०सी और अन्य प्रावधानों के तहत कानूनी रूप से टैक्स बचाएं।",
-            insurance: "बीमा योजना",
-            insuranceDesc: "आपके परिवार की पूर्ण सुरक्षा के लिए जीवन और स्वास्थ्य कवरेज।",
-            retirement: "सेवानिवृत्ति योजना",
-            retirementDesc: "पेंशन योजनाओं के साथ अपने सुनहरे वर्षों के लिए आय सुरक्षित करें।",
-            healthInsurance: "स्वास्थ्य बीमा",
-            healthInsuranceDesc: "चिकित्सा आपात स्थिति और अस्पताल में भर्ती होने के लिए व्यापक कवरेज।",
-            wealthManagement: "धन प्रबंधन",
-            wealthManagementDesc: "उच्च नेटवर्थ व्यक्तियों के लिए समग्र पोर्टफोलियो प्रबंधन।",
-            bestFor: "इनके लिए सर्वश्रेष्ठ",
-            riskProfile: "जोखिम प्रोफ़ाइल",
-            learnMore: "और जानें",
-            startPlanning: "योजना शुरू करें",
-            goalPlanner: "लक्ष्य योजनाकार",
-            exploreAll: "सभी सेवाएं देखें",
-            disclaimer: "म्यूचुअल फंड निवेश बाजार के जोखिमों के अधीन हैं, सभी योजना संबंधी दस्तावेजों को ध्यान से पढ़ें। पिछला प्रदर्शन भविष्य के रिटर्न का संकेतक नहीं है।"
-        },
         calculators: {
             title: "वित्तीय योजना उपकरण",
             subtitle: "हमारे इंटरैक्टिव उपकरणों के साथ अपने लक्ष्यों की गणना करें और अपने भविष्य की योजना बनाएं।",
+            startPlanning: "योजना शुरू करें",
+            disclaimer: "म्यूचुअल फंड निवेश बाजार के जोखिमों के अधीन हैं, सभी योजना संबंधित दस्तावेजों को ध्यान से पढ़ें। पिछला प्रदर्शन भविष्य के रिटर्न का संकेतक नहीं है।",
             sip: {
                 title: "एसआईपी कैलकुलेटर",
                 description: "गणना करें कि आप सिस्टेमैटिक इन्वेस्टमेंट प्लान के माध्यम से कितना धन बना सकते हैं।",
@@ -695,6 +685,12 @@ export const translations = {
                 health: "स्वास्थ्य बीमा",
                 retirement: "सेवानिवृत्ति योजना",
                 wealth: "धन प्रबंधन",
+                businessPlanning: "व्यवसाय नियोजन",
+                completeFinancialPlanning: "संपूर्ण वित्तीय नियोजन",
+                scientificFinancialPlanning: "वैज्ञानिक वित्तीय नियोजन",
+                adequatePlanning: "पर्याप्त नियोजन",
+                childEducation: "बच्चों की शिक्षा योजना",
+                businessInsurance: "व्यवसाय बीमा",
                 other: "अन्य प्रश्न"
             }
         },
@@ -739,6 +735,15 @@ export const translations = {
             title: "सम्मान और उपलब्धियां",
             subtitle: "वित्तीय सलाहकार और ग्राहक सेवा में उत्कृष्टता के लिए मान्यता प्राप्त।",
             year: "वर्ष"
+        },
+        services: {
+            title: "विशेषज्ञ वित्तीय सेवाएं",
+            subtitle: "आपके अद्वितीय वित्तीय लक्ष्यों और जीवन के चरणों के अनुरूप व्यापक समाधान।",
+            exploreAll: "सभी सेवाओं का अन्वेषण करें",
+            viewDetails: "विवरण देखें",
+            searchServices: "सेवाएं खोजें...",
+            allCategories: "सभी श्रेणियां",
+            noServicesFound: "आपकी खोज से मेल खाने वाली कोई सेवा नहीं मिली।"
         },
         chatbot: {
             welcome: "नमस्ते! मैं आपका रौनक एआई चैटबॉट हूँ। मैं आज आपकी कैसे मदद कर सकता हूँ?",
@@ -810,8 +815,13 @@ export const translations = {
                 nextProvisions: "अगला: प्रावधान",
                 seeResults: "परिणाम देखें",
                 restart: "पुनः विश्लेषण",
-                greetingTooltip: "एआई चैटबॉट आपकी मदद के लिए यहाँ है!",
+                greetingTooltip: "रौनक एआई",
                 alwaysActive: "हमेशा सक्रिय"
+            },
+            floatingActions: {
+                whatsapp: "व्हाट्सएप करें",
+                call: "हमे कॉल करें",
+                email: "हमे ईमेल करें"
             }
         }
     },
@@ -819,7 +829,6 @@ export const translations = {
         nav: {
             home: "मुखपृष्ठ",
             about: "परिचय",
-            services: "सेवा",
             claims: "क्लेम मदत",
             contact: "संपर्क",
             bookConsultation: "सल्ला बुक करा",
@@ -831,14 +840,21 @@ export const translations = {
             testimonials: "प्रशंसापत्रे",
             blogs: "ब्लॉग",
             awards: "पुरस्कार",
+            services: "सेवा",
             aboutOverview: "अवलोकन"
         },
         hero: {
             title: "तज्ञ आर्थिक नियोजनासह ",
             titleHighlight: "आपले भविष्य सुरक्षित करा",
+            typingWords: [
+                "तज्ञ आर्थिक नियोजन",
+                "स्मार्ट गुंतवणूक धोरणे",
+                "संपूर्ण संपत्ती व्यवस्थापन",
+                "वैज्ञानिक आर्थिक नियोजन",
+                "दीर्घकालीन संपत्ती निर्मिती"
+            ],
             subtitle: "३०,०००+ कुटुंबांचा विश्वास. आम्ही तुम्हाला संपत्ती वाढवण्यास, कर वाचवण्यास आणि आपल्या प्रियजनांचे संरक्षण करण्यास मदत करतो.",
-            ctaPrimary: "मोफत सल्ला बुक करा",
-            ctaSecondary: "सेवा पहा"
+            ctaPrimary: "मोफत सल्ला बुक करा"
         },
         stats: {
             families: "कुटुंबे सेवा",
@@ -857,7 +873,7 @@ export const translations = {
             intro: "२००८ पासून कुटुंबांना आर्थिक स्वातंत्र्य मिळवून देण्यात मदत करत आहे.",
             description: "वित्तीय क्षेत्रातील २५ वर्षांहून अधिक अनुभवासह, मी हजारो कुटुंबांना धोरणात्मक गुंतवणूक नियोजन आणि सर्वसमावेशक विमा संरक्षणाद्वारे त्यांचे भविष्य सुरक्षित करण्यात मदत केली आहे। सामान्य माणसासाठी वित्त सोपे करणे हे माझे ध्येय आहे।",
             missionTitle: "माझे ध्येय",
-            mission: "२०३० पर्यंत १,००,००० कुटुंबांना आर्थिक सुरक्षा आणि संपत्ती निर्मिती धोरणांसह सक्षम करणे.",
+            mission: "२०३५ पर्यंत ५०,००० कुटुंबांना आर्थिक सुरक्षा आणि संपत्ती निर्मिती धोरणांसह सक्षम करणे.",
             valuesTitle: "मूल्ये",
             values: ["प्रामाणिकपणा", "पारदर्शकता", "ग्राहक प्रथम", "दीर्घकालीन दृष्टी"],
             certified: "प्रमाणित आणि अनुपालन",
@@ -868,32 +884,11 @@ export const translations = {
             hello: "नमस्कार, मी आहे",
             associatedWith: "मला या टीमसोबत काम करण्याचा अभिमान आहे: "
         },
-        services: {
-            title: "आमचे कौशल्य",
-            subtitle: "तुमच्या जीवनातील ध्येयानुसार सर्वसमावेशक आर्थिक उपाय.",
-            mutualFunds: "म्युच्युअल फंड आणि एसआयपी",
-            mutualFundsDesc: "म्युच्युअल फंडमध्ये शिस्तबद्ध गुंतवणुकीद्वारे संपत्ती निर्मिती.",
-            taxPlanning: "टॅक्स प्लॅनिंग",
-            taxPlanningDesc: "संपत्ती वाढवताना कलम ८०सी आणि इतर तरतुदींनुसार कायदेशीररित्या कर वाचवा.",
-            insurance: "विमा नियोजन",
-            insuranceDesc: "तुमच्या कुटुंबाच्या संपूर्ण संरक्षणासाठी जीवन आणि आरोग्य विमा.",
-            retirement: "निवृत्ती नियोजन",
-            retirementDesc: "पेन्शन योजनांसह आपल्या सुवर्ण वर्षांसाठी हक्काचे उत्पन्न सुरक्षित करा.",
-            healthInsurance: "आरोग्य विमा",
-            healthInsuranceDesc: "वैद्यकीय आणीबाणी आणि रुग्णालयात दाखल होण्यासाठी सर्वसमावेशक विमा.",
-            wealthManagement: "संपत्ती व्यवस्थापन",
-            wealthManagementDesc: "उच्च नेटवर्थ व्यक्तींसाठी सर्वांगीण पोर्टफोलिओ व्यवस्थापन.",
-            bestFor: "यांच्यासाठी सर्वोत्तम",
-            riskProfile: "जोखिम प्रोफाइल",
-            learnMore: "अधिक जाणून घ्या",
-            startPlanning: "नियोजन सुरू करा",
-            goalPlanner: "ध्येय नियोजक",
-            exploreAll: "सर्व सेवा पहा",
-            disclaimer: "म्युच्युअल फंड गुंतवणूक बाजार जोखमीच्या अधीन आहे, सर्व योजना संबंधित कागदपत्रे काळजीपूर्वक वाचा. मागील कामगिरी भविष्यातील परताव्याचा निदर्शक नाही।"
-        },
         calculators: {
             title: "वित्तीय नियोजन साधने",
             subtitle: "तुमच्या ध्येयांची गणना करा आणि आमच्या परस्परसंवादी साधनांसह तुमच्या भविष्याचे नियोजन करा.",
+            startPlanning: "नियोजन सुरू करा",
+            disclaimer: "म्युच्युअल फंड गुंतवणूक बाजार जोखमीच्या अधीन आहे, सर्व योजना संबंधित कागदपत्रे काळजीपूर्वक वाचा. मागील कामगिरी भविष्यातील परताव्याचा निदर्शक नाही।",
             sip: {
                 title: "एसआयपी कॅल्क्युलेटर",
                 description: "सिस्टमॅटिक इन्व्हेस्टमेंट प्लॅनद्वारे तुम्ही किती संपत्ती निर्माण करू शकता याची गणना करा.",
@@ -1102,6 +1097,12 @@ export const translations = {
                 health: "आरोग्य विमा",
                 retirement: "निवृत्ती नियोजन",
                 wealth: "संपत्ती व्यवस्थापन",
+                businessPlanning: "व्यवसाय नियोजन",
+                completeFinancialPlanning: "संपूर्ण आर्थिक नियोजन",
+                scientificFinancialPlanning: "वैज्ञानिक आर्थिक नियोजन",
+                adequatePlanning: "पुरेसे नियोजन",
+                childEducation: "मुलांचे शिक्षण नियोजन",
+                businessInsurance: "व्यवसाय विमा",
                 other: "इतर प्रश्न"
             }
         },
@@ -1128,6 +1129,33 @@ export const translations = {
             title: "आमचा प्रवास",
             subtitle: "कार्यक्रम, ग्राहक बैठका आणि आमच्या कार्यालयातील क्षण.",
             loading: "गॅलरी लोड होत आहे..."
+        },
+        blogs: {
+            title: "लेख आणि अपडेट्स",
+            subtitle: "तज्ञ सल्ला, बाजारातील कल आणि आर्थिक टिप्स तुम्हाला माहिती देण्यासाठी.",
+            readMore: "संपूर्ण लेख वाचा",
+            categories: {
+                all: "सर्व",
+                tax: "कर बचत",
+                investment: "गुंतवणूक",
+                insurance: "विमा",
+                planning: "आर्थिक नियोजन"
+            },
+            noBlogs: "लवकरच येत आहे! आमच्या ताज्या अपडेट्ससाठी संपर्कात रहा."
+        },
+        awards: {
+            title: "सन्मान आणि उपलब्धी",
+            subtitle: "आर्थिक सल्लागार आणि ग्राहक सेवेतील उत्कृष्टतेसाठी मान्यता प्राप्त.",
+            year: "वर्ष"
+        },
+        services: {
+            title: "तज्ञ आर्थिक सेवा",
+            subtitle: "तुमच्या अद्वितीय आर्थिक उद्दिष्टांच्या आणि जीवनाच्या टप्प्यांनुसार सर्वसमावेशक उपाय.",
+            exploreAll: "सर्व सेवा पहा",
+            viewDetails: "तपशील पहा",
+            searchServices: "सेवा शोधा...",
+            allCategories: "सर्व श्रेणी",
+            noServicesFound: "तुमच्या शोधाशी जुळणारी कोणतीही सेवा आढळली नाही।"
         },
         chatbot: {
             welcome: "नमस्कार! मी तुमचा रौनक एआई चॅटबॉट आहे. मी आज तुम्हाला कशी मदत करू शकतो?",
@@ -1199,8 +1227,13 @@ export const translations = {
                 nextProvisions: "पुढील: तरतुदी",
                 seeResults: "निकाल पहा",
                 restart: "पुन्हा विश्लेषण",
-                greetingTooltip: "एआई चॅटबॉट तुमच्या मदतीसाठी येथे आहे!",
+                greetingTooltip: "रौनक एआई",
                 alwaysActive: "नेहमी सक्रिय"
+            },
+            floatingActions: {
+                whatsapp: "व्हाट्सएप करा",
+                call: "कॉल करा",
+                email: "ईमेल करा"
             }
         }
     }

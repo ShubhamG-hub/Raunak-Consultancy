@@ -41,6 +41,7 @@ const Calculators = () => {
     // Handle navigation from dropdown with state
     useEffect(() => {
         if (location.state?.activeTab) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setActiveTab(location.state.activeTab);
             // Scroll to the calculator section if needed
             const element = document.getElementById('calc-container');
@@ -94,12 +95,12 @@ const Calculators = () => {
                 <div id="calc-container" className="mb-12 flex justify-center px-4 lg:hidden">
                     <DropdownMenu>
                         <DropdownMenuTrigger>
-                            <div className="group flex items-center justify-between gap-4 px-6 py-4 rounded-2xl bg-white dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 shadow-xl shadow-blue-500/5 hover:border-blue-500/50 transition-all duration-500 cursor-pointer w-full max-w-[320px]">
+                            <div className="group flex items-center justify-between gap-4 px-6 py-4 rounded-2xl bg-white dark:bg-slate-800 border-2 border-slate-100 dark:border-slate-700 shadow-xl shadow-primary-theme/5 hover:border-primary-theme/50 transition-all duration-500 cursor-pointer w-full max-w-[320px]">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+                                    <div className="w-10 h-10 rounded-xl bg-primary-theme/10 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
                                         {(() => {
                                             const ActiveIcon = tabs.find(t => t.id === activeTab)?.icon || CalcIcon;
-                                            return <ActiveIcon className="w-5 h-5 text-blue-600 dark:text-blue-400" />;
+                                            return <ActiveIcon className="w-5 h-5 text-primary-theme" />;
                                         })()}
                                     </div>
                                     <div className="flex flex-col items-start text-left">
@@ -109,7 +110,7 @@ const Calculators = () => {
                                         </span>
                                     </div>
                                 </div>
-                                <ChevronDown className="w-5 h-5 text-slate-300 group-hover:text-blue-500 group-hover:rotate-180 transition-all duration-500" />
+                                <ChevronDown className="w-5 h-5 text-slate-300 group-hover:text-primary-theme group-hover:rotate-180 transition-all duration-500" />
                             </div>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="center" className="w-[320px] p-2 rounded-2xl border-slate-100 dark:border-slate-700 bg-white/95 dark:bg-slate-800/95 backdrop-blur-2xl shadow-2xl mt-4 animate-in fade-in zoom-in-95 duration-300">
@@ -119,7 +120,7 @@ const Calculators = () => {
                                         key={tab.id}
                                         onClick={() => setActiveTab(tab.id)}
                                         className={`rounded-xl p-3 flex items-center gap-3 transition-all duration-300 ${activeTab === tab.id
-                                            ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20'
+                                            ? 'bg-primary-theme text-white shadow-lg shadow-primary-theme/20'
                                             : 'hover:bg-slate-100 dark:hover:bg-slate-700/50 text-slate-600 dark:text-slate-300'
                                             }`}
                                     >
@@ -141,11 +142,11 @@ const Calculators = () => {
                             key={tab.id}
                             onClick={() => setActiveTab(tab.id)}
                             className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-sm transition-all duration-300 ${activeTab === tab.id
-                                ? 'bg-white dark:bg-slate-800 shadow-xl shadow-blue-500/5 text-blue-600 dark:text-blue-400 scale-105 border-2 border-blue-600/20'
+                                ? 'bg-white dark:bg-slate-800 shadow-xl shadow-primary-theme/5 text-primary-theme scale-105 border-2 border-primary-theme/20'
                                 : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 bg-white/50 dark:bg-slate-800/30'
                                 }`}
                         >
-                            <tab.icon className={`w-4 h-4 ${activeTab === tab.id ? 'text-blue-600' : 'text-slate-400'}`} />
+                            <tab.icon className={`w-4 h-4 ${activeTab === tab.id ? 'text-primary-theme' : 'text-slate-400'}`} />
                             {tab.label}
                         </button>
                     ))}
@@ -166,7 +167,7 @@ const Calculators = () => {
 
                 <div className="mt-20 text-center max-w-2xl mx-auto">
                     <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed italic">
-                        {t.services.disclaimer}
+                        {t.calculators.disclaimer}
                     </p>
                 </div>
             </div>
