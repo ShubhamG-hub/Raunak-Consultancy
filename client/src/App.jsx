@@ -1,4 +1,4 @@
-import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState, useMemo } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import LoadingScreen from '@/components/ui/LoadingScreen';
@@ -178,13 +178,14 @@ function App() {
             <Route path="/gallery" element={<Gallery />} />
             <Route path="/certificates" element={<CertificatesPage />} />
             <Route path="/testimonials" element={<TestimonialsPage />} />
-            <Route path="/testimonials" element={<TestimonialsPage />} />
             <Route path="/about-details" element={<AboutDetails />} />
             <Route path="/blogs" element={<Blogs />} />
             <Route path="/blogs/:slug" element={<BlogDetail />} />
 
 
             {/* Admin Routes */}
+            {/* Redirect typo URL to correct admin login */}
+            <Route path="/admin/loign" element={<Navigate to="/admin/login" replace />} />
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route
               path="/admin/dashboard"
