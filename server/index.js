@@ -131,16 +131,17 @@ app.use((err, req, res, next) => {
     });
 });
 
-const server = app.listen(PORT, () => {
-    console.log(`✅ Server running on http://localhost:${PORT}`);
-    const isVercel = !!process.env.VERCEL;
-    if (!isVercel) {
+const isVercel = !!process.env.VERCEL;
+
+if (!isVercel) {
+    app.listen(PORT, () => {
+        console.log(`✅ Server running on http://localhost:${PORT}`);
         const logPath = path.join(__dirname, 'error.log');
         const startupMsg = `✅ Server started at ${new Date().toISOString()} on http://localhost:${PORT}\n`;
         try {
             fs.appendFileSync(logPath, startupMsg);
         } catch (e) { }
-    }
-});
+    });
+}
 
 module.exports = app;
