@@ -224,7 +224,7 @@ const Navbar = () => {
                     <div className="absolute -top-24 -left-24 w-64 h-64 bg-primary-theme/5 blur-[100px] rounded-full" />
                     <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-primary-theme/5 blur-[100px] rounded-full" />
 
-                    <div className="container mx-auto px-4 xl:px-6 flex items-center h-20 relative z-10 gap-2">
+                    <div className="container mx-auto px-4 xl:px-6 flex items-center h-20 relative z-10 gap-4 xl:gap-8">
                         {/* Branding Area - Left Column */}
                         <div className="flex-shrink-0">
                             <Link to="/" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="flex items-center gap-2.5 group">
@@ -237,10 +237,10 @@ const Navbar = () => {
                                         {t.footer.companyName}
                                     </span>
                                     <div className="flex items-center gap-1.5 mt-0.5">
-                                        <div className="h-[2px] w-6 bg-primary-theme/30 rounded-full overflow-hidden shrink-0">
+                                        <div className="h-[2px] w-8 bg-primary-theme/40 rounded-full overflow-hidden shrink-0">
                                             <div className="h-full w-full bg-primary-theme animate-[shimmer_2s_infinite]" />
                                         </div>
-                                        <span className="text-[8px] xl:text-[10px] font-black text-primary-theme/70 uppercase tracking-[0.3em] whitespace-nowrap">Financial Consultancy</span>
+                                        <span className="text-[8px] xl:text-[10px] font-black text-primary-theme/80 uppercase tracking-[0.2em] whitespace-nowrap">Financial Consultancy</span>
                                     </div>
                                 </div>
                             </Link>
