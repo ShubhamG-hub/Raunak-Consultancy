@@ -31,7 +31,7 @@ const BlogsPreview = () => {
     if (!loading && blogs.length === 0) return null;
 
     return (
-        <section id="blogs-preview" className="py-24 bg-slate-50 dark:bg-slate-900/50 transition-colors duration-500">
+        <section id="blogs-preview" className="bg-slate-50 dark:bg-slate-900/50 transition-colors duration-500">
             <div className="container mx-auto px-6">
                 <SectionHeader
                     title={t.blogs.title}

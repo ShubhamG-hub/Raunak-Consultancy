@@ -57,7 +57,7 @@ const Contact = () => {
 
     return (
         <div className="container mx-auto px-6">
-            <div className="text-center mb-20">
+            <div className="text-center mb-10">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}

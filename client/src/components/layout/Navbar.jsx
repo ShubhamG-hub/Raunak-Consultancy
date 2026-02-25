@@ -67,7 +67,7 @@ const Navbar = () => {
                 { name: t.nav.testimonials, path: '#testimonials' },
             ]
         },
-        { name: t.nav.blogs, path: '/blogs', isRoute: true },
+        { name: t.nav.blogs, path: '#blogs' },
         { name: t.nav.contact, path: '#contact' },
     ];
 
@@ -96,7 +96,11 @@ const Navbar = () => {
                     }
                 }
             } else {
-                navigate('/' + link.path);
+                if (link.path === '#blogs') {
+                    navigate('/blogs');
+                } else {
+                    navigate('/' + link.path);
+                }
             }
         }
     };
@@ -105,14 +109,14 @@ const Navbar = () => {
     const renderActions = () => {
         if (user) {
             return (
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-1">
                     <div className="hidden xl:flex flex-col items-end mr-1">
                         <span className="text-[10px] font-black tracking-widest text-primary-theme uppercase block leading-tight">Administrator</span>
                         <span className="text-xs xl:text-sm font-bold text-slate-800 dark:text-white block leading-tight">{user.name || 'Admin'}</span>
                     </div>
                     {isAdmin ? (
                         <Link to="/admin/dashboard">
-                            <Button size="sm" variant="outline" className="rounded-2xl border-primary-theme/30 text-primary-theme h-10 xl:h-12 px-3 xl:px-6 font-black uppercase tracking-widest text-[9px] xl:text-[10px] hover:bg-primary-theme hover:text-white transition-all duration-300 shadow-xl shadow-primary-theme/5 whitespace-nowrap">
+                            <Button size="sm" variant="outline" className="rounded-2xl border-primary-theme/30 text-primary-theme h-9 xl:h-10 px-2 xl:px-3 font-black uppercase tracking-widest text-[9px] xl:text-[10px] hover:bg-primary-theme hover:text-white transition-all duration-300 shadow-xl shadow-primary-theme/5 whitespace-nowrap">
                                 {t.auth.dashboard}
                             </Button>
                         </Link>
@@ -123,10 +127,10 @@ const Navbar = () => {
                     )}
                     <button
                         onClick={logout}
-                        className="h-10 xl:h-12 px-3 xl:px-5 rounded-2xl flex items-center gap-2 xl:gap-3 text-slate-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-300 ring-1 ring-slate-200 dark:ring-slate-800 bg-white dark:bg-slate-900 shadow-lg shadow-black/5 group/logout whitespace-nowrap"
+                        className="h-9 w-9 rounded-full flex items-center justify-center text-slate-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-300 ring-1 ring-slate-200 dark:ring-slate-800 bg-white dark:bg-slate-900 shadow-lg shadow-black/5 group/logout"
+                        title="Logout"
                     >
-                        <LogOut className="w-4 h-4 xl:w-4.5 xl:h-4.5 transition-transform group-hover/logout:-translate-x-1" />
-                        <span className="text-[10px] font-black uppercase tracking-widest hidden xl:inline">Logout</span>
+                        <LogOut className="w-5 h-5 transition-transform group-hover/logout:-translate-x-1" />
                     </button>
                 </div>
             );
@@ -197,10 +201,6 @@ const Navbar = () => {
                                         ))}
                                     </div>
                                     <div className="flex items-center gap-4">
-                                        <div className="flex items-center gap-2 px-3 xl:px-4 py-2 xl:py-2.5 bg-primary-theme/5 dark:bg-primary-theme/10 rounded-full border border-primary-theme/20 hover:bg-primary-theme/10 transition-colors">
-                                            <LayoutDashboard className="w-3.5 h-3.5 xl:w-4 xl:h-4 text-primary-theme" />
-                                            <span className="text-[10px] xl:text-xs font-bold text-primary-theme uppercase tracking-wider">Client Dashboard</span>
-                                        </div>
                                         <div className="flex items-center bg-white/5 backdrop-blur-md rounded-full px-2 py-1 ring-1 ring-white/10">
                                             <LanguageToggle />
                                             <div className="w-px h-4 bg-white/10 mx-1" />
@@ -228,7 +228,7 @@ const Navbar = () => {
                     <div className="absolute -top-24 -left-24 w-64 h-64 bg-primary-theme/5 blur-[100px] rounded-full" />
                     <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-primary-theme/5 blur-[100px] rounded-full" />
 
-                    <div className="container mx-auto px-4 xl:px-6 flex items-center h-20 relative z-10 gap-1 lg:gap-1.5 xl:gap-8">
+                    <div className="container mx-auto px-4 xl:px-6 flex items-center h-20 relative z-10 gap-4 xl:gap-4">
                         {/* Branding Area - Left Column */}
                         <div className="flex-shrink-0 min-w-max">
                             <Link to="/" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="flex items-center gap-2.5 group">
@@ -297,8 +297,8 @@ const Navbar = () => {
                         </div>
 
                         {/* Actions Area - Right Column */}
-                        <div className="flex items-center gap-2 xl:gap-3 flex-shrink-0 min-w-max">
-                            <div className="flex items-center border-l border-primary-theme/10 pl-3 xl:pl-5">
+                        <div className="flex items-center gap-1 flex-shrink-0 min-w-max">
+                            <div className="flex items-center border-l border-primary-theme/10 pl-2 xl:pl-3">
                                 {renderActions()}
                             </div>
                         </div>

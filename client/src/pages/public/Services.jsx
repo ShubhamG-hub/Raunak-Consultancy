@@ -54,7 +54,7 @@ const Services = () => {
     if (categories.length === 0) return null;
 
     return (
-        <section id="services" className="py-14 md:py-24 bg-white dark:bg-slate-900 transition-colors duration-500 overflow-hidden relative">
+        <section id="services" className="bg-white dark:bg-slate-900 transition-colors duration-500 overflow-hidden relative">
             <div className="container mx-auto px-6 relative z-10">
                 <SectionHeader
                     title={t.services.title}

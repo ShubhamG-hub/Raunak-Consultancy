@@ -13,7 +13,7 @@ const About = () => {
         <div className="container mx-auto px-6">
 
             {/* Introduction */}
-            <div className="flex flex-col md:flex-row gap-8 md:gap-16 items-center mb-10 md:mb-24">
+            <div className="flex flex-col md:flex-row gap-8 md:gap-16 items-center mb-8 md:mb-12">
                 <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
                     whileInView={{ opacity: 1, scale: 1 }}
@@ -84,7 +84,7 @@ const About = () => {
             </div>
 
             {/* Mission & Vision - Modern Cards */}
-            <div className="grid md:grid-cols-2 gap-6 md:gap-8 mb-10 md:mb-24">
+            <div className="grid md:grid-cols-2 gap-6 md:gap-8 mb-8 md:mb-12">
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}

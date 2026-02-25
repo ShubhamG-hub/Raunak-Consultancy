@@ -236,7 +236,7 @@ const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.8 }}
-                className="py-14 md:py-24 bg-white dark:bg-slate-900 transition-colors duration-500"
+                className="py-10 md:py-16 bg-white dark:bg-slate-900 transition-colors duration-500"
             >
                 <Services />
             </motion.section>
@@ -248,7 +248,7 @@ const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.8 }}
-                className="py-14 md:py-24 bg-white dark:bg-slate-900 transition-colors duration-500 overflow-hidden relative"
+                className="py-10 md:py-16 bg-white dark:bg-slate-900 transition-colors duration-500 overflow-hidden relative"
             >
                 <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-slate-200 dark:via-slate-800 to-transparent" />
 
@@ -359,7 +359,7 @@ const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.8 }}
-                className="py-14 md:py-24 bg-slate-50 dark:bg-slate-900/50 transition-colors duration-500"
+                className="py-10 md:py-16 bg-slate-50 dark:bg-slate-900/50 transition-colors duration-500"
             >
                 <Claims />
             </motion.section>
@@ -371,7 +371,7 @@ const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.8 }}
-                className="py-14 md:py-24 bg-white dark:bg-slate-900 transition-colors duration-500"
+                className="py-10 md:py-16 bg-white dark:bg-slate-900 transition-colors duration-500"
             >
                 <About />
             </motion.section>
@@ -383,7 +383,7 @@ const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.8 }}
-                className="py-14 md:py-24 bg-white dark:bg-slate-900 transition-colors duration-500"
+                className="py-10 md:py-16 bg-white dark:bg-slate-900 transition-colors duration-500"
             >
                 <div className="container mx-auto px-6">
                     <SectionHeader title={t.certificates.title} description={t.certificates.subtitle} />
@@ -405,7 +405,7 @@ const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.8 }}
-                className="py-14 md:py-24 bg-slate-50 dark:bg-slate-900/50 transition-colors duration-500"
+                className="py-10 md:py-16 bg-slate-50 dark:bg-slate-900/50 transition-colors duration-500"
             >
                 <AwardsSection />
             </motion.section>
@@ -417,7 +417,7 @@ const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.8 }}
-                className="py-14 md:py-24 bg-white dark:bg-slate-900 transition-colors duration-500"
+                className="py-10 md:py-16 bg-white dark:bg-slate-900 transition-colors duration-500"
             >
                 <div className="container mx-auto px-6">
                     <SectionHeader title={t.gallery.title} description={t.gallery.subtitle} />
@@ -439,7 +439,7 @@ const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.8 }}
-                className="py-14 md:py-24 bg-white dark:bg-slate-900 transition-colors duration-500"
+                className="py-10 md:py-16 bg-white dark:bg-slate-900 transition-colors duration-500"
             >
                 <div className="container mx-auto px-6">
                     <SectionHeader title={t.testimonials.title} description={t.testimonials.subtitle} />
@@ -465,7 +465,7 @@ const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.8 }}
-                className="py-14 md:py-24 bg-slate-50 dark:bg-slate-900/50 transition-colors duration-500"
+                className="py-10 md:py-16 bg-slate-50 dark:bg-slate-900/50 transition-colors duration-500"
             >
                 <BlogsPreview />
             </motion.section>
@@ -477,7 +477,7 @@ const Home = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.8 }}
-                className="py-14 md:py-24 bg-slate-50 dark:bg-slate-900/50 transition-colors duration-500"
+                className="py-10 md:py-16 bg-slate-50 dark:bg-slate-900/50 transition-colors duration-500"
             >
                 <Contact />
             </motion.section>
