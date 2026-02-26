@@ -7,31 +7,50 @@ const poolConfig = {
     user: process.env.DB_USER || 'root',
     password: process.env.DB_PASSWORD || '',
     database: process.env.DB_NAME || 'portfolio_db',
-    port: process.env.DB_PORT || 3306,
+    port: parseInt(process.env.DB_PORT) || 3306,
     waitForConnections: true,
     connectionLimit: 10,
-    queueLimit: 0
+    queueLimit: 0,
+    // Add a connection timeout
+    connectTimeout: 10000
 };
 
 // Add SSL for Aiven/Cloud DB
-if (poolConfig.host.includes('aivencloud.com')) {
-    const caPaths = [
-        path.join(__dirname, '../ca.pem'), // server/ca.pem
-        path.join(process.cwd(), 'ca.pem'), // current directory
-        path.join(process.cwd(), 'server/ca.pem'), // subdirectory
-        path.join(__dirname, '../../ca.pem') // root if in server/config
-    ];
+if (poolConfig.host.includes('aivencloud.com') || process.env.DB_SSL === 'true') {
+    let caContent = null;
 
-    let caPath = caPaths.find(p => fs.existsSync(p));
+    // 1. Try environment variable first (most reliable on Render)
+    if (process.env.DB_SSL_CA) {
+        caContent = process.env.DB_SSL_CA;
+        console.log('🔒 Using SSL CA from Environment Variable');
+    } else {
+        // 2. Try file-based CA
+        const caPaths = [
+            path.join(__dirname, '../ca.pem'),
+            path.join(process.cwd(), 'ca.pem'),
+            path.join(process.cwd(), 'server/ca.pem'),
+            path.join(__dirname, '../../ca.pem')
+        ];
 
-    if (caPath) {
+        const caPath = caPaths.find(p => fs.existsSync(p));
+        if (caPath) {
+            caContent = fs.readFileSync(caPath);
+            console.log('🔒 Using SSL CA from file:', caPath);
+        }
+    }
+
+    if (caContent) {
         poolConfig.ssl = {
-            ca: fs.readFileSync(caPath),
+            ca: caContent,
             rejectUnauthorized: true
         };
-        console.log('🔒 SSL Enabled for Aiven MySQL using:', caPath);
     } else {
-        console.warn('⚠️  CA Certificate missing. Checked:', caPaths);
+        console.warn('⚠️  No SSL CA found. Connection might fail if database requires it.');
+        // Last resort fallback for some cloud providers
+        poolConfig.ssl = {
+            rejectUnauthorized: false
+        };
+        console.log('⚠️  Falling back to rejectUnauthorized: false');
     }
 }
 
