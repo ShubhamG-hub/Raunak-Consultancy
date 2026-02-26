@@ -60,8 +60,11 @@ if (poolConfig.host.includes('aivencloud.com') || process.env.DB_SSL === 'true')
 }
 
 // Test connection with detailed logging
-console.log('📡 Attempting to connect to database at:', poolConfig.host, 'Port:', poolConfig.port);
-console.log('🔑 DB User:', poolConfig.user);
+console.log('📡 Attempting to connect to database:');
+console.log(`   Host: ${poolConfig.host} (Length: ${poolConfig.host.length})`);
+console.log(`   Port: ${poolConfig.port}`);
+console.log(`   User: ${poolConfig.user} (Length: ${poolConfig.user.length})`);
+console.log(`   Database: ${poolConfig.database}`);
 
 const pool = mysql.createPool(poolConfig);
 
