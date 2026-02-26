@@ -11,9 +11,14 @@ const poolConfig = {
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0,
-    // Add a connection timeout
     connectTimeout: 10000
 };
+
+// Log missing critical env vars
+const requiredVars = ['DB_HOST', 'DB_USER', 'DB_PASSWORD', 'DB_NAME', 'DB_PORT'];
+requiredVars.forEach(v => {
+    if (!process.env[v]) console.warn(`⚠️  Missing Environment Variable: ${v}`);
+});
 
 // Add SSL for Aiven/Cloud DB
 if (poolConfig.host.includes('aivencloud.com') || process.env.DB_SSL === 'true') {
