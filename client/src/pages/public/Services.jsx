@@ -30,7 +30,8 @@ const Services = () => {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const cats = Array.isArray(data) ? data : [];
+                const response = await api.get('/categories');
+                const cats = Array.isArray(response.data) ? response.data : [];
                 setCategories(cats.filter(c => c.is_active === 1 || c.is_active === true));
             } catch (err) {
                 console.error('Failed to fetch categories:', err);
