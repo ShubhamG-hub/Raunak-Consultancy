@@ -15,15 +15,23 @@ const poolConfig = {
 
 // Add SSL for Aiven/Cloud DB
 if (poolConfig.host.includes('aivencloud.com')) {
-    const caPath = path.join(__dirname, '../ca.pem');
-    if (fs.existsSync(caPath)) {
+    const caPaths = [
+        path.join(__dirname, '../ca.pem'), // server/ca.pem
+        path.join(process.cwd(), 'ca.pem'), // current directory
+        path.join(process.cwd(), 'server/ca.pem'), // subdirectory
+        path.join(__dirname, '../../ca.pem') // root if in server/config
+    ];
+
+    let caPath = caPaths.find(p => fs.existsSync(p));
+
+    if (caPath) {
         poolConfig.ssl = {
             ca: fs.readFileSync(caPath),
             rejectUnauthorized: true
         };
-        console.log('🔒 SSL Enabled for Aiven MySQL');
+        console.log('🔒 SSL Enabled for Aiven MySQL using:', caPath);
     } else {
-        console.warn('⚠️  CA Certificate missing at', caPath);
+        console.warn('⚠️  CA Certificate missing. Checked:', caPaths);
     }
 }
 
