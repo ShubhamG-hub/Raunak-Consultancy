@@ -35,16 +35,31 @@ if (poolConfig.host.includes('aivencloud.com')) {
     }
 }
 
+// Test connection with detailed logging
+console.log('📡 Attempting to connect to database at:', poolConfig.host, 'Port:', poolConfig.port);
+console.log('🔑 DB User:', poolConfig.user);
+
 const pool = mysql.createPool(poolConfig);
 
-// Test connection
 pool.getConnection()
     .then(conn => {
         console.log('🚀 Connected to Aiven MySQL Successfully!');
         conn.release();
     })
     .catch(err => {
-        console.error('❌ Database Connection Error:', err.message);
+        console.error('❌ Database Connection Error!');
+        console.error('Error Name:', err.name);
+        console.error('Error Code:', err.code);
+        console.error('Error Message:', err.message);
+        if (err.code === 'PROTOCOL_CONNECTION_LOST') {
+            console.error('Database connection was closed.');
+        }
+        if (err.code === 'ER_CON_COUNT_ERROR') {
+            console.error('Database has too many connections.');
+        }
+        if (err.code === 'ECONNREFUSED') {
+            console.error('Database connection was refused.');
+        }
     });
 
 module.exports = pool;
