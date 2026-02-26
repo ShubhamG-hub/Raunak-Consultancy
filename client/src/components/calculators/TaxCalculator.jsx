@@ -53,8 +53,8 @@ const TaxCalculator = () => {
     return (
         <div className="bg-white dark:bg-slate-800 p-5 md:p-8 rounded-[2rem] border border-slate-100 dark:border-slate-700 shadow-xl">
             <div className="flex items-center gap-4 mb-8">
-                <div className="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/30 rounded-2xl flex items-center justify-center">
-                    <ReceiptIndianRupee className="text-indigo-600 w-6 h-6" />
+                <div className="w-12 h-12 bg-primary-theme/10 dark:bg-primary-theme/20 rounded-2xl flex items-center justify-center">
+                    <ReceiptIndianRupee className="text-primary-theme w-6 h-6" />
                 </div>
                 <div>
                     <h3 className="text-xl font-black text-slate-900 dark:text-white">{t.calculators.tax.title}</h3>
@@ -73,7 +73,7 @@ const TaxCalculator = () => {
                                     type="number"
                                     value={annualIncome}
                                     onChange={(e) => setAnnualIncome(Number(e.target.value))}
-                                    className="pl-7 h-9 rounded-lg border-slate-200 focus:ring-indigo-600 font-black text-indigo-600"
+                                    className="pl-7 h-9 rounded-lg border-slate-200 focus:ring-primary-theme font-black text-primary-theme"
                                 />
                             </div>
                         </div>
@@ -81,7 +81,7 @@ const TaxCalculator = () => {
                             type="range" min="300000" max="10000000" step="50000"
                             value={annualIncome}
                             onChange={(e) => setAnnualIncome(Number(e.target.value))}
-                            className="w-full h-2 bg-slate-100 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-indigo-600"
+                            className="w-full h-2 bg-slate-100 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-primary-theme"
                         />
                     </div>
 
@@ -94,7 +94,7 @@ const TaxCalculator = () => {
                                     type="number"
                                     value={deductions}
                                     onChange={(e) => setDeductions(Number(e.target.value))}
-                                    className="pl-7 h-9 rounded-lg border-slate-200 focus:ring-indigo-600 font-black text-indigo-600"
+                                    className="pl-7 h-9 rounded-lg border-slate-200 focus:ring-primary-theme font-black text-primary-theme"
                                 />
                             </div>
                         </div>
@@ -102,7 +102,7 @@ const TaxCalculator = () => {
                             type="range" min="0" max="500000" step="5000"
                             value={deductions}
                             onChange={(e) => setDeductions(Number(e.target.value))}
-                            className="w-full h-2 bg-slate-100 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-indigo-600"
+                            className="w-full h-2 bg-slate-100 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-primary-theme"
                         />
                         <p className="text-[10px] text-slate-400 font-medium">80C, 80D, etc. (Applies to Old Regime only)</p>
                     </div>
@@ -114,13 +114,13 @@ const TaxCalculator = () => {
                             <span className="text-sm font-bold text-slate-500">{t.calculators.tax.oldTax}</span>
                             <span className="font-black text-slate-900 dark:text-white">{formatCurrency(results.oldTax)}</span>
                         </div>
-                        <div className="flex justify-between items-center p-4 rounded-2xl bg-indigo-600 shadow-lg shadow-indigo-200 dark:shadow-none">
-                            <span className="text-sm font-bold text-indigo-100">{t.calculators.tax.newTax}</span>
+                        <div className="flex justify-between items-center p-4 rounded-2xl bg-primary-theme shadow-lg shadow-primary-theme/20 dark:shadow-none">
+                            <span className="text-sm font-bold text-white/80">{t.calculators.tax.newTax}</span>
                             <span className="font-black text-white">{formatCurrency(results.newTax)}</span>
                         </div>
                         <div className="pt-4 flex flex-col items-center">
                             <span className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">{t.calculators.tax.savings}</span>
-                            <span className="text-xl font-black text-emerald-500">
+                            <span className="text-xl font-black text-primary-theme">
                                 {formatCurrency(results.savings)}
                             </span>
                             <p className="text-[10px] text-slate-400 mt-2 text-center">

@@ -92,7 +92,7 @@ const About = () => {
                     transition={{ duration: 0.6 }}
                 >
                     <Card className="bg-slate-900 dark:bg-slate-900/50 text-white border-none rounded-[2.5rem] overflow-hidden group h-full">
-                        <CardContent className="p-5 md:p-12 text-center space-y-6 relative h-full flex flex-col justify-center">
+                        <CardContent className="p-5 md:p-6 text-center space-y-4 relative h-full flex flex-col justify-center">
                             <div className="absolute top-0 right-0 w-32 h-32 bg-primary-theme/10 rounded-bl-full group-hover:bg-primary-theme/20 transition-all duration-500"></div>
                             <Target className="w-16 h-16 mx-auto text-primary-theme group-hover:scale-110 transition-transform duration-500" />
                             <h3 className="text-2xl font-black">{t.about.missionTitle}</h3>
@@ -110,7 +110,7 @@ const About = () => {
                     transition={{ duration: 0.6, delay: 0.2 }}
                 >
                     <Card className="bg-primary-theme text-white border-none rounded-[2.5rem] overflow-hidden group h-full shadow-2xl">
-                        <CardContent className="p-5 md:p-12 text-center space-y-6 relative h-full flex flex-col justify-center">
+                        <CardContent className="p-5 md:p-6 text-center space-y-4 relative h-full flex flex-col justify-center">
                             <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-bl-full group-hover:bg-white/20 transition-all duration-500"></div>
                             <Heart className="w-16 h-16 mx-auto text-white group-hover:scale-110 transition-transform duration-500" />
                             <h3 className="text-2xl font-black">{t.about.valuesTitle}</h3>

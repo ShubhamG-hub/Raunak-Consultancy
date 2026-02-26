@@ -52,9 +52,6 @@ const Navbar = () => {
 
     const navLinks = [
         { name: t.nav.home, path: '#home' },
-        { name: t.nav.services, path: '#services' },
-        { name: t.nav.calculators, path: '#calculators' },
-        { name: t.nav.claims, path: '#claims' },
         {
             name: t.nav.about,
             path: '#about',
@@ -67,6 +64,9 @@ const Navbar = () => {
                 { name: t.nav.testimonials, path: '#testimonials' },
             ]
         },
+        { name: t.nav.services, path: '#services' },
+        { name: t.nav.calculators, path: '#calculators' },
+        { name: t.nav.claims, path: '#claims' },
         { name: t.nav.blogs, path: '#blogs' },
         { name: t.nav.contact, path: '#contact' },
     ];
@@ -219,7 +219,7 @@ const Navbar = () => {
                 </AnimatePresence>
 
                 {/* Line 1.0: Main Navigation Bar */}
-                <div className={`transition-all duration-500 overflow-hidden relative ${scrolled
+                <div className={`transition-all duration-500 relative ${scrolled
                     ? 'bg-white/80 dark:bg-slate-950/80 backdrop-blur-2xl border-b border-primary-theme/10 shadow-2xl shadow-primary-theme/5 py-1'
                     : 'bg-white/90 dark:bg-slate-900/40 backdrop-blur-xl border-b border-primary-theme/5 pt-3 pb-1'
                     }`}>
@@ -307,7 +307,7 @@ const Navbar = () => {
             </div>
 
             {/* Mobile Menu Layout (Compact) - Theme Based */}
-            <div className="md:hidden flex flex-col pt-4 pb-3 gap-4 border-b border-primary-theme/5 bg-white/95 dark:bg-slate-950/95 backdrop-blur-xl relative overflow-hidden">
+            <div className="md:hidden flex flex-col pt-4 pb-3 gap-4 border-b border-primary-theme/5 bg-white/95 dark:bg-slate-950/95 backdrop-blur-xl relative">
                 {/* Background decoration */}
                 <div className="absolute top-0 right-0 w-32 h-32 bg-primary-theme/5 blur-3xl -z-10" />
 

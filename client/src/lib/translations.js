@@ -278,6 +278,7 @@ export const translations = {
                 adequatePlanning: "Adequate Planning",
                 childEducation: "Child Education Planning",
                 businessInsurance: "Business Insurance",
+                businessProvisions: "Business Provisions",
                 other: "Other Query"
             }
         },
@@ -330,7 +331,8 @@ export const translations = {
             viewDetails: "View Details",
             searchServices: "Search services...",
             allCategories: "All Categories",
-            noServicesFound: "No services found matching your search."
+            noServicesFound: "No services found matching your search.",
+            businessProvisions: "Business Provisions"
         },
         chatbot: {
             welcome: "Hello! I am Raunak AI Chatbot. How can I help you today?",
@@ -691,6 +693,7 @@ export const translations = {
                 adequatePlanning: "पर्याप्त नियोजन",
                 childEducation: "बच्चों की शिक्षा योजना",
                 businessInsurance: "व्यवसाय बीमा",
+                businessProvisions: "व्यापार प्रावधान",
                 other: "अन्य प्रश्न"
             }
         },
@@ -743,7 +746,8 @@ export const translations = {
             viewDetails: "विवरण देखें",
             searchServices: "सेवाएं खोजें...",
             allCategories: "सभी श्रेणियां",
-            noServicesFound: "आपकी खोज से मेल खाने वाली कोई सेवा नहीं मिली।"
+            noServicesFound: "आपकी खोज से मेल खाने वाली कोई सेवा नहीं मिली।",
+            businessProvisions: "व्यापार प्रावधान"
         },
         chatbot: {
             welcome: "नमस्ते! मैं आपका रौनक एआई चैटबॉट हूँ। मैं आज आपकी कैसे मदद कर सकता हूँ?",
@@ -1103,6 +1107,7 @@ export const translations = {
                 adequatePlanning: "पुरेसे नियोजन",
                 childEducation: "मुलांचे शिक्षण नियोजन",
                 businessInsurance: "व्यवसाय विमा",
+                businessProvisions: "व्यवसाय तरतूद",
                 other: "इतर प्रश्न"
             }
         },
@@ -1155,7 +1160,8 @@ export const translations = {
             viewDetails: "तपशील पहा",
             searchServices: "सेवा शोधा...",
             allCategories: "सर्व श्रेणी",
-            noServicesFound: "तुमच्या शोधाशी जुळणारी कोणतीही सेवा आढळली नाही।"
+            noServicesFound: "तुमच्या शोधाशी जुळणारी कोणतीही सेवा आढळली नाही।",
+            businessProvisions: "व्यवसाय तरतूद"
         },
         chatbot: {
             welcome: "नमस्कार! मी तुमचा रौनक एआई चॅटबॉट आहे. मी आज तुम्हाला कशी मदत करू शकतो?",

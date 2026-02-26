@@ -7,8 +7,10 @@ async function runMigration() {
 
         // 1. Create categories table
         console.log('Creating categories table...');
+        await db.query('SET FOREIGN_KEY_CHECKS = 0');
+        await db.query('DROP TABLE IF EXISTS categories');
         await db.query(`
-            CREATE TABLE IF NOT EXISTS categories (
+            CREATE TABLE categories (
                 id VARCHAR(36) PRIMARY KEY,
                 name VARCHAR(255) NOT NULL,
                 description TEXT,
@@ -67,7 +69,7 @@ async function runMigration() {
                 ]
             },
             {
-                name: 'Financial Planning Services',
+                name: 'Complete Financial Planning',
                 slug: 'financial-planning',
                 icon: 'Calculator',
                 services: [

@@ -55,16 +55,16 @@ const Calculators = () => {
     }, [location.state]);
 
     const tabs = [
-        { id: 'sip', label: t.calculators.sip.title, icon: TrendingUp, color: 'blue' },
-        { id: 'lumpsum', label: t.calculators.lumpsum.title, icon: CalcIcon, color: 'blue' },
-        { id: 'retirement', label: t.calculators.retirement.title, icon: Sunset, color: 'indigo' },
-        { id: 'child', label: t.calculators.child.title, icon: Baby, color: 'rose' },
-        { id: 'emi', label: t.calculators.emi.title, icon: Landmark, color: 'emerald' },
-        { id: 'fd', label: t.calculators.fd.title, icon: PiggyBank, color: 'amber' },
-        { id: 'rd', label: t.calculators.rd.title, icon: Coins, color: 'purple' },
-        { id: 'hlv', label: t.calculators.hlv.title, icon: Umbrella, color: 'rose' },
-        { id: 'tax', label: t.calculators.tax.title, icon: ReceiptIndianRupee, color: 'indigo' },
-        { id: 'delay', label: t.calculators.delay.title, icon: Clock, color: 'orange' }
+        { id: 'sip', label: t.calculators.sip.title, icon: TrendingUp },
+        { id: 'lumpsum', label: t.calculators.lumpsum.title, icon: CalcIcon },
+        { id: 'retirement', label: t.calculators.retirement.title, icon: Sunset },
+        { id: 'child', label: t.calculators.child.title, icon: Baby },
+        { id: 'emi', label: t.calculators.emi.title, icon: Landmark },
+        { id: 'fd', label: t.calculators.fd.title, icon: PiggyBank },
+        { id: 'rd', label: t.calculators.rd.title, icon: Coins },
+        { id: 'hlv', label: t.calculators.hlv.title, icon: Umbrella },
+        { id: 'tax', label: t.calculators.tax.title, icon: ReceiptIndianRupee },
+        { id: 'delay', label: t.calculators.delay.title, icon: Clock }
     ];
 
     const getActiveComponent = () => {
@@ -104,7 +104,7 @@ const Calculators = () => {
                                         })()}
                                     </div>
                                     <div className="flex flex-col items-start text-left">
-                                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-600/50 leading-none mb-1">Select Tool</span>
+                                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary-theme/50 leading-none mb-1">Select Tool</span>
                                         <span className="text-base font-black text-slate-900 dark:text-white leading-tight">
                                             {tabs.find(t => t.id === activeTab)?.label}
                                         </span>

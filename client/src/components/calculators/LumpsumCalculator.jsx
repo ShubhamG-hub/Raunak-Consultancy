@@ -32,8 +32,8 @@ const LumpsumCalculator = () => {
     return (
         <div className="bg-white dark:bg-slate-800 p-5 md:p-8 rounded-[2rem] border border-slate-100 dark:border-slate-700 shadow-xl">
             <div className="flex items-center gap-4 mb-8">
-                <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-2xl flex items-center justify-center">
-                    <TrendingUp className="text-blue-600 w-6 h-6" />
+                <div className="w-12 h-12 bg-primary-theme/10 dark:bg-primary-theme/20 rounded-2xl flex items-center justify-center">
+                    <TrendingUp className="text-primary-theme w-6 h-6" />
                 </div>
                 <div>
                     <h3 className="text-xl font-black text-slate-900 dark:text-white">{t.calculators.lumpsum.title}</h3>
@@ -52,7 +52,7 @@ const LumpsumCalculator = () => {
                                     type="number"
                                     value={totalInvestment}
                                     onChange={(e) => setTotalInvestment(Number(e.target.value))}
-                                    className="pl-7 h-9 rounded-lg border-slate-200 focus:ring-blue-600 font-black text-blue-600"
+                                    className="pl-7 h-9 rounded-lg border-slate-200 focus:ring-primary-theme font-black text-primary-theme"
                                 />
                             </div>
                         </div>
@@ -60,7 +60,7 @@ const LumpsumCalculator = () => {
                             type="range" min="5000" max="10000000" step="5000"
                             value={totalInvestment}
                             onChange={(e) => setTotalInvestment(Number(e.target.value))}
-                            className="w-full h-2 bg-slate-100 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                            className="w-full h-2 bg-slate-100 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-primary-theme"
                         />
                     </div>
 
@@ -72,7 +72,7 @@ const LumpsumCalculator = () => {
                                     type="number"
                                     value={period}
                                     onChange={(e) => setPeriod(Number(e.target.value))}
-                                    className="pr-8 h-9 rounded-lg border-slate-200 focus:ring-blue-600 font-black text-blue-600"
+                                    className="pr-8 h-9 rounded-lg border-slate-200 focus:ring-primary-theme font-black text-primary-theme"
                                 />
                                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs font-bold">yr</span>
                             </div>
@@ -81,7 +81,7 @@ const LumpsumCalculator = () => {
                             type="range" min="1" max="40" step="1"
                             value={period}
                             onChange={(e) => setPeriod(Number(e.target.value))}
-                            className="w-full h-2 bg-slate-100 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                            className="w-full h-2 bg-slate-100 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-primary-theme"
                         />
                     </div>
 
@@ -93,7 +93,7 @@ const LumpsumCalculator = () => {
                                     type="number"
                                     value={expectedReturn}
                                     onChange={(e) => setExpectedReturn(Number(e.target.value))}
-                                    className="pr-8 h-9 rounded-lg border-slate-200 focus:ring-blue-600 font-black text-blue-600"
+                                    className="pr-8 h-9 rounded-lg border-slate-200 focus:ring-primary-theme font-black text-primary-theme"
                                 />
                                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold">%</span>
                             </div>
@@ -102,7 +102,7 @@ const LumpsumCalculator = () => {
                             type="range" min="1" max="30" step="0.5"
                             value={expectedReturn}
                             onChange={(e) => setExpectedReturn(Number(e.target.value))}
-                            className="w-full h-2 bg-slate-100 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                            className="w-full h-2 bg-slate-100 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-primary-theme"
                         />
                     </div>
                 </div>
@@ -118,14 +118,14 @@ const LumpsumCalculator = () => {
                         </div>
                         <div className="flex justify-between items-center p-3 rounded-xl hover:bg-white dark:hover:bg-slate-800 transition-colors">
                             <div className="flex items-center gap-3">
-                                <div className="w-2 h-2 rounded-full bg-blue-500" />
+                                <div className="w-2 h-2 rounded-full bg-primary-theme" />
                                 <span className="text-sm text-slate-500 dark:text-slate-400">{t.calculators.lumpsum.estReturns}</span>
                             </div>
-                            <span className="font-bold text-blue-600">{formatCurrency(results.estReturns)}</span>
+                            <span className="font-bold text-primary-theme">{formatCurrency(results.estReturns)}</span>
                         </div>
                         <div className="pt-6 border-t border-slate-200 dark:border-slate-700 flex justify-between items-center">
                             <span className="text-base font-black text-slate-900 dark:text-white">{t.calculators.lumpsum.totalValue}</span>
-                            <span className="text-2xl font-black text-blue-600">{formatCurrency(results.totalValue)}</span>
+                            <span className="text-2xl font-black text-primary-theme">{formatCurrency(results.totalValue)}</span>
                         </div>
                     </div>
 
@@ -136,7 +136,7 @@ const LumpsumCalculator = () => {
                         />
                         <div
                             style={{ height: '100%' }}
-                            className="flex-1 bg-blue-600 rounded-t-lg"
+                            className="flex-1 bg-primary-theme rounded-t-lg"
                         />
                     </div>
                 </div>

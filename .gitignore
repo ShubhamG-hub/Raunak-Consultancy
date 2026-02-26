@@ -27,6 +27,13 @@ Thumbs.db
 *.sln
 *.sw?
 
+# SSL Certificates
+*.pem
+server/ca.pem
+
+# Database
+*.sqlite
+
 # Temporary Files
 tmp/
 .temp/

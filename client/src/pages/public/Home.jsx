@@ -229,6 +229,18 @@ const Home = () => {
                 </div>
             </section>
 
+            {/* About Section */}
+            <motion.section
+                id="about"
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.8 }}
+                className="py-10 md:py-16 bg-white dark:bg-slate-900 transition-colors duration-500"
+            >
+                <About />
+            </motion.section>
+
             {/* Services Section */}
             <motion.section
                 id="services"
@@ -364,17 +376,6 @@ const Home = () => {
                 <Claims />
             </motion.section>
 
-            {/* About Section */}
-            <motion.section
-                id="about"
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ duration: 0.8 }}
-                className="py-10 md:py-16 bg-white dark:bg-slate-900 transition-colors duration-500"
-            >
-                <About />
-            </motion.section>
 
             {/* Certificates Section */}
             <motion.section

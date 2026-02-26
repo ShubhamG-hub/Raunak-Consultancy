@@ -1,0 +1,8 @@
+# Netlify Redirects for SPA Routing
+/*    /index.html   200
+
+# API Proxy to Render Backend
+# Replace [YOUR_RENDER_URL] with your actual Render deployment URL
+# Example: /api/* https://portfolio-server.onrender.com/api/:splat 200
+/api/*    [YOUR_RENDER_URL]/api/:splat    200
+/uploads/* [YOUR_RENDER_URL]/uploads/:splat 200

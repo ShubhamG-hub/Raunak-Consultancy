@@ -40,8 +40,8 @@ const HLVCalculator = () => {
     return (
         <div className="bg-white dark:bg-slate-800 p-5 md:p-8 rounded-[2rem] border border-slate-100 dark:border-slate-700 shadow-xl">
             <div className="flex items-center gap-4 mb-8">
-                <div className="w-12 h-12 bg-rose-100 dark:bg-rose-900/30 rounded-2xl flex items-center justify-center">
-                    <Umbrella className="text-rose-600 w-6 h-6" />
+                <div className="w-12 h-12 bg-primary-theme/10 dark:bg-primary-theme/20 rounded-2xl flex items-center justify-center">
+                    <Umbrella className="text-primary-theme w-6 h-6" />
                 </div>
                 <div>
                     <h3 className="text-xl font-black text-slate-900 dark:text-white">{t.calculators.hlv.title}</h3>
@@ -58,7 +58,7 @@ const HLVCalculator = () => {
                                 type="number"
                                 value={currentAge}
                                 onChange={(e) => setCurrentAge(Number(e.target.value))}
-                                className="h-12 rounded-xl border-slate-200 focus:ring-rose-500 font-black text-rose-600"
+                                className="h-12 rounded-xl border-slate-200 focus:ring-primary-theme font-black text-primary-theme"
                             />
                         </div>
                         <div className="space-y-2">
@@ -67,7 +67,7 @@ const HLVCalculator = () => {
                                 type="number"
                                 value={retirementAge}
                                 onChange={(e) => setRetirementAge(Number(e.target.value))}
-                                className="h-12 rounded-xl border-slate-200 focus:ring-rose-500 font-black text-rose-600"
+                                className="h-12 rounded-xl border-slate-200 focus:ring-primary-theme font-black text-primary-theme"
                             />
                         </div>
                     </div>
@@ -81,7 +81,7 @@ const HLVCalculator = () => {
                                     type="number"
                                     value={annualIncome}
                                     onChange={(e) => setAnnualIncome(Number(e.target.value))}
-                                    className="pl-7 h-9 rounded-lg border-slate-200 focus:ring-rose-600 font-black text-rose-600"
+                                    className="pl-7 h-9 rounded-lg border-slate-200 focus:ring-primary-theme font-black text-primary-theme"
                                 />
                             </div>
                         </div>
@@ -89,7 +89,7 @@ const HLVCalculator = () => {
                             type="range" min="100000" max="20000000" step="50000"
                             value={annualIncome}
                             onChange={(e) => setAnnualIncome(Number(e.target.value))}
-                            className="w-full h-2 bg-slate-100 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-rose-600"
+                            className="w-full h-2 bg-slate-100 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-primary-theme"
                         />
                     </div>
 
@@ -102,7 +102,7 @@ const HLVCalculator = () => {
                                     type="number"
                                     value={annualExpenses}
                                     onChange={(e) => setAnnualExpenses(Number(e.target.value))}
-                                    className="pl-7 h-9 rounded-lg border-slate-200 focus:ring-rose-600 font-black text-rose-600"
+                                    className="pl-7 h-9 rounded-lg border-slate-200 focus:ring-primary-theme font-black text-primary-theme"
                                 />
                             </div>
                         </div>
@@ -110,16 +110,16 @@ const HLVCalculator = () => {
                             type="range" min="50000" max="10000000" step="50000"
                             value={annualExpenses}
                             onChange={(e) => setAnnualExpenses(Number(e.target.value))}
-                            className="w-full h-2 bg-slate-100 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-rose-600"
+                            className="w-full h-2 bg-slate-100 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-primary-theme"
                         />
                     </div>
                 </div>
 
-                <div className="bg-gradient-to-br from-rose-500 to-pink-600 p-6 md:p-8 rounded-[1.5rem] text-white flex flex-col justify-center items-center text-center">
+                <div className="bg-gradient-to-br from-primary-theme to-accent-theme p-6 md:p-8 rounded-[1.5rem] text-white flex flex-col justify-center items-center text-center shadow-xl shadow-primary-theme/20">
                     <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6">
                         <Heart className="w-8 h-8 fill-current" />
                     </div>
-                    <h4 className="text-rose-100 text-sm font-bold uppercase tracking-widest mb-2">{t.calculators.hlv.insuranceCover}</h4>
+                    <h4 className="text-white/80 text-sm font-bold uppercase tracking-widest mb-2">{t.calculators.hlv.insuranceCover}</h4>
                     <motion.span
                         key={hlv}
                         initial={{ opacity: 0, y: 10 }}
@@ -128,7 +128,7 @@ const HLVCalculator = () => {
                     >
                         {formatCurrency(hlv)}
                     </motion.span>
-                    <p className="text-rose-100/70 text-xs leading-relaxed max-w-[250px]">
+                    <p className="text-white/70 text-xs leading-relaxed max-w-[250px]">
                         This is the estimated amount of life cover required to replace your income for your family's future.
                     </p>
                 </div>

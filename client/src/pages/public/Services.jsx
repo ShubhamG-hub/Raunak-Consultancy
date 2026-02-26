@@ -62,7 +62,7 @@ const Services = () => {
                 />
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {categories.slice(0, 5).map((category, index) => {
+                    {categories.slice(0, 6).map((category, index) => {
                         const Icon = iconMap[category.icon] || Layout;
                         return (
                             <motion.div
@@ -109,27 +109,7 @@ const Services = () => {
                         );
                     })}
 
-                    {/* 6th Card: All Services */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.5, delay: 0.6 }}
-                    >
-                        <Link to="/services">
-                            <Card className="group h-full rounded-[2rem] border-dashed border-2 border-primary-theme/30 bg-primary-theme/5 hover:bg-primary-theme/10 transition-all duration-500 overflow-hidden cursor-pointer flex flex-col items-center justify-center p-6 md:p-8 text-center ring-1 ring-primary-theme/10 hover:ring-primary-theme/20 shadow-xl shadow-primary-theme/5">
-                                <div className="w-16 h-16 rounded-full bg-primary-theme text-white flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500 shadow-lg shadow-primary-theme/30">
-                                    <ArrowRight className="w-8 h-8" />
-                                </div>
-                                <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-3 font-heading uppercase tracking-tight">
-                                    {t.services.exploreAll}
-                                </h3>
-                                <p className="text-slate-600 dark:text-slate-400 text-sm font-bold uppercase tracking-widest opacity-80 group-hover:opacity-100 transition-opacity">
-                                    Browse all categories & plans
-                                </p>
-                            </Card>
-                        </Link>
-                    </motion.div>
+
                 </div>
 
                 <div className="mt-16 text-center">
