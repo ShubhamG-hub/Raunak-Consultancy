@@ -81,10 +81,12 @@ app.get('/api/test-db', async (req, res) => {
         res.json({
             status: 'success',
             message: 'MySQL Database Connected Successfully',
-            config: {
-                host: process.env.DB_HOST || 'localhost',
-                user: process.env.DB_USER || 'root',
-                database: process.env.DB_NAME || 'portfolio_db'
+            diagnostics: {
+                host: process.env.DB_HOST ? `${process.env.DB_HOST.substring(0, 5)}...` : 'not set',
+                hostLength: process.env.DB_HOST ? process.env.DB_HOST.length : 0,
+                userLength: process.env.DB_USER ? process.env.DB_USER.length : 0,
+                port: process.env.DB_PORT,
+                sslEnabled: !!(process.env.DB_HOST && process.env.DB_HOST.includes('aivencloud.com'))
             }
         });
     } catch (err) {
@@ -93,7 +95,12 @@ app.get('/api/test-db', async (req, res) => {
             message: 'MySQL Connection Failed',
             error: err.message,
             code: err.code,
-            stack: err.stack
+            diagnostics: {
+                hostLength: process.env.DB_HOST ? process.env.DB_HOST.length : 0,
+                userLength: process.env.DB_USER ? process.env.DB_USER.length : 0,
+                port: process.env.DB_PORT,
+                dbName: process.env.DB_NAME
+            }
         });
     }
 });
