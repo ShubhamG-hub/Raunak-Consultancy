@@ -22,8 +22,9 @@ const CategoryPage = () => {
                     api.get('/categories')
                 ]);
 
-                setServices(servicesRes.data);
-                const currentCat = categoriesRes.data.find(c => c.slug === categorySlug);
+                setServices(Array.isArray(servicesRes.data) ? servicesRes.data : []);
+                const cats = Array.isArray(categoriesRes.data) ? categoriesRes.data : [];
+                const currentCat = cats.find(c => c.slug === categorySlug);
                 setCategory(currentCat);
             } catch (err) {
                 console.error('Failed to fetch category services:', err);

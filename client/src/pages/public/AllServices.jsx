@@ -29,9 +29,12 @@ const AllServices = () => {
                     api.get('/categories')
                 ]);
 
+                const servicesData = Array.isArray(servicesRes.data) ? servicesRes.data : [];
+                const categoriesData = Array.isArray(categoriesRes.data) ? categoriesRes.data : [];
+
                 // Only active services and categories
-                const activeServices = servicesRes.data.filter(s => s.is_active === 1 || s.is_active === true);
-                const activeCategories = categoriesRes.data.filter(c => c.is_active === 1 || c.is_active === true);
+                const activeServices = servicesData.filter(s => s.is_active === 1 || s.is_active === true);
+                const activeCategories = categoriesData.filter(c => c.is_active === 1 || c.is_active === true);
 
                 setServices(activeServices);
                 setCategories(activeCategories);
