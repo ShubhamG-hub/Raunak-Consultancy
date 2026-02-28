@@ -82,11 +82,9 @@ app.get('/api/test-db', async (req, res) => {
             status: 'success',
             message: 'MySQL Database Connected Successfully',
             diagnostics: {
-                host: process.env.DB_HOST ? `${process.env.DB_HOST.substring(0, 5)}...` : 'not set',
-                hostLength: process.env.DB_HOST ? process.env.DB_HOST.length : 0,
-                userLength: process.env.DB_USER ? process.env.DB_USER.length : 0,
-                port: process.env.DB_PORT,
-                sslEnabled: !!(process.env.DB_HOST && process.env.DB_HOST.includes('aivencloud.com'))
+                host: process.env.DB_HOST || 'localhost',
+                port: process.env.DB_PORT || 3306,
+                database: process.env.DB_NAME
             }
         });
     } catch (err) {
@@ -96,10 +94,9 @@ app.get('/api/test-db', async (req, res) => {
             error: err.message,
             code: err.code,
             diagnostics: {
-                hostLength: process.env.DB_HOST ? process.env.DB_HOST.length : 0,
-                userLength: process.env.DB_USER ? process.env.DB_USER.length : 0,
-                port: process.env.DB_PORT,
-                dbName: process.env.DB_NAME
+                host: process.env.DB_HOST || 'localhost',
+                port: process.env.DB_PORT || 3306,
+                database: process.env.DB_NAME
             }
         });
     }
@@ -109,26 +106,7 @@ app.get('/api/test-db', async (req, res) => {
 
 // Global Error Handler
 app.use((err, req, res, next) => {
-    const errorDetail = {
-        timestamp: new Date().toISOString(),
-        message: err.message,
-        stack: err.stack,
-        url: req.url,
-        method: req.method,
-        headers: req.headers,
-        body: req.body
-    };
-
-    const isVercel = !!process.env.VERCEL;
-    const logPath = isVercel ? '/tmp/error.log' : path.join(__dirname, 'error.log');
-
-    try {
-        fs.appendFileSync(logPath, JSON.stringify(errorDetail, null, 2) + '\n');
-    } catch (logErr) {
-        // Silently fail if fs is read-only (standard for serverless)
-    }
-
-    console.error('🔴 Server Error:', errorDetail);
+    console.error('🔴 Server Error:', err.message);
 
     res.status(500).json({
         error: 'Something went wrong!',
@@ -141,11 +119,6 @@ app.use((err, req, res, next) => {
 // Start Server
 app.listen(PORT, () => {
     console.log(`✅ Server running on http://localhost:${PORT}`);
-    const logPath = path.join(__dirname, 'error.log');
-    const startupMsg = `✅ Server started at ${new Date().toISOString()} on http://localhost:${PORT}\n`;
-    try {
-        fs.appendFileSync(logPath, startupMsg);
-    } catch (e) { }
 });
 
 module.exports = app;
