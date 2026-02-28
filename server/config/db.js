@@ -20,28 +20,14 @@ requiredVars.forEach(v => {
     if (!process.env[v]) console.warn(`⚠️  Missing Environment Variable: ${v}`);
 });
 
-// Add SSL for Aiven/Cloud DB
-if (poolConfig.host.includes('aivencloud.com') || process.env.DB_SSL === 'true') {
+// Add SSL for Cloud DB
+if (poolConfig.host.includes('mysql.services.clever-cloud.com') || process.env.DB_SSL === 'true') {
     let caContent = null;
 
-    // 1. Try environment variable first (most reliable on Render)
+    // Try environment variable first (most reliable on Render/Vercel)
     if (process.env.DB_SSL_CA) {
         caContent = process.env.DB_SSL_CA;
         console.log('🔒 Using SSL CA from Environment Variable');
-    } else {
-        // 2. Try file-based CA
-        const caPaths = [
-            path.join(__dirname, '../ca.pem'),
-            path.join(process.cwd(), 'ca.pem'),
-            path.join(process.cwd(), 'server/ca.pem'),
-            path.join(__dirname, '../../ca.pem')
-        ];
-
-        const caPath = caPaths.find(p => fs.existsSync(p));
-        if (caPath) {
-            caContent = fs.readFileSync(caPath);
-            console.log('🔒 Using SSL CA from file:', caPath);
-        }
     }
 
     if (caContent) {
@@ -61,21 +47,20 @@ if (poolConfig.host.includes('aivencloud.com') || process.env.DB_SSL === 'true')
 
 // Test connection with detailed logging
 console.log('📡 Attempting to connect to database:');
-console.log(`   Host: ${poolConfig.host} (Length: ${poolConfig.host.length})`);
+console.log(`   Host: ${poolConfig.host}`);
 console.log(`   Port: ${poolConfig.port}`);
-console.log(`   User: ${poolConfig.user} (Length: ${poolConfig.user.length})`);
+console.log(`   User: ${poolConfig.user}`);
 console.log(`   Database: ${poolConfig.database}`);
 
 const pool = mysql.createPool(poolConfig);
 
 pool.getConnection()
     .then(conn => {
-        console.log('🚀 Connected to Aiven MySQL Successfully!');
+        console.log('🚀 Connected to Database Successfully!');
         conn.release();
     })
     .catch(err => {
         console.error('❌ Database Connection Error!');
-        console.error('Error Name:', err.name);
         console.error('Error Code:', err.code);
         console.error('Error Message:', err.message);
         if (err.code === 'PROTOCOL_CONNECTION_LOST') {
