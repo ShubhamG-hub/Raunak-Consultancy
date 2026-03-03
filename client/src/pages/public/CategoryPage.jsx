@@ -3,12 +3,14 @@ import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight, ArrowLeft, Briefcase, CheckCircle2, ChevronRight, Layout } from 'lucide-react';
 import api from '@/lib/api';
+import { useLanguage } from '@/context/useLanguage';
 import SectionHeader from '@/components/layout/SectionHeader';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 
 const CategoryPage = () => {
     const { categorySlug } = useParams();
+    const { language, t } = useLanguage();
     const [services, setServices] = useState([]);
     const [loading, setLoading] = useState(true);
     const [category, setCategory] = useState(null);
@@ -34,7 +36,7 @@ const CategoryPage = () => {
         };
 
         fetchCategoryData();
-    }, [categorySlug]);
+    }, [categorySlug, language]);
 
     if (loading) {
         return (
@@ -47,10 +49,10 @@ const CategoryPage = () => {
     if (!category && !loading) {
         return (
             <div className="min-h-[60vh] flex flex-col items-center justify-center text-center px-6">
-                <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-4">Category Not Found</h2>
-                <p className="text-slate-600 dark:text-slate-400 mb-8">The category you are looking for does not exist or has been removed.</p>
+                <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-4">{t.common.categoryNotFound}</h2>
+                <p className="text-slate-600 dark:text-slate-400 mb-8">{t.common.categoryNotFoundDesc}</p>
                 <Link to="/#services">
-                    <Button className="bg-primary-theme text-white rounded-xl">Back to Services</Button>
+                    <Button className="bg-primary-theme text-white rounded-xl">{t.common.backToServices}</Button>
                 </Link>
             </div>
         );
@@ -65,20 +67,20 @@ const CategoryPage = () => {
                     className="inline-flex items-center gap-2 text-primary-theme font-black text-xs uppercase tracking-[0.2em] mb-6 hover:translate-x-[-4px] transition-transform"
                 >
                     <ArrowLeft className="w-4 h-4" />
-                    Back to Services
+                    {t.common.backToServices}
                 </Link>
                 {/* Breadcrumbs */}
                 <nav className="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-[0.2em] mb-8">
-                    <Link to="/" className="hover:text-primary-theme transition-colors">Home</Link>
+                    <Link to="/" className="hover:text-primary-theme transition-colors">{t.nav.home}</Link>
                     <ChevronRight className="w-3 h-3" />
-                    <Link to="/services" className="hover:text-primary-theme transition-colors">Services</Link>
+                    <Link to="/services" className="hover:text-primary-theme transition-colors">{t.nav.services}</Link>
                     <ChevronRight className="w-3 h-3" />
                     <span className="text-slate-900 dark:text-white">{category?.name}</span>
                 </nav>
 
                 <SectionHeader
                     title={category?.name}
-                    description={category?.description || `Explore our expert ${category?.name} designed to secure your financial future.`}
+                    description={category?.description || t.services.defaultServiceDesc}
                 />
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
@@ -117,7 +119,7 @@ const CategoryPage = () => {
                                         )}
 
                                         <div className="flex items-center gap-2 text-primary-theme font-black text-xs uppercase tracking-[0.2em] group">
-                                            <span>Learn More</span>
+                                            <span>{t.common.learnMore}</span>
                                             <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                                         </div>
                                     </CardContent>
@@ -130,8 +132,8 @@ const CategoryPage = () => {
                 {services.length === 0 && (
                     <div className="text-center py-20 bg-slate-50 dark:bg-slate-900/50 rounded-[3rem] border-2 border-dashed border-slate-200 dark:border-slate-800">
                         <Layout className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-                        <h3 className="text-xl font-bold text-slate-900 dark:text-white">No Services Found</h3>
-                        <p className="text-slate-500 mt-2">We are currently updating our offerings for this category.</p>
+                        <h3 className="text-xl font-bold text-slate-900 dark:text-white">{t.common.noServicesFound}</h3>
+                        <p className="text-slate-500 mt-2">{t.common.noServicesDesc}</p>
                     </div>
                 )}
             </div>

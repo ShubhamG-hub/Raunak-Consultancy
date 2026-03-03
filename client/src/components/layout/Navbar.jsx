@@ -168,7 +168,7 @@ const Navbar = () => {
                             initial={{ height: 0, opacity: 0 }}
                             animate={{ height: '60px', opacity: 1 }}
                             exit={{ height: 0, opacity: 0 }}
-                            className="bg-slate-950 dark:bg-black text-white/90 border-b border-white/5 overflow-hidden relative"
+                            className="bg-slate-950 dark:bg-black text-white/90 border-b border-white/5 relative z-10"
                         >
                             {/* Theme accent blur */}
                             <div className="absolute top-0 right-0 w-64 h-full bg-primary-theme/10 blur-3xl -z-10" />
@@ -225,8 +225,8 @@ const Navbar = () => {
                     }`}>
 
                     {/* Background decoration */}
-                    <div className="absolute -top-24 -left-24 w-64 h-64 bg-primary-theme/5 blur-[100px] rounded-full" />
-                    <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-primary-theme/5 blur-[100px] rounded-full" />
+                    <div className="absolute -top-24 -left-24 w-64 h-64 bg-primary-theme/5 blur-[100px] rounded-full pointer-events-none" />
+                    <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-primary-theme/5 blur-[100px] rounded-full pointer-events-none" />
 
                     <div className="container mx-auto px-4 xl:px-6 flex items-center h-20 relative z-10 gap-4 xl:gap-4">
                         {/* Branding Area - Left Column */}
@@ -244,7 +244,7 @@ const Navbar = () => {
                                         <div className="h-[2px] w-8 bg-primary-theme/40 rounded-full overflow-hidden shrink-0">
                                             <div className="h-full w-full bg-primary-theme animate-[shimmer_2s_infinite]" />
                                         </div>
-                                        <span className="text-[8px] xl:text-[10px] font-black text-primary-theme/80 uppercase tracking-[0.2em] whitespace-nowrap">Financial Consultancy</span>
+                                        <span className="text-[8px] xl:text-[10px] font-black text-primary-theme/80 uppercase tracking-[0.2em] whitespace-nowrap">Financial Planner</span>
                                     </div>
                                 </div>
                             </Link>

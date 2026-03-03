@@ -3,6 +3,7 @@ const router = express.Router();
 const db = require('../config/db');
 const authMiddleware = require('../middleware/authMiddleware');
 const { v4: uuidv4 } = require('uuid');
+const { translateContent } = require('../services/translateService');
 
 // Helper to generate slug
 const generateSlug = (text) => {
@@ -14,9 +15,13 @@ const generateSlug = (text) => {
 
 // GET /api/services - Get all services
 router.get('/', async (req, res) => {
+    const lang = req.headers['accept-language-code'] || req.query.lang || 'en';
+    const fields = ['title', 'short_description', 'full_description', 'benefits', 'features'];
+    const selectFields = fields.map(f => `s.${f}_${lang} as ${f}`).join(', ');
+
     try {
         const [rows] = await db.query(`
-            SELECT s.*, c.name as category_name, c.slug as category_slug 
+            SELECT s.*, ${selectFields}, c.name as category_name, c.slug as category_slug 
             FROM services s 
             LEFT JOIN categories c ON s.category_id = c.id 
             ORDER BY s.display_order ASC, s.created_at DESC
@@ -31,9 +36,13 @@ router.get('/', async (req, res) => {
 // GET /api/services/category/:categorySlug - Get services by category
 router.get('/category/:categorySlug', async (req, res) => {
     const { categorySlug } = req.params;
+    const lang = req.headers['accept-language-code'] || req.query.lang || 'en';
+    const fields = ['title', 'short_description', 'full_description', 'benefits', 'features'];
+    const selectFields = fields.map(f => `s.${f}_${lang} as ${f}`).join(', ');
+
     try {
         const [rows] = await db.query(`
-            SELECT s.*, c.name as category_name, c.slug as category_slug 
+            SELECT s.*, ${selectFields}, c.name as category_name, c.slug as category_slug 
             FROM services s 
             JOIN categories c ON s.category_id = c.id 
             WHERE c.slug = ? AND s.is_active = 1
@@ -49,9 +58,13 @@ router.get('/category/:categorySlug', async (req, res) => {
 // GET /api/services/:categorySlug/:serviceSlug - Get specific service detail
 router.get('/:categorySlug/:serviceSlug', async (req, res) => {
     const { categorySlug, serviceSlug } = req.params;
+    const lang = req.headers['accept-language-code'] || req.query.lang || 'en';
+    const fields = ['title', 'short_description', 'full_description', 'benefits', 'features'];
+    const selectFields = fields.map(f => `s.${f}_${lang} as ${f}`).join(', ');
+
     try {
         const [rows] = await db.query(`
-            SELECT s.*, c.name as category_name, c.slug as category_slug 
+            SELECT s.*, ${selectFields}, c.name as category_name, c.slug as category_slug 
             FROM services s 
             JOIN categories c ON s.category_id = c.id 
             WHERE c.slug = ? AND s.slug = ? AND s.is_active = 1
@@ -81,15 +94,31 @@ router.post('/', authMiddleware, async (req, res) => {
     const finalSlug = slug || generateSlug(title);
 
     try {
+        // Auto-translate translatable fields
+        const translations = await translateContent({
+            title, short_description, full_description, benefits, features
+        });
+
         const id = uuidv4();
         await db.query(
             `INSERT INTO services (
-                id, category_id, title, slug, short_description, full_description, 
-                benefits, features, is_active, display_order
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                id, category_id, 
+                title_en, title_hi, title_mr,
+                slug, 
+                short_description_en, short_description_hi, short_description_mr,
+                full_description_en, full_description_hi, full_description_mr,
+                benefits_en, benefits_hi, benefits_mr,
+                features_en, features_hi, features_mr,
+                is_active, display_order
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
             [
-                id, category_id, title, finalSlug, short_description || null, full_description || null,
-                JSON.stringify(benefits || []), JSON.stringify(features || []),
+                id, category_id,
+                translations.en.title, translations.hi.title, translations.mr.title,
+                finalSlug,
+                translations.en.short_description, translations.hi.short_description, translations.mr.short_description,
+                translations.en.full_description, translations.hi.full_description, translations.mr.full_description,
+                JSON.stringify(translations.en.benefits || []), JSON.stringify(translations.hi.benefits || []), JSON.stringify(translations.mr.benefits || []),
+                JSON.stringify(translations.en.features || []), JSON.stringify(translations.hi.features || []), JSON.stringify(translations.mr.features || []),
                 is_active !== undefined ? is_active : true, display_order || 0
             ]
         );
@@ -116,15 +145,30 @@ router.put('/:id', authMiddleware, async (req, res) => {
     try {
         const finalSlug = slug || generateSlug(title);
 
+        // Auto-translate translatable fields
+        const translations = await translateContent({
+            title, short_description, full_description, benefits, features
+        });
+
         await db.query(
             `UPDATE services SET 
-                category_id = ?, title = ?, slug = ?, short_description = ?, 
-                full_description = ?, benefits = ?, features = ?, 
+                category_id = ?, 
+                title_en = ?, title_hi = ?, title_mr = ?,
+                slug = ?, 
+                short_description_en = ?, short_description_hi = ?, short_description_mr = ?,
+                full_description_en = ?, full_description_hi = ?, full_description_mr = ?,
+                benefits_en = ?, benefits_hi = ?, benefits_mr = ?,
+                features_en = ?, features_hi = ?, features_mr = ?,
                 is_active = ?, display_order = ?
             WHERE id = ?`,
             [
-                category_id, title, finalSlug, short_description, full_description,
-                JSON.stringify(benefits || []), JSON.stringify(features || []),
+                category_id,
+                translations.en.title, translations.hi.title, translations.mr.title,
+                finalSlug,
+                translations.en.short_description, translations.hi.short_description, translations.mr.short_description,
+                translations.en.full_description, translations.hi.full_description, translations.mr.full_description,
+                JSON.stringify(translations.en.benefits || []), JSON.stringify(translations.hi.benefits || []), JSON.stringify(translations.mr.benefits || []),
+                JSON.stringify(translations.en.features || []), JSON.stringify(translations.hi.features || []), JSON.stringify(translations.mr.features || []),
                 is_active, display_order, id
             ]
         );

@@ -13,7 +13,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 
 const AllServices = () => {
-    const { t } = useLanguage();
+    const { t, language } = useLanguage();
     const [services, setServices] = useState([]);
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -46,7 +46,7 @@ const AllServices = () => {
         };
 
         fetchData();
-    }, []);
+    }, [language]);
 
     const filteredServices = services.filter(service => {
         const matchesSearch =
@@ -194,13 +194,13 @@ const AllServices = () => {
                                     </div>
                                 </div>
                                 <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2">{t.services.noServicesFound}</h3>
-                                <p className="text-slate-500 font-medium">Try different keywords or check other categories.</p>
+                                <p className="text-slate-500 font-medium">{t.services.noServicesFoundDesc || 'Try different keywords or check other categories.'}</p>
                                 <Button
                                     variant="outline"
                                     onClick={() => { setSearchTerm(''); setSelectedCategory('All'); }}
                                     className="mt-8 rounded-xl border-primary-theme text-primary-theme font-bold"
                                 >
-                                    Reset Filters
+                                    {t.services.resetFilters || 'Reset Filters'}
                                 </Button>
                             </motion.div>
                         )}

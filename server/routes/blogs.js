@@ -4,6 +4,7 @@ const db = require('../config/db');
 const { v4: uuidv4 } = require('uuid');
 const authMiddleware = require('../middleware/authMiddleware');
 const Joi = require('joi');
+const { translateContent } = require('../services/translateService');
 
 const blogSchema = Joi.object({
     title: Joi.string().required(),
@@ -15,11 +16,52 @@ const blogSchema = Joi.object({
     published: Joi.boolean().default(false)
 });
 
-// GET /api/blogs - Fetch all published blogs
-router.get('/', async (req, res) => {
+// GET /api/blogs/public - Fetch all published blogs for public view
+router.get('/public', async (req, res) => {
+    const lang = req.headers['accept-language-code'] || req.query.lang || 'en';
+    const fields = ['title', 'excerpt', 'content'];
+    const selectFields = fields.map(f => `${f}_${lang} as ${f}`).join(', ');
+
     try {
         const [rows] = await db.query(
-            'SELECT * FROM blogs WHERE published = true ORDER BY created_at DESC'
+            `SELECT *, ${selectFields} FROM blogs WHERE published = true ORDER BY created_at DESC`
+        );
+        res.json(rows);
+    } catch (err) {
+        console.error('Failed to fetch blogs:', err);
+        res.status(500).json({ error: 'Failed to fetch blogs' });
+    }
+});
+
+// GET /api/blogs/public/:slug - Fetch single blog by slug for public view
+router.get('/public/:slug', async (req, res) => {
+    const lang = req.headers['accept-language-code'] || req.query.lang || 'en';
+    const fields = ['title', 'excerpt', 'content'];
+    const selectFields = fields.map(f => `${f}_${lang} as ${f}`).join(', ');
+
+    try {
+        const [rows] = await db.query(
+            `SELECT *, ${selectFields} FROM blogs WHERE slug = ? AND published = true`,
+            [req.params.slug]
+        );
+
+        if (rows.length === 0) return res.status(404).json({ error: 'Blog not found' });
+        res.json(rows[0]);
+    } catch (err) {
+        console.error('Failed to fetch blog:', err);
+        res.status(404).json({ error: 'Blog not found' });
+    }
+});
+
+// GET /api/blogs - Fetch all published blogs (Base/Admin)
+router.get('/', async (req, res) => {
+    const lang = req.headers['accept-language-code'] || req.query.lang || 'en';
+    const fields = ['title', 'excerpt', 'content'];
+    const selectFields = fields.map(f => `${f}_${lang} as ${f}`).join(', ');
+
+    try {
+        const [rows] = await db.query(
+            `SELECT *, ${selectFields} FROM blogs WHERE published = true ORDER BY created_at DESC`
         );
 
         res.json(rows);
@@ -31,9 +73,13 @@ router.get('/', async (req, res) => {
 
 // GET /api/blogs/:slug - Fetch single blog by slug
 router.get('/:slug', async (req, res) => {
+    const lang = req.headers['accept-language-code'] || req.query.lang || 'en';
+    const fields = ['title', 'excerpt', 'content'];
+    const selectFields = fields.map(f => `${f}_${lang} as ${f}`).join(', ');
+
     try {
         const [rows] = await db.query(
-            'SELECT * FROM blogs WHERE slug = ? AND published = true',
+            `SELECT *, ${selectFields} FROM blogs WHERE slug = ? AND published = true`,
             [req.params.slug]
         );
 
@@ -56,10 +102,28 @@ router.post('/', authMiddleware, async (req, res) => {
 
     try {
         const { title, slug, excerpt, content, image_url, category, published } = value;
+
+        // Auto-translate translatable fields
+        const translations = await translateContent({ title, excerpt, content });
+
         const blogId = uuidv4();
         await db.query(
-            'INSERT INTO blogs (id, title, slug, excerpt, content, image_url, category, published) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-            [blogId, title, slug, excerpt, content, image_url, category, published]
+            `INSERT INTO blogs (
+                id, 
+                title_en, title_hi, title_mr,
+                slug, 
+                excerpt_en, excerpt_hi, excerpt_mr,
+                content_en, content_hi, content_mr,
+                image_url, category, published
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [
+                blogId,
+                translations.en.title, translations.hi.title, translations.mr.title,
+                slug,
+                translations.en.excerpt, translations.hi.excerpt, translations.mr.excerpt,
+                translations.en.content, translations.hi.content, translations.mr.content,
+                image_url, category, published
+            ]
         );
 
         res.json({ id: blogId, title, slug, excerpt, content, image_url, category, published });
@@ -98,9 +162,25 @@ router.put('/:id', authMiddleware, async (req, res) => {
 
     try {
         const { title, slug, excerpt, content, image_url, category, published } = value;
+
+        // Auto-translate translatable fields
+        const translations = await translateContent({ title, excerpt, content });
+
         const [result] = await db.query(
-            'UPDATE blogs SET title = ?, slug = ?, excerpt = ?, content = ?, image_url = ?, category = ?, published = ? WHERE id = ?',
-            [title, slug, excerpt, content, image_url, category, published, req.params.id]
+            `UPDATE blogs SET 
+                title_en = ?, title_hi = ?, title_mr = ?,
+                slug = ?, 
+                excerpt_en = ?, excerpt_hi = ?, excerpt_mr = ?,
+                content_en = ?, content_hi = ?, content_mr = ?,
+                image_url = ?, category = ?, published = ? 
+            WHERE id = ?`,
+            [
+                translations.en.title, translations.hi.title, translations.mr.title,
+                slug,
+                translations.en.excerpt, translations.hi.excerpt, translations.mr.excerpt,
+                translations.en.content, translations.hi.content, translations.mr.content,
+                image_url, category, published, req.params.id
+            ]
         );
 
         if (result.affectedRows === 0) return res.status(404).json({ error: 'Blog not found' });

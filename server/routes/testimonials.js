@@ -6,6 +6,7 @@ const authMiddleware = require('../middleware/authMiddleware');
 const notificationService = require('../services/notificationService');
 const Joi = require('joi');
 const { createNotification } = require('./notifications');
+const { translateContent } = require('../services/translateService');
 
 const testimonialSchema = Joi.object({
     name: Joi.string().pattern(/^[a-zA-Z\s]+$/).message('Name must contain only letters').required(),
@@ -23,11 +24,22 @@ router.post('/', complianceFilter, async (req, res) => {
     if (error) return res.status(400).json({ error: error.details[0].message });
 
     try {
+        // Auto-translate translatable fields
+        const translations = await translateContent({ content: value.content });
+
         const testimonialId = uuidv4();
         const tDate = value.testimonial_date || new Date();
         await db.query(
-            'INSERT INTO testimonials (id, name, email, content, rating, status, testimonial_date) VALUES (?, ?, ?, ?, ?, ?, ?)',
-            [testimonialId, value.name, value.email, value.content, value.rating, 'Pending', tDate]
+            `INSERT INTO testimonials (
+                id, name, email, 
+                content_en, content_hi, content_mr, 
+                rating, status, testimonial_date
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [
+                testimonialId, value.name, value.email,
+                translations.en.content, translations.hi.content, translations.mr.content,
+                value.rating, 'Pending', tDate
+            ]
         );
 
         console.log('✅ Testimonial inserted successfully:', testimonialId);
@@ -56,9 +68,11 @@ router.post('/', complianceFilter, async (req, res) => {
 
 // GET /api/testimonials (Public - Approved Only)
 router.get('/public', async (req, res) => {
+    const lang = req.headers['accept-language-code'] || req.query.lang || 'en';
+
     try {
         const [rows] = await db.query(
-            'SELECT * FROM testimonials WHERE status = "Approved" ORDER BY created_at DESC'
+            `SELECT *, content_${lang} as content FROM testimonials WHERE status = "Approved" ORDER BY created_at DESC`
         );
         res.json(rows);
     } catch (err) {
@@ -69,9 +83,11 @@ router.get('/public', async (req, res) => {
 
 // GET /api/testimonials (Admin - All)
 router.get('/', authMiddleware, async (req, res) => {
+    const lang = req.headers['accept-language-code'] || req.query.lang || 'en';
+
     try {
         const [rows] = await db.query(
-            'SELECT * FROM testimonials ORDER BY created_at DESC'
+            `SELECT *, content_${lang} as content FROM testimonials ORDER BY created_at DESC`
         );
         res.json(rows);
     } catch (err) {
@@ -86,11 +102,22 @@ router.post('/admin', authMiddleware, async (req, res) => {
     if (error) return res.status(400).json({ error: error.details[0].message });
 
     try {
+        // Auto-translate translatable fields
+        const translations = await translateContent({ content: value.content });
+
         const testimonialId = uuidv4();
         const tDate = value.testimonial_date || new Date();
         await db.query(
-            'INSERT INTO testimonials (id, name, content, rating, status, testimonial_date) VALUES (?, ?, ?, ?, ?, ?)',
-            [testimonialId, value.name, value.content, value.rating, 'Approved', tDate]
+            `INSERT INTO testimonials (
+                id, name, 
+                content_en, content_hi, content_mr, 
+                rating, status, testimonial_date
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+            [
+                testimonialId, value.name,
+                translations.en.content, translations.hi.content, translations.mr.content,
+                value.rating, 'Approved', tDate
+            ]
         );
 
         res.status(201).json({
@@ -127,10 +154,21 @@ router.put('/:id', authMiddleware, async (req, res) => {
     if (error) return res.status(400).json({ error: error.details[0].message });
 
     try {
+        // Auto-translate translatable fields
+        const translations = await translateContent({ content: value.content });
+
         const tDate = value.testimonial_date || new Date();
         const [result] = await db.query(
-            'UPDATE testimonials SET name = ?, email = ?, content = ?, rating = ?, status = ?, testimonial_date = ? WHERE id = ?',
-            [value.name, value.email || null, value.content, value.rating, status || 'Approved', tDate, req.params.id]
+            `UPDATE testimonials SET 
+                name = ?, email = ?, 
+                content_en = ?, content_hi = ?, content_mr = ?, 
+                rating = ?, status = ?, testimonial_date = ? 
+            WHERE id = ?`,
+            [
+                value.name, value.email || null,
+                translations.en.content, translations.hi.content, translations.mr.content,
+                value.rating, status || 'Approved', tDate, req.params.id
+            ]
         );
 
         if (result.affectedRows === 0) return res.status(404).json({ error: 'Testimonial not found' });

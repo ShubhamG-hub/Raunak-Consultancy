@@ -24,7 +24,7 @@ const ICON_MAP = {
 };
 
 const AboutDetails = () => {
-    useLanguage();
+    const { language } = useLanguage();
     const [sections, setSections] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -40,9 +40,9 @@ const AboutDetails = () => {
             }
         };
         fetchContent();
-    }, []);
+    }, [language]);
 
-    if (loading) return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+    if (loading) return <div className="min-h-screen flex items-center justify-center">{t.aboutDetails?.loading || 'Loading...'}</div>;
 
     const milestones = sections.filter(s => s.section_type === 'milestone').sort((a, b) => a.order_index - b.order_index);
     const stats = sections.filter(s => s.section_type === 'stat').sort((a, b) => a.order_index - b.order_index);
@@ -53,11 +53,11 @@ const AboutDetails = () => {
         return item ? item.description : defaultValue;
     };
 
-    const heroTitle = getGeneral('Hero Main Title', 'From 2008 to 2024: Building Trust, One Family at a Time');
+    const heroTitle = getGeneral('Hero Main Title', 'From 2009 to 2026: Building Trust, One Family at a Time');
     const heroHighlight = getGeneral('Hero Highlight Text', 'Building Trust, One Family at a Time');
     const bioParagraphs = [
         getGeneral('Bio Paragraph 1', "My journey in financial services began more than two decades ago with a simple observation: most families worked incredibly hard for their money, but their money didn't work for them. There was a massive gap between earning and strategic wealth creation."),
-        getGeneral('Bio Paragraph 2', "In 2008, I decided to bridge this gap. I set out with a mission to simplify finance and bring institutional-grade investment strategies to every household. Whether it's planning for a child's Ivy League education or building a comfortable retirement corpus, I believe every dream deserves a roadmap."),
+        getGeneral('Bio Paragraph 2', "In 2009, I decided to bridge this gap. I set out with a mission to simplify finance and bring institutional-grade investment strategies to every household. Whether it's planning for a child's Ivy League education or building a comfortable retirement corpus, I believe every dream deserves a roadmap."),
         getGeneral('Bio Paragraph 3', "Over the years, Raunak Consultancy has evolved into a trusted name for financial advisory. But beyond the numbers and portfolios, what drives me is the \"Peace of Mind\" I see on a parent's face when they know their family's future is secure.")
     ];
     const advisorName = getGeneral('Advisor Name', 'Sudhir Mewalal Gupta');
@@ -85,8 +85,8 @@ const AboutDetails = () => {
                                 />
                                 <div className="absolute -bottom-3 -right-3 md:-bottom-6 md:-right-6 bg-primary-theme text-white p-3 md:p-6 rounded-2xl md:rounded-3xl shadow-2xl flex flex-col items-center">
                                     <Star className="w-4 h-4 md:w-6 md:h-6 mb-1 fill-white" />
-                                    <span className="text-base md:text-xl font-black">25+</span>
-                                    <span className="text-[9px] md:text-[10px] uppercase font-bold tracking-widest text-primary-theme/20">Years</span>
+                                    <span className="text-base md:text-xl font-black">17+</span>
+                                    <span className="text-[9px] md:text-[10px] uppercase font-bold tracking-widest text-primary-theme/20">{t.aboutDetails?.years || 'Years'}</span>
                                 </div>
                             </div>
 
@@ -97,14 +97,14 @@ const AboutDetails = () => {
                                 <div className="flex items-center gap-4 p-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-700 transition-all hover:scale-105">
                                     <Target className="w-5 h-5 text-rose-500" />
                                     <div>
-                                        <p className="text-[10px] uppercase font-bold text-slate-400">Primary Focus</p>
+                                        <p className="text-[10px] uppercase font-bold text-slate-400">{t.aboutDetails?.primaryFocus || 'Primary Focus'}</p>
                                         <p className="text-sm font-bold text-slate-700 dark:text-slate-200">{primaryFocus}</p>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-4 p-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-700 transition-all hover:scale-105">
                                     <Heart className="w-5 h-5 text-primary-theme" />
                                     <div>
-                                        <p className="text-[10px] uppercase font-bold text-slate-400">Philosophy</p>
+                                        <p className="text-[10px] uppercase font-bold text-slate-400">{t.aboutDetails?.philosophy || 'Philosophy'}</p>
                                         <p className="text-sm font-bold text-slate-700 dark:text-slate-200">{philosophy}</p>
                                     </div>
                                 </div>
@@ -145,7 +145,7 @@ const AboutDetails = () => {
                             {/* Timeline / Milestones */}
                             <h3 className="text-3xl font-black text-slate-900 dark:text-white mb-10 flex items-center gap-3">
                                 <TrendingUp className="text-primary-theme" />
-                                Growth Milestones
+                                {t.aboutDetails?.growthMilestones || 'Growth Milestones'}
                             </h3>
                             <div className="relative border-l-2 border-slate-100 dark:border-slate-800 ml-4 space-y-12 pb-12">
                                 {milestones.map((item, i) => (
@@ -162,7 +162,7 @@ const AboutDetails = () => {
                             <div className="bg-primary-theme rounded-[2rem] md:rounded-[3rem] p-6 md:p-12 text-white overflow-hidden relative">
                                 <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 blur-[80px] rounded-full -mr-32 -mt-32" />
                                 <div className="relative z-10">
-                                    <h3 className="text-xl md:text-3xl font-black mb-5 md:mb-8 leading-tight">My Commitment to You</h3>
+                                    <h3 className="text-xl md:text-3xl font-black mb-5 md:mb-8 leading-tight">{t.aboutDetails?.commitmentToYou || 'My Commitment to You'}</h3>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                         {commitments.map((promise, i) => (
                                             <div key={i} className="flex gap-4">
@@ -180,7 +180,7 @@ const AboutDetails = () => {
                             <div className="mt-16 text-center">
                                 <Link to="/certificates">
                                     <Button size="lg" className="h-16 px-12 rounded-full bg-primary-theme hover:opacity-90 text-lg font-black shadow-2xl shadow-primary-theme/30 transition-all hover:scale-105">
-                                        View Professional Certifications
+                                        {t.aboutDetails?.viewCertifications || 'View Professional Certifications'}
                                     </Button>
                                 </Link>
                             </div>

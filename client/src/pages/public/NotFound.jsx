@@ -3,8 +3,10 @@ import { motion } from 'framer-motion';
 import { Home, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { useLanguage } from '@/context/useLanguage';
 
 const NotFound = () => {
+    const { t } = useLanguage();
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col items-center justify-center p-6 relative overflow-hidden transition-colors duration-500">
             {/* Background animated elements */}
@@ -54,9 +56,9 @@ const NotFound = () => {
                             </div>
 
                             <div className="space-y-2">
-                                <h2 className="text-3xl font-black text-slate-900 dark:text-white">Page Not Found</h2>
+                                <h2 className="text-3xl font-black text-slate-900 dark:text-white">{t.common.pageNotFound}</h2>
                                 <p className="text-slate-500 dark:text-slate-400 font-medium">
-                                    The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.
+                                    {t.common.pageNotFoundDesc}
                                 </p>
                             </div>
 
@@ -64,7 +66,7 @@ const NotFound = () => {
                                 <Link to="/" className="flex-1">
                                     <Button className="w-full h-14 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-bold group">
                                         <ArrowLeft className="mr-2 w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-                                        Go Home
+                                        {t.common.goHome}
                                     </Button>
                                 </Link>
                                 <Button
@@ -72,7 +74,7 @@ const NotFound = () => {
                                     className="flex-1 h-14 rounded-2xl border-2 font-bold dark:text-white"
                                     onClick={() => window.history.back()}
                                 >
-                                    Previous Page
+                                    {t.common.previousPage}
                                 </Button>
                             </div>
                         </div>

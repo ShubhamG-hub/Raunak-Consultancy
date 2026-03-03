@@ -8,25 +8,25 @@ import SectionHeader from '@/components/layout/SectionHeader';
 import api from '@/lib/api';
 
 const BlogsPreview = () => {
-    const { t } = useLanguage();
+    const { t, language } = useLanguage();
     const [blogs, setBlogs] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchBlogs = async () => {
             try {
-                const { data } = await api.get('/blogs');
+                const response = await api.get('/blogs/public');
                 // Show only first 3 blogs on home page
-                setBlogs(data.slice(0, 3));
-            } catch (error) {
-                console.error('Error fetching blogs:', error);
+                setBlogs(response.data.slice(0, 3));
+            } catch (err) {
+                console.error('Error fetching blogs:', err);
             } finally {
                 setLoading(false);
             }
         };
 
         fetchBlogs();
-    }, []);
+    }, [language]);
 
     if (!loading && blogs.length === 0) return null;
 
@@ -97,7 +97,7 @@ const BlogsPreview = () => {
                 <div className="mt-12 text-center">
                     <Link to="/blogs">
                         <Button variant="outline" size="lg" className="rounded-full px-8 font-bold border-2 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group">
-                            View All Blogs <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                            {t.blogs.viewAllBlogs} <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                         </Button>
                     </Link>
                 </div>

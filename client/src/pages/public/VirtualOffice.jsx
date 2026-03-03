@@ -10,6 +10,7 @@ import api from '@/lib/api';
 // ─ States: validating → waiting → admitted → rejected ─────────────────────────
 export default function VirtualOffice() {
     const [searchParams] = useSearchParams();
+    const { t } = useLanguage();
     const bookingId = searchParams.get('booking');
     const token = searchParams.get('token');
 
@@ -47,9 +48,9 @@ export default function VirtualOffice() {
         } catch (err) {
             const msg = err.response?.data?.error || err.message;
             if (msg.includes('No active meeting')) {
-                setError('The advisor hasn\'t started the meeting yet. Please wait and try again shortly.');
+                setError(t.virtualOffice.noActiveMeeting);
             } else {
-                setError(msg || 'Failed to join. Please check your booking link.');
+                setError(msg || t.virtualOffice.cannotJoin);
             }
             setState('error');
         }
@@ -91,31 +92,31 @@ export default function VirtualOffice() {
                             <Video className="w-8 h-8 text-white" />
                         </div>
                     </div>
-                    <h1 className="text-2xl font-black text-white text-center mb-1">Virtual Office</h1>
-                    <p className="text-sm text-slate-400 text-center mb-8">Raunak Consultancy · Secure Meeting</p>
+                    <h1 className="text-2xl font-black text-white text-center mb-1">{t.virtualOffice.title}</h1>
+                    <p className="text-sm text-slate-400 text-center mb-8">{t.virtualOffice.subtitle}</p>
                     <div className="space-y-4">
                         <div>
-                            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-2">Your Name</label>
+                            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-2">{t.virtualOffice.nameLabel}</label>
                             <input type="text" value={userName} onChange={e => setUserName(e.target.value)}
-                                placeholder="e.g. Rahul Sharma"
+                                placeholder={t.virtualOffice.namePlaceholder}
                                 className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-theme/50 text-sm" />
                         </div>
                         <div>
-                            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-2">Your Email</label>
+                            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest block mb-2">{t.virtualOffice.emailLabel}</label>
                             <input type="email" value={userEmail} onChange={e => setUserEmail(e.target.value)}
-                                placeholder="your@email.com"
+                                placeholder={t.virtualOffice.emailPlaceholder}
                                 className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-sm" />
                         </div>
                         <button
                             onClick={() => { if (userName.trim() && userEmail.trim()) setNameSubmitted(true); }}
                             disabled={!userName.trim() || !userEmail.trim()}
                             className="w-full py-3 rounded-xl bg-primary-theme hover:opacity-90 text-white font-bold transition-colors disabled:opacity-40 mt-2">
-                            Join Meeting →
+                            {t.virtualOffice.joinBtn}
                         </button>
                     </div>
                     <div className="flex items-center gap-2 mt-6 text-xs text-slate-500 justify-center">
                         <Shield className="w-3.5 h-3.5" />
-                        End-to-end encrypted · Zoom powered
+                        {t.virtualOffice.encryptInfo}
                     </div>
                 </motion.div>
             </div>
@@ -124,17 +125,17 @@ export default function VirtualOffice() {
 
     // SCREEN: Validating
     if (state === 'validating') {
-        return <FullScreenStatus icon={<Loader2 className="w-8 h-8 text-primary-theme animate-spin" />} title="Validating your access..." subtitle="Please wait while we verify your booking." />;
+        return <FullScreenStatus icon={<Loader2 className="w-8 h-8 text-primary-theme animate-spin" />} title={t.virtualOffice.validatingTitle} subtitle={t.virtualOffice.validatingSubtitle} />;
     }
 
     // SCREEN: Error
     if (state === 'error') {
-        return <FullScreenStatus icon={<XCircle className="w-8 h-8 text-red-400" />} title="Cannot Join" subtitle={error} color="red" />;
+        return <FullScreenStatus icon={<XCircle className="w-8 h-8 text-red-400" />} title={t.virtualOffice.cannotJoin} subtitle={error} color="red" />;
     }
 
     // SCREEN: Rejected
     if (state === 'rejected') {
-        return <FullScreenStatus icon={<XCircle className="w-8 h-8 text-red-400" />} title="Entry Declined" subtitle="The advisor has declined your meeting request. Please contact support." color="red" />;
+        return <FullScreenStatus icon={<XCircle className="w-8 h-8 text-red-400" />} title={t.virtualOffice.entryDeclined} subtitle={t.virtualOffice.entryDeclinedDesc} color="red" />;
     }
 
     // SCREEN: Waiting Room
@@ -149,14 +150,14 @@ export default function VirtualOffice() {
                         </div>
                         <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-amber-400 animate-ping" />
                     </div>
-                    <h2 className="text-2xl font-black text-white mb-2">You're in the Waiting Room</h2>
-                    <p className="text-slate-400 text-sm mb-6">The advisor will admit you shortly. This page refreshes automatically.</p>
+                    <h2 className="text-2xl font-black text-white mb-2">{t.virtualOffice.waitingTitle}</h2>
+                    <p className="text-slate-400 text-sm mb-6">{t.virtualOffice.waitingSubtitle}</p>
                     <div className="bg-white/5 border border-white/10 rounded-2xl p-4 text-left space-y-2">
-                        <div className="flex justify-between text-sm"><span className="text-slate-400">Name</span><span className="text-white font-bold">{userName}</span></div>
-                        <div className="flex justify-between text-sm"><span className="text-slate-400">Status</span><span className="text-amber-400 font-bold">Waiting</span></div>
+                        <div className="flex justify-between text-sm"><span className="text-slate-400">{t.virtualOffice.statusName}</span><span className="text-white font-bold">{userName}</span></div>
+                        <div className="flex justify-between text-sm"><span className="text-slate-400">{t.virtualOffice.statusStatus}</span><span className="text-amber-400 font-bold">{t.virtualOffice.statusWaiting}</span></div>
                     </div>
                     <div className="flex items-center justify-center gap-2 mt-6 text-xs text-slate-500">
-                        <Loader2 className="w-3.5 h-3.5 animate-spin" />Checking for admission every 3 seconds…
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />{t.virtualOffice.checkingAdmission}
                     </div>
                 </motion.div>
             </div>
@@ -170,7 +171,7 @@ export default function VirtualOffice() {
             <div className="h-12 flex items-center justify-between px-4 bg-slate-950/80 border-b border-white/10 flex-shrink-0">
                 <div className="flex items-center gap-2">
                     <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                    <span className="text-sm font-bold text-white">Virtual Office · Live</span>
+                    <span className="text-sm font-bold text-white">{t.virtualOffice.liveTitle}</span>
                 </div>
                 <div className="flex items-center gap-2 text-xs text-slate-400">
                     <Video className="w-3.5 h-3.5" />
@@ -199,8 +200,8 @@ export default function VirtualOffice() {
                     {/* Tabs */}
                     <div className="flex border-b border-white/10">
                         {[
-                            { id: 'chat', icon: MessageSquare, label: 'Chat' },
-                            { id: 'files', icon: Paperclip, label: 'Files' },
+                            { id: 'chat', icon: MessageSquare, label: t.virtualOffice.chatTab },
+                            { id: 'files', icon: Paperclip, label: t.virtualOffice.filesTab },
                         ].map(tab => (
                             <button key={tab.id} onClick={() => setRightTab(tab.id)}
                                 className={`flex-1 flex items-center justify-center gap-1.5 py-3 text-xs font-bold transition-colors ${rightTab === tab.id ? 'text-primary-theme border-b-2 border-primary-theme' : 'text-slate-400 hover:text-slate-200'}`}>

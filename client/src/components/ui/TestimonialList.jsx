@@ -3,14 +3,16 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Star, Quote, UserCircle2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import api from '@/lib/api';
+import { useLanguage } from '@/context/useLanguage';
 
 const TestimonialList = () => {
+    const { language, t } = useLanguage();
     const [testimonials, setTestimonials] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         fetchTestimonials();
-    }, []);
+    }, [language]);
 
     const fetchTestimonials = async () => {
         try {
@@ -28,7 +30,7 @@ const TestimonialList = () => {
             <div className="text-center py-10">
                 <div className="inline-flex items-center gap-2 text-slate-500 dark:text-slate-400">
                     <div className="w-5 h-5 border-2 border-primary-theme border-t-transparent rounded-full animate-spin" />
-                    Loading stories...
+                    {t.testimonials.loading}
                 </div>
             </div>
         );

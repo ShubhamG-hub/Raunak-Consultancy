@@ -21,8 +21,8 @@ const LanguageToggle = () => {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="rounded-full w-10 h-10 bg-slate-100 hover:bg-slate-200 text-slate-700">
-                    <Globe className="h-[1.2rem] w-[1.2rem]" />
+                <Button variant="ghost" size="icon" className="rounded-full w-10 h-10 hover:bg-primary-theme/20 hover:text-primary-theme transition-all duration-300">
+                    <Globe className="h-5 w-5" />
                     <span className="sr-only">Toggle language</span>
                 </Button>
             </DropdownMenuTrigger>

@@ -5,7 +5,7 @@ import api from '@/lib/api';
 import { useLanguage } from '@/context/useLanguage';
 
 const GalleryGrid = () => {
-    const { t } = useLanguage();
+    const { language, t } = useLanguage();
     const [images, setImages] = useState([]);
     const [loading, setLoading] = useState(true);
     const [lightboxOpen, setLightboxOpen] = useState(false);
@@ -13,7 +13,7 @@ const GalleryGrid = () => {
 
     useEffect(() => {
         fetchGallery();
-    }, []);
+    }, [language]);
 
     const fetchGallery = async () => {
         try {

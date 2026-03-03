@@ -6,24 +6,24 @@ import SectionHeader from '@/components/layout/SectionHeader';
 import api from '@/lib/api';
 
 const AwardsSection = () => {
-    const { t } = useLanguage();
+    const { t, language } = useLanguage();
     const [awards, setAwards] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchAwards = async () => {
             try {
-                const { data } = await api.get('/awards');
-                setAwards(data);
-            } catch (error) {
-                console.error('Error fetching awards:', error);
+                const response = await api.get('/awards/public');
+                setAwards(response.data);
+            } catch (err) {
+                console.error(err);
             } finally {
                 setLoading(false);
             }
         };
 
         fetchAwards();
-    }, []);
+    }, [language]);
 
     if (!loading && awards.length === 0) return null;
 

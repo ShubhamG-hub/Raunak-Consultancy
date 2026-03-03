@@ -4,6 +4,7 @@ const db = require('../config/db');
 const { v4: uuidv4 } = require('uuid');
 const authMiddleware = require('../middleware/authMiddleware');
 const Joi = require('joi');
+const { translateContent } = require('../services/translateService');
 
 const certificateSchema = Joi.object({
     name: Joi.string().required(),
@@ -14,9 +15,11 @@ const certificateSchema = Joi.object({
 
 // GET /api/certificates/public (Public - Active Only)
 router.get('/public', async (req, res) => {
+    const lang = req.headers['accept-language-code'] || req.query.lang || 'en';
+
     try {
         const [rows] = await db.query(
-            'SELECT * FROM certificates WHERE active = true ORDER BY created_at DESC'
+            `SELECT *, name_${lang} as name FROM certificates WHERE active = true ORDER BY created_at DESC`
         );
         res.json(rows);
     } catch (err) {
@@ -27,9 +30,11 @@ router.get('/public', async (req, res) => {
 
 // GET /api/certificates (Admin - All)
 router.get('/', authMiddleware, async (req, res) => {
+    const lang = req.headers['accept-language-code'] || req.query.lang || 'en';
+
     try {
         const [rows] = await db.query(
-            'SELECT * FROM certificates ORDER BY created_at DESC'
+            `SELECT *, name_${lang} as name FROM certificates ORDER BY created_at DESC`
         );
         res.json(rows);
     } catch (err) {
@@ -44,10 +49,13 @@ router.post('/', authMiddleware, async (req, res) => {
     if (error) return res.status(400).json({ error: error.details[0].message });
 
     try {
+        // Auto-translate translatable fields
+        const translations = await translateContent({ name: value.name });
+
         const certId = uuidv4();
         await db.query(
-            'INSERT INTO certificates (id, name, expiry_date, image_url, active) VALUES (?, ?, ?, ?, ?)',
-            [certId, value.name, value.expiry_date, value.image_url, value.active]
+            'INSERT INTO certificates (id, name_en, name_hi, name_mr, expiry_date, image_url, active) VALUES (?, ?, ?, ?, ?, ?, ?)',
+            [certId, translations.en.name, translations.hi.name, translations.mr.name, value.expiry_date, value.image_url, value.active]
         );
 
         res.status(201).json({ message: 'Certificate added', data: { id: certId, ...value } });
@@ -81,9 +89,12 @@ router.put('/:id', authMiddleware, async (req, res) => {
     if (error) return res.status(400).json({ error: error.details[0].message });
 
     try {
+        // Auto-translate translatable fields
+        const translations = await translateContent({ name: value.name });
+
         const [result] = await db.query(
-            'UPDATE certificates SET name = ?, expiry_date = ?, image_url = ?, active = ? WHERE id = ?',
-            [value.name, value.expiry_date, value.image_url, value.active, req.params.id]
+            'UPDATE certificates SET name_en = ?, name_hi = ?, name_mr = ?, expiry_date = ?, image_url = ?, active = ? WHERE id = ?',
+            [translations.en.name, translations.hi.name, translations.mr.name, value.expiry_date, value.image_url, value.active, req.params.id]
         );
 
         if (result.affectedRows === 0) return res.status(404).json({ error: 'Certificate not found' });

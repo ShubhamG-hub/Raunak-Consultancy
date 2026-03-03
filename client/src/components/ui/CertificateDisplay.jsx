@@ -11,19 +11,18 @@ const CertificateDisplay = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        const fetchCertificates = async () => {
+            try {
+                const response = await api.get('/certificates/public');
+                setCertificates(response.data);
+            } catch (err) {
+                console.error('Failed to fetch certificates:', err);
+            } finally {
+                setLoading(false);
+            }
+        };
         fetchCertificates();
-    }, []);
-
-    const fetchCertificates = async () => {
-        try {
-            const res = await api.get('/certificates/public');
-            setCertificates(Array.isArray(res.data) ? res.data : []);
-        } catch (error) {
-            console.error('Failed to fetch certificates:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
+    }, [language]);
 
     if (loading) {
         return (

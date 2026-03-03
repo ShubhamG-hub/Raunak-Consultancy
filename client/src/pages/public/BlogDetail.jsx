@@ -8,7 +8,7 @@ import api from '@/lib/api';
 
 const BlogDetail = () => {
     const { slug } = useParams();
-    useLanguage();
+    const { t, language } = useLanguage();
     const [blog, setBlog] = useState(null);
     const [loading, setLoading] = useState(true);
 
@@ -33,7 +33,7 @@ const BlogDetail = () => {
 
         fetchBlog();
         window.scrollTo(0, 0);
-    }, [slug]);
+    }, [slug, language]);
 
     if (loading) {
         return (
@@ -46,8 +46,8 @@ const BlogDetail = () => {
     if (!blog) {
         return (
             <div className="min-h-screen bg-white dark:bg-slate-900 pt-32 text-center">
-                <h2 className="text-3xl font-black text-slate-900 dark:text-white">Blog not found</h2>
-                <Link to="/blogs" className="text-primary-theme mt-4 inline-block font-bold underline">Back to Blogs</Link>
+                <h2 className="text-3xl font-black text-slate-900 dark:text-white">{t.blogs.blogNotFound}</h2>
+                <Link to="/blogs" className="text-primary-theme mt-4 inline-block font-bold underline">{t.blogs.backToBlogs}</Link>
             </div>
         );
     }
@@ -59,7 +59,7 @@ const BlogDetail = () => {
                 <div className="flex justify-between items-center mb-12">
                     <Link to="/blogs" className="inline-flex items-center text-slate-900 dark:text-white hover:text-primary-theme font-bold group transition-colors">
                         <ArrowLeft className="mr-2 w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-                        Back to Insights
+                        {t.blogs.backToInsights}
                     </Link>
                     <Button variant="ghost" size="icon" className="rounded-full">
                         <Share2 className="w-5 h-5" />
@@ -83,7 +83,7 @@ const BlogDetail = () => {
                         </div>
                         <div className="flex items-center gap-1.5">
                             <Clock className="w-4 h-4" />
-                            {estimateReadTime(blog.content)} min read
+                            {estimateReadTime(blog.content)} {t.blogs.minRead}
                         </div>
                     </div>
 
@@ -96,7 +96,7 @@ const BlogDetail = () => {
                             SG
                         </div>
                         <div>
-                            <p className="text-[10px] uppercase font-bold text-slate-400">Written by</p>
+                            <p className="text-[10px] uppercase font-bold text-slate-400">{t.blogs.writtenBy}</p>
                             <p className="text-lg font-black text-slate-900 dark:text-white leading-tight">{blog.author}</p>
                         </div>
                     </div>
@@ -137,13 +137,13 @@ const BlogDetail = () => {
                 {/* Related CTA */}
                 <div className="bg-slate-900 dark:bg-primary-theme rounded-[3rem] p-12 text-white text-center relative overflow-hidden">
                     <div className="absolute top-0 left-0 w-64 h-64 bg-white/10 blur-[80px] rounded-full -ml-32 -mt-32" />
-                    <h3 className="text-3xl font-black mb-6 relative z-10">Have questions about this topic?</h3>
+                    <h3 className="text-3xl font-black mb-6 relative z-10">{t.blogs.haveQuestions}</h3>
                     <p className="text-slate-400 dark:text-white/80 mb-10 text-lg max-w-2xl mx-auto relative z-10">
-                        Schedule a free one-on-one consultation with Sudhir Gupta to discuss your specific financial goals.
+                        {t.blogs.ctaDesc}
                     </p>
                     <Link to="/" className="relative z-10">
                         <Button className="bg-white text-slate-900 hover:bg-slate-50 rounded-full h-16 px-10 text-lg font-black transition-all hover:scale-105">
-                            Book Free Consultation
+                            {t.blogs.bookFreeConsultation}
                         </Button>
                     </Link>
                 </div>

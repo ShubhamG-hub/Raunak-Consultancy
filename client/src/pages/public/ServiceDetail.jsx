@@ -7,12 +7,14 @@ import {
     ChevronRight, Briefcase
 } from 'lucide-react';
 import api from '@/lib/api';
+import { useLanguage } from '@/context/useLanguage';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import BookingModal from '@/components/ui/BookingModal';
 
 const ServiceDetail = () => {
     const { categorySlug, serviceSlug } = useParams();
+    const { t, language } = useLanguage();
     const [service, setService] = useState(null);
     const [loading, setLoading] = useState(true);
     const [isBookingOpen, setIsBookingOpen] = useState(false);
@@ -31,7 +33,7 @@ const ServiceDetail = () => {
         };
 
         fetchServiceDetail();
-    }, [categorySlug, serviceSlug]);
+    }, [categorySlug, serviceSlug, language]);
 
     if (loading) {
         return (
@@ -44,9 +46,9 @@ const ServiceDetail = () => {
     if (!service) {
         return (
             <div className="min-h-[80vh] flex flex-col items-center justify-center text-center px-6">
-                <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-4">Service Not Found</h2>
+                <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-4">{t.common.serviceNotFound}</h2>
                 <Link to="/">
-                    <Button className="bg-primary-theme text-white rounded-xl">Back to Home</Button>
+                    <Button className="bg-primary-theme text-white rounded-xl">{t.common.backToHome}</Button>
                 </Link>
             </div>
         );
@@ -61,11 +63,11 @@ const ServiceDetail = () => {
                     className="inline-flex items-center gap-2 text-primary-theme font-black text-xs uppercase tracking-[0.2em] mb-6 hover:translate-x-[-4px] transition-transform"
                 >
                     <ArrowLeft className="w-4 h-4" />
-                    Back to {service.category_name}
+                    {t.common.backTo} {service.category_name}
                 </Link>
                 {/* Breadcrumbs */}
                 <nav className="flex items-center flex-wrap gap-2 text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-[0.2em] mb-8 md:mb-12">
-                    <Link to="/" className="hover:text-primary-theme transition-colors">Home</Link>
+                    <Link to="/" className="hover:text-primary-theme transition-colors">{t.nav.home}</Link>
                     <ChevronRight className="w-3 h-3" />
                     <Link to={`/services/${categorySlug}`} className="hover:text-primary-theme transition-colors">{service.category_name}</Link>
                     <ChevronRight className="w-3 h-3" />
@@ -101,9 +103,9 @@ const ServiceDetail = () => {
                             viewport={{ once: true }}
                             className="space-y-6"
                         >
-                            <h2 className="text-2xl font-black text-slate-900 dark:text-white font-heading underline decoration-primary-theme/30 decoration-8 underline-offset-[-2px]">Overview</h2>
+                            <h2 className="text-2xl font-black text-slate-900 dark:text-white font-heading underline decoration-primary-theme/30 decoration-8 underline-offset-[-2px]">{t.common.overview}</h2>
                             <div className="prose dark:prose-invert max-w-none text-slate-600 dark:text-slate-400 leading-loose text-lg font-medium">
-                                {service.full_description || "Detailed information for this service is coming soon."}
+                                {service.full_description || t.common.comingSoon}
                             </div>
                         </motion.div>
 
@@ -120,7 +122,7 @@ const ServiceDetail = () => {
                                     <div className="w-10 h-10 rounded-xl bg-primary-theme text-white flex items-center justify-center">
                                         <Shield className="w-5 h-5" />
                                     </div>
-                                    The Benefits
+                                    {t.common.benefits}
                                 </h3>
                                 <ul className="space-y-6">
                                     {service.benefits && Array.isArray(service.benefits) ? service.benefits.map((benefit, i) => (
@@ -130,7 +132,7 @@ const ServiceDetail = () => {
                                             </div>
                                             <span className="text-slate-700 dark:text-slate-300 font-bold text-sm md:text-base">{benefit}</span>
                                         </li>
-                                    )) : <li className="text-slate-500 italic">No benefits listed.</li>}
+                                    )) : <li className="text-slate-500 italic">{t.common.noBenefits}</li>}
                                 </ul>
                             </motion.div>
 
@@ -145,7 +147,7 @@ const ServiceDetail = () => {
                                     <div className="w-10 h-10 rounded-xl bg-white/20 text-white flex items-center justify-center">
                                         <CheckCircle2 className="w-5 h-5" />
                                     </div>
-                                    Key Features
+                                    {t.common.features}
                                 </h3>
                                 <ul className="space-y-6">
                                     {service.features && Array.isArray(service.features) ? service.features.map((feature, i) => (
@@ -155,7 +157,7 @@ const ServiceDetail = () => {
                                             </div>
                                             <span className="font-bold text-sm md:text-base opacity-90">{feature}</span>
                                         </li>
-                                    )) : <li className="italic opacity-70">No features listed.</li>}
+                                    )) : <li className="italic opacity-70">{t.common.noFeatures}</li>}
                                 </ul>
                             </motion.div>
                         </div>
@@ -166,9 +168,9 @@ const ServiceDetail = () => {
                         <div className="sticky top-32 space-y-8">
                             <Card className="rounded-[3rem] overflow-hidden border-slate-100 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-2xl">
                                 <CardContent className="p-8 md:p-10">
-                                    <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-6 font-heading">Get Started Today</h3>
+                                    <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-6 font-heading">{t.common.getStartedToday}</h3>
                                     <p className="text-slate-500 dark:text-slate-400 text-sm mb-8 leading-relaxed font-medium">
-                                        Ready to secure your future with our {service.title}? Speak with our expert advisors for a personalized consultation.
+                                        {t.common.readyDescPrefix || 'Ready to secure your future'} {t.common.withOur || 'with our'} {service.title}? {t.common.speakWith || 'Speak with our expert advisors for a personalized consultation.'}
                                     </p>
 
                                     <div className="space-y-4 mb-8">
@@ -176,11 +178,11 @@ const ServiceDetail = () => {
                                             onClick={() => setIsBookingOpen(true)}
                                             className="w-full h-14 rounded-2xl bg-primary-theme text-white font-black text-xs uppercase tracking-[0.2em] shadow-xl shadow-primary-theme/20 hover:opacity-90 active:scale-95 transition-all"
                                         >
-                                            Book Consultation <ArrowRight className="ml-2 w-4 h-4" />
+                                            {t.common.bookConsultation} <ArrowRight className="ml-2 w-4 h-4" />
                                         </Button>
                                         <a href="https://wa.me/917738658033" target="_blank" rel="noopener noreferrer" className="block">
                                             <Button variant="outline" className="w-full h-14 rounded-2xl border-2 font-black text-xs uppercase tracking-[0.2em] gap-2">
-                                                <MessageSquare className="w-4 h-4 text-emerald-500" /> WhatsApp Us
+                                                <MessageSquare className="w-4 h-4 text-emerald-500" /> {t.common.whatsappUs}
                                             </Button>
                                         </a>
                                     </div>
@@ -203,9 +205,9 @@ const ServiceDetail = () => {
                             {/* Help Box */}
                             <div className="p-8 md:p-10 rounded-[3.5rem] bg-gradient-to-br from-slate-900 to-slate-800 text-white relative overflow-hidden group shadow-2xl">
                                 <div className="absolute top-0 right-0 w-32 h-32 bg-primary-theme/20 blur-[60px] rounded-full" />
-                                <h4 className="text-xl font-black mb-4 relative z-10 font-heading">Need Help?</h4>
+                                <h4 className="text-xl font-black mb-4 relative z-10 font-heading">{t.common.needHelp}</h4>
                                 <p className="text-xs md:text-sm text-slate-400 mb-8 leading-relaxed font-medium relative z-10">
-                                    For any queries regarding this service, our support team is available from 10 AM to 6 PM.
+                                    {t.common.helpSupportDesc}
                                 </p>
                                 <div className="space-y-4 relative z-10">
                                     <div className="flex items-center gap-3 text-xs md:text-sm font-bold opacity-80 hover:opacity-100 transition-opacity">

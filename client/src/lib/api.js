@@ -7,13 +7,15 @@ const api = axios.create({
     },
 });
 
-// Request Interceptor: Attach Token
+// Request Interceptor: Attach Token and Language
 api.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem('token');
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
+        const language = localStorage.getItem('language') || 'en';
+        config.headers['accept-language-code'] = language;
         return config;
     },
     (error) => Promise.reject(error)

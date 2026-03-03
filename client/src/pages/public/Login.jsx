@@ -26,7 +26,7 @@ const Login = () => {
         if (result.success) {
             navigate('/');
         } else {
-            setError(result.error || 'Login failed');
+            setError(result.error || t.validation.loginFailed);
         }
         setLoading(false);
     };
@@ -77,7 +77,7 @@ const Login = () => {
                                 <Input
                                     id="email"
                                     type="email"
-                                    placeholder="name@example.com"
+                                    placeholder={t.auth.emailPlaceholder}
                                     className="pl-12 h-12 rounded-2xl border-slate-200 dark:border-slate-700 focus:ring-blue-600 transition-all"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
@@ -98,7 +98,7 @@ const Login = () => {
                                 <Input
                                     id="password"
                                     type="password"
-                                    placeholder="••••••••"
+                                    placeholder={t.auth.passwordPlaceholder}
                                     className="pl-12 h-12 rounded-2xl border-slate-200 dark:border-slate-700 focus:ring-blue-600 transition-all"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
@@ -133,7 +133,7 @@ const Login = () => {
 
                     <div className="mt-6 flex items-center justify-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                         <ShieldCheck className="w-3 h-3" />
-                        Secure Encrypted Session
+                        {t.auth.secureSession}
                     </div>
                 </div>
             </motion.div>

@@ -23,7 +23,7 @@ const iconMap = {
 };
 
 const Services = () => {
-    const { t } = useLanguage();
+    const { t, language } = useLanguage();
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -41,7 +41,7 @@ const Services = () => {
         };
 
         fetchCategories();
-    }, []);
+    }, [language]);
 
     if (loading) {
         return (
@@ -94,12 +94,12 @@ const Services = () => {
                                             </h3>
 
                                             <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-6 flex-grow">
-                                                {category.description || `Explore our comprehensive range of ${category.name} tailored for you.`}
+                                                {category.description || t.services.defaultCategoryDesc}
                                             </p>
 
                                             <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
                                                 <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary-theme">
-                                                    View Services
+                                                    {t.common.viewServices}
                                                 </span>
                                             </div>
                                         </CardContent>

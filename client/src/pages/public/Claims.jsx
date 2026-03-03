@@ -25,23 +25,23 @@ const allowOnlyDigits = (e) => {
     e.target.value = e.target.value.replace(/[^0-9]/g, '').slice(0, 10);
 };
 
-const claimSchema = z.object({
-    client_name: z.string()
-        .min(2, "Name is required")
-        .regex(/^[a-zA-Z\s]+$/, "Name must contain only letters"),
-    email: z.string().email("Invalid email address"),
-    phone: z.string()
-        .regex(/^[0-9]{10}$/, "Enter a valid 10-digit mobile number"),
-    policy_no: z.string().optional(),
-    type: z.string().min(1, "Claim type is required"),
-    description: z.string().optional(),
-});
-
 const Claims = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState('');
     const { t } = useLanguage();
+
+    const claimSchema = z.object({
+        client_name: z.string()
+            .min(2, t.validation.nameRequired)
+            .regex(/^[a-zA-Z\s]+$/, t.validation.nameLetters),
+        email: z.string().email(t.validation.emailInvalid),
+        phone: z.string()
+            .regex(/^[0-9]{10}$/, t.validation.mobileDigits),
+        policy_no: z.string().optional(),
+        type: z.string().min(1, t.claims.formTypeSelect),
+        description: z.string().optional(),
+    });
 
     const { register, handleSubmit, formState: { errors }, reset } = useForm({
         resolver: zodResolver(claimSchema),
@@ -56,7 +56,7 @@ const Claims = () => {
             reset();
         } catch (err) {
             const rawError = err.response?.data?.error;
-            setError(typeof rawError === 'string' ? rawError : rawError?.message || rawError?.code || 'Failed to submit claim request.');
+            setError(typeof rawError === 'string' ? rawError : rawError?.message || rawError?.code || t.testimonials.error);
         } finally {
             setIsSubmitting(false);
         }
@@ -138,7 +138,7 @@ const Claims = () => {
                         <CardTitle className="text-2xl font-black text-slate-900 dark:text-white leading-tight">
                             {t.claims.submitTrigger}
                         </CardTitle>
-                        <p className="text-sm text-slate-500 dark:text-slate-400 mt-2 font-medium">Submit your claim request for quick processing.</p>
+                        <p className="text-sm text-slate-500 dark:text-slate-400 mt-2 font-medium">{t.claims.successDesc || t.claims.submitTrigger}</p>
                     </CardHeader>
 
                     <CardContent className="p-0 relative z-10">
@@ -159,7 +159,7 @@ const Claims = () => {
                                     onClick={() => setSuccess(false)}
                                     className="h-12 px-8 rounded-2xl border-2 border-green-200 dark:border-green-800 hover:bg-green-50 dark:hover:bg-green-900/50 font-bold transition-all text-green-800 dark:text-green-400 text-sm"
                                 >
-                                    Submit Another Claim
+                                    {t.claims.submitTrigger}
                                 </button>
                             </motion.div>
                         ) : (
@@ -180,7 +180,7 @@ const Claims = () => {
                                         <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 ml-1">{t.claims.formPhone}</label>
                                         <Input
                                             {...register('phone')}
-                                            placeholder="10-digit mobile number"
+                                            placeholder={t.contact.mobilePlaceholder}
                                             onInput={allowOnlyDigits}
                                             inputMode="numeric"
                                             maxLength={10}
@@ -195,7 +195,7 @@ const Claims = () => {
                                     <Input
                                         {...register('email')}
                                         type="email"
-                                        placeholder="email@example.com"
+                                        placeholder={t.contact.emailPlaceholder}
                                         className="h-12 rounded-2xl bg-slate-50 dark:bg-slate-900 border-transparent dark:border-slate-800 focus:bg-white dark:focus:bg-slate-900 focus:ring-4 focus:ring-red-500/10 transition-all px-6 text-base dark:text-white"
                                     />
                                     {errors.email && <p className="text-red-500 text-[10px] font-bold mt-1 ml-1">{errors.email.message}</p>}

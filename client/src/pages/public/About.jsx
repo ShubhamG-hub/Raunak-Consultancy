@@ -39,7 +39,7 @@ const About = () => {
                         viewport={{ once: true }}
                         transition={{ duration: 0.8 }}
                     >
-                        <span className="text-primary-theme font-bold tracking-widest uppercase text-[10px] mb-4 inline-block">Meet Your Advisor</span>
+                        <span className="text-primary-theme font-bold tracking-widest uppercase text-[10px] mb-4 inline-block">{t.common.meetYourAdvisor}</span>
                         <h2 className="text-3xl md:text-5xl font-black text-slate-900 dark:text-white mb-6 leading-tight">
                             {t.about.hello} <span className="bg-gradient-to-r from-primary-theme to-accent-theme dark:from-primary-theme dark:to-accent-theme bg-clip-text text-transparent">{t.about.name}</span>
                         </h2>
@@ -91,14 +91,22 @@ const About = () => {
                     viewport={{ once: true }}
                     transition={{ duration: 0.6 }}
                 >
-                    <Card className="bg-slate-900 dark:bg-slate-900/50 text-white border-none rounded-[2.5rem] overflow-hidden group h-full">
+                    <Card className="bg-primary-theme text-white border-none rounded-[2.5rem] overflow-hidden group h-full shadow-2xl">
                         <CardContent className="p-5 md:p-6 text-center space-y-4 relative h-full flex flex-col justify-center">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-primary-theme/10 rounded-bl-full group-hover:bg-primary-theme/20 transition-all duration-500"></div>
-                            <Target className="w-16 h-16 mx-auto text-primary-theme group-hover:scale-110 transition-transform duration-500" />
-                            <h3 className="text-2xl font-black">{t.about.missionTitle}</h3>
-                            <p className="text-slate-400 text-base leading-relaxed">
-                                {t.about.mission}
-                            </p>
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-bl-full group-hover:bg-white/20 transition-all duration-500"></div>
+                            <Heart className="w-16 h-16 mx-auto text-white group-hover:scale-110 transition-transform duration-500" />
+                            <h3 className="text-2xl font-black">{t.about.valuesTitle}</h3>
+                            {Array.isArray(t?.about?.values) ? (
+                                <div className="flex flex-wrap justify-center gap-2">
+                                    {t.about.values.map((v, i) => (
+                                        <span key={i} className="bg-white/20 px-3 py-1 rounded-full text-xs font-bold backdrop-blur-sm border border-white/10">{v}</span>
+                                    ))}
+                                </div>
+                            ) : (
+                                <p className="text-white/90 text-sm md:text-base leading-relaxed font-medium italic">
+                                    "{t.about.values}"
+                                </p>
+                            )}
                         </CardContent>
                     </Card>
                 </motion.div>
@@ -109,16 +117,14 @@ const About = () => {
                     viewport={{ once: true }}
                     transition={{ duration: 0.6, delay: 0.2 }}
                 >
-                    <Card className="bg-primary-theme text-white border-none rounded-[2.5rem] overflow-hidden group h-full shadow-2xl">
+                    <Card className="bg-slate-900 dark:bg-slate-900/50 text-white border-none rounded-[2.5rem] overflow-hidden group h-full">
                         <CardContent className="p-5 md:p-6 text-center space-y-4 relative h-full flex flex-col justify-center">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-bl-full group-hover:bg-white/20 transition-all duration-500"></div>
-                            <Heart className="w-16 h-16 mx-auto text-white group-hover:scale-110 transition-transform duration-500" />
-                            <h3 className="text-2xl font-black">{t.about.valuesTitle}</h3>
-                            <div className="flex flex-wrap justify-center gap-2">
-                                {(Array.isArray(t?.about?.values) ? t.about.values : []).map((v, i) => (
-                                    <span key={i} className="bg-white/20 px-3 py-1 rounded-full text-xs font-bold backdrop-blur-sm border border-white/10">{v}</span>
-                                ))}
-                            </div>
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-primary-theme/10 rounded-bl-full group-hover:bg-primary-theme/20 transition-all duration-500"></div>
+                            <Target className="w-16 h-16 mx-auto text-primary-theme group-hover:scale-110 transition-transform duration-500" />
+                            <h3 className="text-2xl font-black">{t.about.missionTitle}</h3>
+                            <p className="text-slate-400 text-base leading-relaxed">
+                                {t.about.mission}
+                            </p>
                         </CardContent>
                     </Card>
                 </motion.div>

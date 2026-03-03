@@ -28,21 +28,23 @@ const Register = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setLoading(true);
-        setError('');
+        setError(t.validation.registerDisabled);
+        // The actual registration logic is disabled as per the UI message
+        // setLoading(true);
+        // setError('');
 
-        try {
-            const { data } = await api.post('/auth/register', formData);
-            if (data.success) {
-                setSuccess(true);
-                setTimeout(() => navigate('/login'), 2000);
-            }
-        } catch (err) {
-            const rawError = err.response?.data?.error;
-            setError(typeof rawError === 'string' ? rawError : rawError?.message || rawError?.code || 'Registration failed');
-        } finally {
-            setLoading(false);
-        }
+        // try {
+        //     const { data } = await api.post('/auth/register', formData);
+        //     if (data.success) {
+        //         setSuccess(true);
+        //         setTimeout(() => navigate('/login'), 2000);
+        //     }
+        // } catch (err) {
+        //     const rawError = err.response?.data?.error;
+        //     setError(typeof rawError === 'string' ? rawError : rawError?.message || rawError?.code || 'Registration failed');
+        // } finally {
+        //     setLoading(false);
+        // }
     };
 
     if (success) {
@@ -56,8 +58,8 @@ const Register = () => {
                     <div className="w-20 h-20 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
                         <CheckCircle className="w-10 h-10 text-green-600" />
                     </div>
-                    <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-2">Registration Successful!</h2>
-                    <p className="text-slate-500 dark:text-slate-400">Welcome to the family. Redirecting to login...</p>
+                    <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-2">{t.auth.registerTitle || 'Registration Successful!'}</h2>
+                    <p className="text-slate-500 dark:text-slate-400">{t.auth.registerSubtitle || 'Welcome to the family. Redirecting to login...'}</p>
                 </motion.div>
             </div>
         );
@@ -103,7 +105,7 @@ const Register = () => {
                                     <User className="absolute left-4 top-3.5 w-4 h-4 text-slate-400 group-focus-within:text-primary-theme transition-colors" />
                                     <Input
                                         id="fullName"
-                                        placeholder="John Doe"
+                                        placeholder={t.auth.namePlaceholder}
                                         className="pl-10 h-11 rounded-2xl border-slate-200 dark:border-slate-700 transition-all text-sm"
                                         value={formData.fullName}
                                         onChange={handleChange}
@@ -118,7 +120,7 @@ const Register = () => {
                                     <Phone className="absolute left-4 top-3.5 w-4 h-4 text-slate-400 group-focus-within:text-primary-theme transition-colors" />
                                     <Input
                                         id="mobile"
-                                        placeholder="98765 43210"
+                                        placeholder={t.auth.mobilePlaceholder}
                                         className="pl-10 h-11 rounded-2xl border-slate-200 dark:border-slate-700 transition-all text-sm"
                                         value={formData.mobile}
                                         onChange={handleChange}
@@ -136,7 +138,7 @@ const Register = () => {
                                 <Input
                                     id="email"
                                     type="email"
-                                    placeholder="name@example.com"
+                                    placeholder={t.auth.emailPlaceholder}
                                     className="pl-10 h-11 rounded-2xl border-slate-200 dark:border-slate-700 transition-all text-sm"
                                     value={formData.email}
                                     onChange={handleChange}
@@ -153,7 +155,7 @@ const Register = () => {
                                 <Input
                                     id="password"
                                     type="password"
-                                    placeholder="••••••••"
+                                    placeholder={t.auth.passwordPlaceholder}
                                     className="pl-10 h-11 rounded-2xl border-slate-200 dark:border-slate-700 transition-all text-sm"
                                     value={formData.password}
                                     onChange={handleChange}

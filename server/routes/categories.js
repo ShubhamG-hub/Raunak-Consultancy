@@ -3,11 +3,16 @@ const router = express.Router();
 const db = require('../config/db');
 const authMiddleware = require('../middleware/authMiddleware');
 const { v4: uuidv4 } = require('uuid');
+const { translateContent } = require('../services/translateService');
 
 // GET /api/categories - Get all categories
 router.get('/', async (req, res) => {
+    const lang = req.headers['accept-language-code'] || req.query.lang || 'en';
+    const fields = ['name', 'description'];
+    const selectFields = fields.map(f => `${f}_${lang} as ${f}`).join(', ');
+
     try {
-        const [rows] = await db.query('SELECT * FROM categories ORDER BY display_order ASC, created_at DESC');
+        const [rows] = await db.query(`SELECT *, ${selectFields} FROM categories ORDER BY display_order ASC, created_at DESC`);
         res.json(rows);
     } catch (err) {
         console.error('Error fetching categories:', err);
@@ -24,13 +29,22 @@ router.post('/', authMiddleware, async (req, res) => {
     }
 
     try {
+        // Auto-translate translatable fields
+        const translations = await translateContent({ name, description });
+
         const id = uuidv4();
         await db.query(
             `INSERT INTO categories (
-                id, name, description, slug, icon, show_on_homepage, display_order, is_active
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+                id, 
+                name_en, name_hi, name_mr,
+                description_en, description_hi, description_mr,
+                slug, icon, show_on_homepage, display_order, is_active
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
             [
-                id, name, description || null, slug, icon || 'Layout',
+                id,
+                translations.en.name, translations.hi.name, translations.mr.name,
+                translations.en.description, translations.hi.description, translations.mr.description,
+                slug, icon || 'Layout',
                 show_on_homepage !== undefined ? show_on_homepage : true,
                 display_order || 0, is_active !== undefined ? is_active : true
             ]
@@ -53,13 +67,20 @@ router.put('/:id', authMiddleware, async (req, res) => {
     const { name, description, slug, icon, show_on_homepage, display_order, is_active } = req.body;
 
     try {
+        // Auto-translate translatable fields
+        const translations = await translateContent({ name, description });
+
         await db.query(
             `UPDATE categories SET 
-                name = ?, description = ?, slug = ?, icon = ?, 
+                name_en = ?, name_hi = ?, name_mr = ?,
+                description_en = ?, description_hi = ?, description_mr = ?,
+                slug = ?, icon = ?, 
                 show_on_homepage = ?, display_order = ?, is_active = ?
             WHERE id = ?`,
             [
-                name, description, slug, icon,
+                translations.en.name, translations.hi.name, translations.mr.name,
+                translations.en.description, translations.hi.description, translations.mr.description,
+                slug, icon,
                 show_on_homepage, display_order, is_active, id
             ]
         );

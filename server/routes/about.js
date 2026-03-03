@@ -2,13 +2,18 @@ const express = require('express');
 const router = express.Router();
 const db = require('../config/db');
 const { v4: uuidv4 } = require('uuid');
+const { translateContent } = require('../services/translateService');
 const authMiddleware = require('../middleware/authMiddleware');
 
 // GET /api/about/public - Fetch active about sections for frontend
 router.get('/public', async (req, res) => {
+    const lang = req.headers['accept-language-code'] || req.query.lang || 'en';
+    const fields = ['title', 'description', 'value'];
+    const selectFields = fields.map(f => `${f}_${lang} as ${f}`).join(', ');
+
     try {
         const [rows] = await db.query(
-            'SELECT * FROM about_sections WHERE active = true ORDER BY section_type, order_index ASC'
+            `SELECT *, ${selectFields} FROM about_sections WHERE active = true ORDER BY section_type, order_index ASC`
         );
         res.json(rows);
     } catch (err) {
@@ -19,9 +24,13 @@ router.get('/public', async (req, res) => {
 
 // GET /api/about - Admin: Fetch all about sections
 router.get('/', authMiddleware, async (req, res) => {
+    const lang = req.headers['accept-language-code'] || req.query.lang || 'en';
+    const fields = ['title', 'description', 'value'];
+    const selectFields = fields.map(f => `${f}_${lang} as ${f}`).join(', ');
+
     try {
         const [rows] = await db.query(
-            'SELECT * FROM about_sections ORDER BY section_type, order_index ASC'
+            `SELECT *, ${selectFields} FROM about_sections ORDER BY section_type, order_index ASC`
         );
         res.json(rows);
     } catch (err) {
@@ -44,10 +53,27 @@ router.post('/', authMiddleware, async (req, res) => {
     }
 
     try {
+        // Auto-translate translatable fields
+        const translations = await translateContent({ title, description, value });
+
         const id = uuidv4();
         await db.query(
-            'INSERT INTO about_sections (id, section_type, title, description, icon, year, value, order_index, active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
-            [id, section_type, title, description || null, icon || null, year || null, value || null, order_index || 0, active !== false]
+            `INSERT INTO about_sections (
+                id, section_type, 
+                title_en, title_hi, title_mr,
+                description_en, description_hi, description_mr,
+                icon, year, 
+                value_en, value_hi, value_mr,
+                order_index, active
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [
+                id, section_type,
+                translations.en.title, translations.hi.title, translations.mr.title,
+                translations.en.description, translations.hi.description, translations.mr.description,
+                icon || null, year || null,
+                translations.en.value, translations.hi.value, translations.mr.value,
+                order_index || 0, active !== false
+            ]
         );
 
         const [rows] = await db.query('SELECT * FROM about_sections WHERE id = ?', [id]);
@@ -63,9 +89,26 @@ router.put('/:id', authMiddleware, async (req, res) => {
     const { section_type, title, description, icon, year, value, order_index, active } = req.body;
 
     try {
+        // Auto-translate translatable fields
+        const translations = await translateContent({ title, description, value });
+
         const [result] = await db.query(
-            'UPDATE about_sections SET section_type = ?, title = ?, description = ?, icon = ?, year = ?, value = ?, order_index = ?, active = ? WHERE id = ?',
-            [section_type, title, description || null, icon || null, year || null, value || null, order_index || 0, active !== false, req.params.id]
+            `UPDATE about_sections SET 
+                section_type = ?, 
+                title_en = ?, title_hi = ?, title_mr = ?,
+                description_en = ?, description_hi = ?, description_mr = ?,
+                icon = ?, year = ?, 
+                value_en = ?, value_hi = ?, value_mr = ?,
+                order_index = ?, active = ? 
+            WHERE id = ?`,
+            [
+                section_type,
+                translations.en.title, translations.hi.title, translations.mr.title,
+                translations.en.description, translations.hi.description, translations.mr.description,
+                icon || null, year || null,
+                translations.en.value, translations.hi.value, translations.mr.value,
+                order_index || 0, active !== false, req.params.id
+            ]
         );
 
         if (result.affectedRows === 0) return res.status(404).json({ error: 'Section not found' });

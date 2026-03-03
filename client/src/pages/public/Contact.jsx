@@ -18,30 +18,27 @@ const allowOnlyDigits = (e) => {
     e.target.value = e.target.value.replace(/[^0-9]/g, '').slice(0, 10);
 };
 
-const contactSchema = z.object({
-    name: z.string()
-        .min(2, "Name is required")
-        .regex(/^[a-zA-Z\s]+$/, "Name must contain only letters"),
-    mobile: z.string()
-        .regex(/^[0-9]{10}$/, "Enter a valid 10-digit mobile number"),
-    email: z.string()
-        .email("Enter a valid email address")
-        .min(5, "Email is required"),
-    requirement: z.string().optional(),
-});
-
 const Contact = () => {
-    const [isSubmitting, setIsSubmitting] = useState(false);
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState('');
     const { t } = useLanguage();
 
-    const { register, handleSubmit, formState: { errors }, reset } = useForm({
-        resolver: zodResolver(contactSchema),
+    const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm({
+        resolver: zodResolver(z.object({
+            name: z.string()
+                .min(2, t.validation.nameRequired)
+                .regex(/^[a-zA-Z\s]+$/, t.validation.nameLetters),
+            mobile: z.string()
+                .regex(/^[0-9]{10}$/, t.validation.mobileDigits),
+            email: z.string()
+                .email(t.validation.emailInvalid)
+                .min(5, t.validation.emailRequired),
+            requirement: z.string().optional(),
+            message: z.string().min(10, "Message must be at least 10 characters")
+        }))
     });
 
     const onSubmit = async (data) => {
-        setIsSubmitting(true);
         setError('');
         try {
             await api.post('/leads', { ...data, type: 'contact' });
@@ -65,10 +62,10 @@ const Contact = () => {
                     transition={{ duration: 0.6 }}
                 >
                     <span className="text-primary-theme font-bold tracking-widest uppercase text-[10px] mb-4 inline-block">{t.contact.title}</span>
-                    <h2 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white mb-6 font-display">Get In Touch</h2>
+                    <h2 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white mb-6 font-display">{t.contact.getInTouch}</h2>
                     <div className="w-16 h-1.5 bg-primary-theme mx-auto rounded-full mb-8"></div>
                     <p className="text-base text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
-                        Ready to secure your financial future? Contact us today for a personalized consultation.
+                        {t.contact.contactSubtitle}
                     </p>
                 </motion.div>
             </div>
@@ -89,7 +86,7 @@ const Contact = () => {
                                     <div className="p-3 bg-primary-theme rounded-2xl">
                                         <MapPin className="text-white w-5 h-5" />
                                     </div>
-                                    Our Office
+                                    {t.contact.ourOffice}
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="p-8">
@@ -162,7 +159,7 @@ const Contact = () => {
                             <CardTitle className="text-2xl font-black text-slate-900 dark:text-white leading-tight">
                                 {t.contact.formTitle}
                             </CardTitle>
-                            <p className="mt-2 text-sm text-slate-500 dark:text-slate-400 font-medium">We'll get back to you within 24 hours.</p>
+                            <p className="mt-2 text-sm text-slate-500 dark:text-slate-400 font-medium">{t.contact.responseTime}</p>
                         </CardHeader>
 
                         <CardContent className="p-0 relative z-10">
@@ -187,7 +184,7 @@ const Contact = () => {
                                         <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 ml-1">{t.contact.nameDetails}</label>
                                         <Input
                                             {...register('name')}
-                                            placeholder="Your Full Name"
+                                            placeholder={t.contact.namePlaceholder}
                                             onInput={allowOnlyLetters}
                                             className="h-12 rounded-2xl bg-slate-50 dark:bg-slate-900 border-transparent dark:border-slate-800 focus:bg-white dark:focus:bg-slate-900 focus:ring-4 focus:ring-primary-theme/10 focus:border-primary-theme transition-all px-6 text-base dark:text-white"
                                         />
@@ -198,7 +195,7 @@ const Contact = () => {
                                         <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 ml-1">{t.contact.mobileDetails}</label>
                                         <Input
                                             {...register('mobile')}
-                                            placeholder="10-digit mobile number"
+                                            placeholder={t.contact.mobilePlaceholder}
                                             onInput={allowOnlyDigits}
                                             inputMode="numeric"
                                             maxLength={10}
@@ -208,12 +205,12 @@ const Contact = () => {
                                     </div>
 
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 ml-1">Email Address</label>
+                                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 ml-1">{t.contact.email}</label>
                                         <div className="relative">
                                             <Input
                                                 {...register('email')}
                                                 type="email"
-                                                placeholder="example@mail.com"
+                                                placeholder={t.contact.emailPlaceholder}
                                                 className="h-12 rounded-2xl bg-slate-50 dark:bg-slate-900 border-transparent dark:border-slate-800 focus:bg-white dark:focus:bg-slate-900 focus:ring-4 focus:ring-primary-theme/10 focus:border-primary-theme transition-all px-6 text-base dark:text-white"
                                             />
                                         </div>
@@ -225,7 +222,7 @@ const Contact = () => {
                                         <textarea
                                             {...register('requirement')}
                                             className="min-h-[100px] w-full rounded-2xl bg-slate-50 dark:bg-slate-900 border border-transparent dark:border-slate-800 px-6 py-4 text-base focus:bg-white dark:focus:bg-slate-900 focus:ring-4 focus:ring-primary-theme/10 focus:border-primary-theme transition-all outline-none resize-none dark:text-white"
-                                            placeholder="How can we help you?"
+                                            placeholder={t.contact.messagePlaceholder}
                                         />
                                     </div>
 

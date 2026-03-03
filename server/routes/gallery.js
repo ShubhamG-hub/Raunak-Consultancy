@@ -4,6 +4,7 @@ const db = require('../config/db');
 const { v4: uuidv4 } = require('uuid');
 const authMiddleware = require('../middleware/authMiddleware');
 const Joi = require('joi');
+const { translateContent } = require('../services/translateService');
 
 const gallerySchema = Joi.object({
     title: Joi.string().required(),
@@ -12,11 +13,12 @@ const gallerySchema = Joi.object({
     active: Joi.boolean().default(true)
 });
 
-// GET /api/gallery/public (Public - Active Only)
 router.get('/public', async (req, res) => {
+    const lang = req.headers['accept-language-code'] || req.query.lang || 'en';
+
     try {
         const [rows] = await db.query(
-            'SELECT * FROM gallery WHERE active = true ORDER BY created_at DESC'
+            `SELECT *, title_${lang} as title FROM gallery WHERE active = true ORDER BY created_at DESC`
         );
         res.json(rows);
     } catch (err) {
@@ -25,11 +27,12 @@ router.get('/public', async (req, res) => {
     }
 });
 
-// GET /api/gallery (Admin - All)
 router.get('/', authMiddleware, async (req, res) => {
+    const lang = req.headers['accept-language-code'] || req.query.lang || 'en';
+
     try {
         const [rows] = await db.query(
-            'SELECT * FROM gallery ORDER BY created_at DESC'
+            `SELECT *, title_${lang} as title FROM gallery ORDER BY created_at DESC`
         );
         res.json(rows);
     } catch (err) {
@@ -44,10 +47,13 @@ router.post('/', authMiddleware, async (req, res) => {
     if (error) return res.status(400).json({ error: error.details[0].message });
 
     try {
+        // Auto-translate translatable fields
+        const translations = await translateContent({ title: value.title });
+
         const galleryId = uuidv4();
         await db.query(
-            'INSERT INTO gallery (id, title, image_url, category, active) VALUES (?, ?, ?, ?, ?)',
-            [galleryId, value.title, value.image_url, value.category, value.active]
+            'INSERT INTO gallery (id, title_en, title_hi, title_mr, image_url, category, active) VALUES (?, ?, ?, ?, ?, ?, ?)',
+            [galleryId, translations.en.title, translations.hi.title, translations.mr.title, value.image_url, value.category, value.active]
         );
 
         res.status(201).json({ message: 'Gallery image added', data: { id: galleryId, ...value } });
@@ -81,9 +87,12 @@ router.put('/:id', authMiddleware, async (req, res) => {
     if (error) return res.status(400).json({ error: error.details[0].message });
 
     try {
+        // Auto-translate translatable fields
+        const translations = await translateContent({ title: value.title });
+
         const [result] = await db.query(
-            'UPDATE gallery SET title = ?, image_url = ?, category = ?, active = ? WHERE id = ?',
-            [value.title, value.image_url, value.category, value.active, req.params.id]
+            'UPDATE gallery SET title_en = ?, title_hi = ?, title_mr = ?, image_url = ?, category = ?, active = ? WHERE id = ?',
+            [translations.en.title, translations.hi.title, translations.mr.title, value.image_url, value.category, value.active, req.params.id]
         );
 
         if (result.affectedRows === 0) return res.status(404).json({ error: 'Gallery item not found' });

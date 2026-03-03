@@ -8,7 +8,7 @@ import SectionHeader from '@/components/layout/SectionHeader';
 import api from '@/lib/api';
 
 const Blogs = () => {
-    const { t } = useLanguage();
+    const { t, language } = useLanguage();
     const [blogs, setBlogs] = useState([]);
     const [filteredBlogs, setFilteredBlogs] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -37,7 +37,7 @@ const Blogs = () => {
         };
 
         fetchBlogs();
-    }, []);
+    }, [language]);
 
     useEffect(() => {
         let result = blogs;
@@ -87,7 +87,7 @@ const Blogs = () => {
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                         <input
                             type="text"
-                            placeholder="Search articles..."
+                            placeholder={t.blogs.searchPlaceholder}
                             className="w-full bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-full py-4 pl-12 pr-6 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-theme transition-all font-medium"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}

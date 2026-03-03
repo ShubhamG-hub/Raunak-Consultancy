@@ -268,7 +268,7 @@ const Home = () => {
                     <div className="flex flex-col lg:flex-row items-center gap-10 md:gap-12 lg:gap-16">
                         <div className="lg:w-1/2">
                             <span className="inline-block py-1 px-3 mb-4 rounded-lg bg-primary-theme/10 text-primary-theme text-xs font-bold uppercase tracking-widest">
-                                Interactive Tools
+                                {t.common.interactiveTools}
                             </span>
                             <h2 className="text-4xl md:text-5xl font-black text-slate-900 dark:text-white mb-6 leading-tight">
                                 {t.calculators.title}
@@ -322,7 +322,7 @@ const Home = () => {
                                             <div className="w-3 h-3 rounded-full bg-yellow-400" />
                                             <div className="w-3 h-3 rounded-full bg-green-400" />
                                         </div>
-                                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">SIP Analysis</span>
+                                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{t.common.sipAnalysis}</span>
                                     </div>
                                     <div className="space-y-6">
                                         <div className="h-2 w-3/4 bg-slate-200 dark:bg-slate-800 rounded-full" />
@@ -392,7 +392,7 @@ const Home = () => {
                     <div className="mt-12 text-center">
                         <Link to="/certificates">
                             <Button variant="outline" size="lg" className="rounded-full px-8 font-bold border-2 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group">
-                                View All Certificates <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                                {t.common.viewAllCertificates} <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                             </Button>
                         </Link>
                     </div>
@@ -426,7 +426,7 @@ const Home = () => {
                     <div className="mt-12 text-center">
                         <Link to="/gallery">
                             <Button variant="outline" size="lg" className="rounded-full px-8 font-bold border-2 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group">
-                                Explore Full Gallery <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                                {t.common.exploreGallery} <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                             </Button>
                         </Link>
                     </div>
@@ -448,7 +448,7 @@ const Home = () => {
                     <div className="mt-12 text-center">
                         <Link to="/testimonials">
                             <Button variant="outline" size="lg" className="rounded-full px-8 font-bold border-2 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all group">
-                                Read All Testimonials <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                                {t.common.readAllTestimonials} <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                             </Button>
                         </Link>
                     </div>
