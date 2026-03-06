@@ -24,7 +24,7 @@ const ICON_MAP = {
 };
 
 const AboutDetails = () => {
-    const { language } = useLanguage();
+    const { language, t } = useLanguage();
     const [sections, setSections] = useState([]);
     const [loading, setLoading] = useState(true);
 
